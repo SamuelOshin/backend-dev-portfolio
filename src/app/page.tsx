@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight, Download, Mail, Github, Linkedin, Code, Database, Globe, Cpu, GitBranch, Package, Palette, Settings, ExternalLink, MessageCircle } from "lucide-react";
 
 
-// Typewriter Component
+// Typewriter Component with Layout Stability
 const Typewriter = ({ text, speed = 100 }: { text: string; speed?: number }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -23,11 +23,54 @@ const Typewriter = ({ text, speed = 100 }: { text: string; speed?: number }) => 
     }
   }, [currentIndex, text, speed]);
 
-  return <span>{displayText}</span>;
+  return (
+    <div className="relative">
+      {/* Invisible placeholder to reserve space */}
+      <span
+        className="invisible absolute inset-0"
+        aria-hidden="true"
+        style={{
+          visibility: 'hidden',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        }}
+      >
+        {text}
+      </span>
+      {/* Animated text */}
+      <span
+        className="relative"
+        style={{
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        }}
+      >
+        {displayText}
+        {/* Cursor */}
+        <span
+          className="inline-block w-0.5 h-[1em] bg-[color:var(--accent)] ml-1 animate-pulse"
+          style={{
+            animation: currentIndex < text.length ? 'pulse 1s infinite' : 'none'
+          }}
+        />
+      </span>
+    </div>
+  );
 };
 
 export default function Home() {
-  // Data
+  // Badge cycling state
+  const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
+  const badgeTitles = ["Backend Engineer", "Fullstack Developer", "Python Developer"];
+
+  // Cycle through badge titles every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBadgeIndex((prev) => (prev + 1) % badgeTitles.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [badgeTitles.length]);
   const experiences = useMemo(
     () => [
     {
@@ -138,125 +181,219 @@ export default function Home() {
   const projects = useMemo(
     () => [
     {
-      title: "Telemetry Mesh",
+      title: "MockBox",
       image:
       "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?q=80&w=1640&auto=format&fit=crop",
-      tags: ["OpenTelemetry", "Go", "gRPC"],
-      githubUrl: "https://github.com/SamuelOshin/telemetry-mesh",
-      liveUrl: "https://telemetry-mesh-demo.vercel.app"
+      tags: ["Python", "FastAPI", "RESTAPI", "NextJS", "TypeScript", "Antropric LLM", "Supabase"],
+      githubUrl: "https://github.com/SamuelOshin/MockBox",
+      liveUrl: "https://mock-box.vercel.app"
     },
     {
-      title: "Ledger Engine",
+      title: "XlideLand",
       image:
       "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1640&auto=format&fit=crop",
-      tags: ["PostgreSQL", "Kafka", "CQRS"],
-      githubUrl: "https://github.com/SamuelOshin/ledger-engine",
-      liveUrl: "https://ledger-engine-demo.vercel.app"
+      tags: ["PostgreSQL", "DjangoREST", "NeonDB", "OAuth"],
+      githubUrl: "https://github.com/SamuelOshin/XlideLand",
+      liveUrl: "https://xlideland.vercel.app"
     },
     {
-      title: "Realtime Sync",
+      title: "CodeBEGen",
       image:
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1640&auto=format&fit=crop",
-      tags: ["WebSocket", "Redis", "TypeScript"],
-      githubUrl: "https://github.com/SamuelOshin/realtime-sync",
-      liveUrl: "https://realtime-sync-demo.vercel.app"
-    },
-    {
-      title: "Policy-as-Code",
-      image:
-      "https://images.unsplash.com/photo-1488229297570-58520851e868?q=80&w=1640&auto=format&fit=crop",
-      tags: ["OPA", "Kubernetes", "GitOps"],
-      githubUrl: "https://github.com/SamuelOshin/policy-as-code",
-      liveUrl: "https://policy-as-code-demo.vercel.app"
-    },
-    {
-      title: "Feature Flags",
-      image:
-      "https://images.unsplash.com/photo-1526498460520-4c246339dccb?q=80&w=1640&auto=format&fit=crop",
-      tags: ["Node.js", "DX", "SDK"],
-      githubUrl: "https://github.com/SamuelOshin/feature-flags",
-      liveUrl: "https://feature-flags-demo.vercel.app"
-    },
-    {
-      title: "Search Relevance",
-      image:
-      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1640&auto=format&fit=crop",
-      tags: ["Embeddings", "Elasticsearch", "Python"],
-      githubUrl: "https://github.com/SamuelOshin/search-relevance",
-      liveUrl: "https://search-relevance-demo.vercel.app"
+      tags: ["FastAPI", "Redis", "Celery"],
+      githubUrl: "https://github.com/codebege_be",
+      liveUrl: "https://codebegen-be.onrender.com/docs"
     }],
 
     []
   );
 
   return (
-    <main className="relative mx-auto max-w-7xl px-6 sm:px-8">
+    <motion.main
+      className="relative mx-auto max-w-7xl px-6 sm:px-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Hero */}
-      <section className="relative grid grid-cols-1 md:grid-cols-12 gap-10 pt-16 sm:pt-24">
+      <section id="home" className="relative grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 pt-8 sm:pt-9 lg:pt-10 min-h-[60vh] md:min-h-[50vh] lg:min-h-[55vh]">
         {/* Left copy */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="col-span-1 md:col-span-6 flex flex-col justify-center">
+          className="col-span-1 md:col-span-6 flex flex-col justify-center md:justify-start"
+          style={{ contain: 'layout style' }}
+        >
 
-          <div className="mb-6 flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="/! bg-white/5 text-white/80 backdrop-blur-sm">
-              Backend Engineer
-            </Badge>
-            <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
-              Performance • Reliability
-            </Badge>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-4 flex flex-wrap items-center gap-2">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <motion.div
+                key={currentBadgeIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="relative"
+              >
+                <Badge 
+                  variant="secondary" 
+                  className="/! bg-white/5 text-white/80 backdrop-blur-sm border border-white/20 shadow-lg"
+                  style={{
+                    boxShadow: '0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  }}
+                >
+                  {badgeTitles[currentBadgeIndex]}
+                </Badge>
+                {/* Animated glow border */}
+                <motion.div
+                  className="absolute inset-0 rounded-full opacity-60"
+                  style={{
+                    background: 'linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1))',
+                    filter: 'blur(8px)',
+                  }}
+                  animate={{
+                    opacity: [0.3, 0.8, 0.3],
+                    scale: [1, 1.05, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+              </motion.div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
+                Performance • Reliability
+              </Badge>
+            </motion.div>
+          </motion.div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-semibold leading-tight tracking-[-0.03em]">
-            <Typewriter text="Architecting dependable systems with elegant APIs." speed={80} />
-          </h1>
-          <p className="mt-5 max-w-2xl text-base sm:text-lg text-white/70">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="relative"
+            style={{
+              minHeight: '100px', // Reduced from 120px
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <h1 className="text-3xl sm:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight tracking-[-0.03em] w-full">
+              <Typewriter text="Architecting dependable systems with elegant APIs." speed={80} />
+            </h1>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="mt-3 lg:mt-4 max-w-2xl text-sm sm:text-base text-white/70">
             I design resilient services, shape data models, and ship
             observability-first platforms. Clean contracts. Predictable latency.
             Zero drama deploys.
-          </p>
+          </motion.p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+            className="mt-3 flex flex-wrap items-center gap-4">
             <GlowButton href="#projects" icon={<ArrowRight size={18} />}>
               View Projects
             </GlowButton>
-            <GlowButton 
-              variant="outline" 
+            <GlowButton
+              variant="outline"
               href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
-              icon={<Download size={18} />} 
+              icon={<Download size={18} />}
               download
             >
               Download CV
             </GlowButton>
-          </div>
+          </motion.div>
 
-          <div className="mt-8 flex items-center gap-4 text-white/60">
-            <a className="hover:text-[color:var(--accent)] transition-colors" href="mailto:samuelt.oshin@gmail.com" aria-label="Email">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.1 }}
+            className="mt-6 flex items-center gap-4 text-white/60">
+            <motion.a
+              className="hover:text-[color:var(--accent)] transition-colors"
+              href="mailto:samuelt.oshin@gmail.com"
+              aria-label="Email"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 1.2 }}
+              whileHover={{ scale: 1.1 }}
+            >
               <Mail size={20} />
-            </a>
-            <a className="hover:text-[color:var(--accent)] transition-colors" href="https://github.com/SamuelOshin" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            </motion.a>
+            <motion.a
+              className="hover:text-[color:var(--accent)] transition-colors"
+              href="https://github.com/SamuelOshin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 1.3 }}
+              whileHover={{ scale: 1.1 }}
+            >
               <Github size={20} />
-            </a>
-            <a className="hover:text-[color:var(--accent)] transition-colors" href="https://linkedin.com/in/samuel-oshin-2903611a5/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            </motion.a>
+            <motion.a
+              className="hover:text-[color:var(--accent)] transition-colors"
+              href="https://linkedin.com/in/samuel-oshin-2903611a5/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 1.4 }}
+              whileHover={{ scale: 1.1 }}
+            >
               <Linkedin size={20} />
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </motion.div>
 
         {/* Right visual */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="col-span-1 md:col-span-6 relative">
+          initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+          className="col-span-1 md:col-span-6 relative flex items-center justify-center md:justify-end"
+          style={{ contain: 'layout style' }}
+        >
 
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[color:var(--accent)]/20 via-transparent to-white/5">
-            <img
+          <motion.div
+            className="relative aspect-[4/3] w-full max-w-sm md:max-w-md lg:max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[color:var(--accent)]/20 via-transparent to-white/5"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+            
+          >
+            <motion.img
               src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/headshotbychatgpt-1758178525713.png"
               alt="Portrait"
-              className="h-full w-full object-cover mix-blend-luminosity opacity-90 grayscale contrast-125" />
+              className="h-full w-full object-cover object-[center_15%] mix-blend-luminosity opacity-90 grayscale contrast-125"
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.2, delay: 0.5 }}
+            />
 
             {/* Duotone overlay */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_600px_at_80%_10%,_color:var(--accent)/35,_transparent_45%),linear-gradient(to_top_right,_#000000_10%,_transparent_40%)]" />
@@ -268,12 +405,12 @@ export default function Home() {
               animate={{ opacity: [0.4, 0.8, 0.4], y: [0, -8, 0] }}
               transition={{ duration: 6, repeat: Infinity }} />
 
-          </div>
+          </motion.div>
         </motion.div>
       </section>
 
       {/* Experience Timeline */}
-      <section className="relative mt-24 sm:mt-32">
+      <section id="about" className="relative mt-24 sm:mt-32">
         <SectionHeader kicker="About / Experience" title="Impact through systems thinking" />
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-5">
@@ -288,7 +425,7 @@ export default function Home() {
       </section>
 
       {/* Skills Section */}
-      <section className="relative mt-32 sm:mt-40">
+      <section id="skills" className="relative mt-32 sm:mt-40">
         <SectionHeader kicker="Core Technologies" title="Building with modern tools" />
         <SkillsWheel skills={skills} />
       </section>
@@ -300,7 +437,7 @@ export default function Home() {
       </section>
 
       {/* Get in Touch */}
-      <section className="relative mt-24 sm:mt-32">
+      <section id="contact" className="relative mt-24 sm:mt-32">
         <SectionHeader kicker="Let's Connect" title="Get in touch" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -370,20 +507,20 @@ export default function Home() {
             className="mt-12 p-6 bg-gradient-to-r from-[color:var(--accent)]/10 to-transparent border border-[color:var(--accent)]/20 rounded-xl"
           >
             <p className="text-sm text-white/80">
-              💡 <strong>Currently available for:</strong> Backend development contracts, consulting, and full-time opportunities
+              💡 <strong>Currently available for:</strong> Backend development contracts, and full-time opportunities
             </p>
           </motion.div>
         </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className="relative mt-28 mb-16 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur">
-        <div className="text-sm text-white/60">© {new Date().getFullYear()} Backend Developer Portfolio</div>
-        <div className="flex items-center gap-2">
-          <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">Available for contracts</Badge>
+      <footer className="relative mt-28 mb-16 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur">
+        <div className="text-sm text-white/60 text-center sm:text-left">© {new Date().getFullYear()} Samuel Oshin</div>
+        <div className="flex items-center justify-center sm:justify-end">
+          <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40 text-center">Available for contracts</Badge>
         </div>
       </footer>
-    </main>);
+    </motion.main>);
 
 }
 
@@ -559,12 +696,32 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
 
 function SectionHeader({ kicker, title }: {kicker: string;title: string;}) {
   return (
-    <div className="max-w-3xl">
-      <div className="text-[11px] uppercase tracking-[0.22em] text-white/50">{kicker}</div>
-      <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-[-0.02em]">
+    <motion.div
+      className="max-w-3xl"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      <motion.div
+        className="text-[11px] uppercase tracking-[0.22em] text-white/50"
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        {kicker}
+      </motion.div>
+      <motion.h2
+        className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-[-0.02em]"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         {title}
-      </h2>
-    </div>);
+      </motion.h2>
+    </motion.div>);
 
 }
 
@@ -573,6 +730,7 @@ function GlowButton({
   href,
   icon,
   variant = "solid",
+  
   download
 }: {children: React.ReactNode;href: string;icon?: React.ReactNode;variant?: "solid" | "outline";download?: boolean;}) {
   return (
@@ -591,7 +749,7 @@ function GlowButton({
         variant={variant === "outline" ? "outline" : "default"}
         className={
         variant === "outline" ?
-        "bg-transparent border-[color:var(--accent)]/40 text-white hover:bg-[color:var(--accent)]/10" :
+        "bg-transparent border-[color:var(--accent)]/40 text-white hover:bg-[color:var(--accent)]/10 hover:text-white" :
         "bg-[color:var(--accent)] text-[color:var(--accent-foreground)] hover:bg-[color:var(--accent)]/90"
         }>
 
@@ -604,35 +762,52 @@ function GlowButton({
 
 function TimelineRail() {
   return (
-    <div className="relative rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-6 backdrop-blur">
-      <div className="overflow-x-auto">
-        <div className="min-w-[640px] md:min-w-0">
-          <div className="relative flex items-center gap-0">
-            <div className="h-[2px] w-full bg-white/10" />
-            {/* decorative overlay gradient */}
-            <div className="pointer-events-none absolute inset-x-0 h-[2px] bg-[linear-gradient(90deg,transparent,theme(colors.accent)/60%,transparent)] opacity-60" />
-          </div>
-          <div className="mt-4 grid grid-cols-4 items-start">
-            {[
-            { label: "2018", sub: "Arc Labs" },
-            { label: "2020", sub: "Nova" },
-            { label: "2022", sub: "Vertis" },
-            { label: "Now", sub: "Impact" }].
-            map((n, i) =>
-            <div key={i} className="flex flex-col items-start">
-                <div className="relative -mt-3 flex items-center">
-                  <div className="h-2 w-2 rounded-full bg-[color:var(--accent)] shadow-[0_0_0_6px_rgba(0,0,0,0.4)]" />
-                </div>
-                <div className="mt-2 text-xs text-white/60">{n.label}</div>
-                <div className="text-sm text-white/80">{n.sub}</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="mt-6 text-sm text-white/60">Evolving systems with clarity and empathy.</div>
-    </div>);
+    <div className="relative rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 backdrop-blur">
+      <div className="flex flex-col items-center space-y-12">
+        {/* Timeline items */}
+        {[
+        // { label: "2022", sub: "Started Learning" },
+        // { label: "2020", sub: "Nova" },
+        // { label: "2022", sub: "Vertis" },
+        { label: "Now", sub: "Impact" }].
+        map((n, i) =>
+        <div key={i} className="flex flex-col items-center space-y-4 relative">
+            {/* Timeline point with connecting line */}
+            <div className="relative flex flex-col items-center">
+              {/* Connecting line from previous item (except for first item) */}
+              {i > 0 && (
+                <div className="absolute -top-8 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
+              )}
 
+              {/* Timeline point */}
+              <div className="relative flex items-center justify-center">
+                <div className="h-4 w-4 rounded-full bg-[color:var(--accent)] shadow-[0_0_0_10px_rgba(0,0,0,0.4)]" />
+                {/* Glow effect */}
+                <div className="absolute inset-0 rounded-full bg-[color:var(--accent)]/30 blur-sm" />
+              </div>
+
+              {/* Connecting line to next item (except for last item) */}
+              {i < 3 && (
+                <div className="absolute top-6 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="text-center space-y-1 min-w-[120px]">
+              <div className="text-sm font-medium text-white/90">{n.label}</div>
+              <div className="text-xs text-white/60">{n.sub}</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bottom description */}
+      <div className="mt-12 text-center">
+        <p className="text-sm text-white/60 leading-relaxed">
+          Evolving systems with clarity and empathy.
+        </p>
+      </div>
+    </div>);
 }
 
 function ExpandableCard({
@@ -718,61 +893,117 @@ function MasonryGrid({
       {projects.map((p, i) =>
       <motion.article
         key={p.title + i}
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5, delay: i * 0.05 }}
-        className="mb-0 flex h-full flex-col rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur overflow-hidden">
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
+        whileHover={{ y: -8, scale: 1.02 }}
+        className="mb-0 flex h-full flex-col rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur overflow-hidden group cursor-pointer">
 
-          <div className="relative w-full h-48 sm:h-56 lg:h-60">
-            <img src={p.image} alt={p.title} className="h-full w-full object-cover" />
+          <motion.div
+            className="relative w-full h-48 sm:h-56 lg:h-60 overflow-hidden"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.img
+              src={p.image}
+              alt={p.title}
+              className="h-full w-full object-cover transition-transform duration-500"
+              whileHover={{ scale: 1.1 }}
+            />
             <motion.div
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
             className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent !w-full !h-full" />
 
-            <div className="pointer-events-none absolute inset-x-0 -bottom-1 h-1 bg-[radial-gradient(60%_100%_at_50%_120%,_var(--accent),_transparent)] opacity-60" />
-          </div>
-          <div className="p-4 flex flex-col gap-3 flex-1">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-lg font-medium tracking-[-0.01em]">{p.title}</h3>
-              <ArrowRight size={16} className="text-white/60" />
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {p.tags.map((tag) =>
-            <Badge
+            <motion.div
+              className="pointer-events-none absolute inset-x-0 -bottom-1 h-1 bg-[radial-gradient(60%_100%_at_50%_120%,_var(--accent),_transparent)] opacity-60"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: i * 0.1 + 0.3 }}
+            />
+          </motion.div>
+          <motion.div
+            className="p-4 flex flex-col gap-3 flex-1"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.1 + 0.2 }}
+          >
+            <motion.div
+              className="flex items-center justify-between gap-3"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.1 + 0.3 }}
+            >
+              <h3 className="text-lg font-medium tracking-[-0.01em] group-hover:text-[color:var(--accent)] transition-colors">{p.title}</h3>
+              <motion.div
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ArrowRight size={16} className="text-white/60 group-hover:text-[color:var(--accent)] transition-colors" />
+              </motion.div>
+            </motion.div>
+            <motion.div
+              className="mt-3 flex flex-wrap gap-2"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.1 + 0.4 }}
+            >
+              {p.tags.map((tag, tagIndex) =>
+            <motion.div
               key={tag}
-              className="/! bg-white/5 text-white/75 border-white/10 hover:border-[color:var(--accent)]/40 hover:text-[color:var(--accent)]">
-
-                  {tag}
-                </Badge>
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: i * 0.1 + 0.5 + tagIndex * 0.05 }}
+            >
+              <Badge
+                className="/! bg-white/5 text-white/75 border-white/10 hover:border-[color:var(--accent)]/40 hover:text-[color:var(--accent)]">
+                {tag}
+              </Badge>
+            </motion.div>
             )}
-            </div>
-            <div className="mt-4 flex gap-3">
+            </motion.div>
+            <motion.div
+              className="mt-4 flex gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.1 + 0.6 }}
+            >
               {p.githubUrl && (
-                <a
+                <motion.a
                   href={p.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[color:var(--accent)]/40 hover:text-[color:var(--accent)] transition-all duration-200"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Github size={16} />
                   Code
-                </a>
+                </motion.a>
               )}
               {p.liveUrl && (
-                <a
+                <motion.a
                   href={p.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-[color:var(--accent)]/20 border border-[color:var(--accent)]/40 rounded-lg hover:bg-[color:var(--accent)]/30 hover:border-[color:var(--accent)]/60 transition-all duration-200"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <ExternalLink size={16} />
                   Live Demo
-                </a>
+                </motion.a>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </motion.article>
       )}
     </div>);
