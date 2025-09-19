@@ -1,45 +1,180 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
+import { ArrowRight, Download, Mail, Github, Linkedin, Code, Database, Globe, Cpu, GitBranch, Package, Palette, Settings } from "lucide-react";
+
+// Technology Icon Components
+const PythonIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <defs>
+      <linearGradient id="python-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#3776ab" />
+        <stop offset="100%" stopColor="#4b8bbe" />
+      </linearGradient>
+      <linearGradient id="python-yellow" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#ffd43b" />
+        <stop offset="100%" stopColor="#ffe873" />
+      </linearGradient>
+    </defs>
+    <path d="M158.208 225.482c0-47.905 13.21-84.564 35.428-107.137 22.217-22.573 52.977-34.906 89.814-34.906h44.31c36.837 0 67.597 12.333 89.814 34.906 22.218 22.573 35.428 59.232 35.428 107.137v44.31c0 47.905-13.21 84.564-35.428 107.137-22.217 22.573-52.977 34.906-89.814 34.906h-44.31c-36.837 0-67.597-12.333-89.814-34.906-22.218-22.573-35.428-59.232-35.428-107.137v-44.31z" fill="url(#python-blue)"/>
+    <path d="M64 158.208v44.31c0 36.837 12.333 67.597 34.906 89.814 22.573 22.218 59.232 35.428 107.137 35.428h44.31c47.905 0 84.564-13.21 107.137-35.428 22.573-22.217 34.906-52.977 34.906-89.814v-44.31c0-36.837-12.333-67.597-34.906-89.814C335.017 45.821 298.358 32.608 250.453 32.608h-44.31c-47.905 0-84.564 13.213-107.137 35.786C76.333 90.611 64 121.371 64 158.208z" fill="url(#python-yellow)"/>
+    <circle cx="160" cy="128" r="16" fill="white"/>
+    <circle cx="352" cy="384" r="16" fill="white"/>
+  </svg>
+);
+
+const ReactIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <circle cx="256" cy="256" r="40" fill="#61dafb"/>
+    <path d="M256 146.9c67.1 0 121.1 19.4 121.1 43.4s-54 43.4-121.1 43.4-121.1-19.4-121.1-43.4 54-43.4 121.1-43.4zm-142.6 83.5c33.5-58.1 86-103.8 117.7-102.1 31.7 1.7 47.1 61.1 34.4 132.8-12.7 71.7-54.1 123.1-85.8 121.4-31.7-1.7-47.1-61.1-34.4-132.8z" fill="#61dafb"/>
+    <path d="M113.4 313.6c-33.5-58.1-20.8-117.6 11-143.2 31.8-25.6 89.4 2.6 128.8 62.8 39.4 60.2 47.1 126.2 15.3 151.8-31.8 25.6-89.4-2.6-128.8-62.8z" fill="#61dafb"/>
+    <path d="M398.6 313.6c33.5-58.1 20.8-117.6-11-143.2-31.8-25.6-89.4 2.6-128.8 62.8-39.4 60.2-47.1 126.2-15.3 151.8 31.8 25.6 89.4-2.6 128.8-62.8z" fill="#61dafb"/>
+  </svg>
+);
+
+const DockerIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <rect x="55" y="206" width="402" height="200" rx="100" fill="#2496ed"/>
+    <path d="M256 120c-55.228 0-100 44.772-100 100h200c0-55.228-44.772-100-100-100z" fill="#f0f0f0"/>
+    <rect x="147" y="156" width="26" height="20" fill="#2496ed"/>
+    <rect x="177" y="156" width="26" height="20" fill="#2496ed"/>
+    <rect x="207" y="156" width="26" height="20" fill="#2496ed"/>
+    <rect x="237" y="156" width="26" height="20" fill="#2496ed"/>
+    <rect x="267" y="156" width="26" height="20" fill="#2496ed"/>
+    <rect x="177" y="210" width="26" height="20" fill="#2496ed"/>
+    <rect x="207" y="210" width="26" height="20" fill="#2496ed"/>
+    <rect x="237" y="210" width="26" height="20" fill="#2496ed"/>
+    <rect x="267" y="210" width="26" height="20" fill="#2496ed"/>
+    <rect x="207" y="234" width="26" height="20" fill="#2496ed"/>
+    <rect x="237" y="234" width="26" height="20" fill="#2496ed"/>
+    <path d="M410 256c0-20-10-35-30-35s-30 15-30 35c0 15 10 30 30 30s30-15 30-30z" fill="#f0f0f0"/>
+  </svg>
+);
+
+const GitIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <path d="M502.3 159.7L352.3 9.7c-12.9-12.9-33.7-12.9-46.6 0L284.4 31l58.6 58.6c13.7-4.6 29.4-1.5 40.3 9.4 11 11 14 26.8 9.2 40.6L451 198c13.8-4.9 29.6-1.8 40.6 9.2 15.3 15.3 15.3 40.1 0 55.4-15.3 15.3-40.1 15.3-55.4 0-11.4-11.4-14.3-28.1-8.7-42.1l-56.1-56.1v147.6c3.7 1.8 7.2 4.4 10.1 7.3 15.3 15.3 15.3 40.1 0 55.4-15.3 15.3-40.1 15.3-55.4 0-15.3-15.3-15.3-40.1 0-55.4 3.8-3.8 8.1-6.6 12.8-8.4V167.1c-4.7-1.8-9-4.6-12.8-8.4-11.5-11.5-14.3-28.4-8.6-42.5L259.1 58 9.7 305.7c-12.9 12.9-12.9 33.7 0 46.6L159.7 502.3c12.9 12.9 33.7 12.9 46.6 0L502.3 206.3c12.9-12.9 12.9-33.7 0-46.6z" fill="#f14e32"/>
+  </svg>
+);
+
+const HTMLIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <path d="M64 32l34.94 403.21L255.77 480 413 435.15 448 32H64z" fill="#e44d26"/>
+    <path d="M256 48l150.4 0L372.54 420.56 256 456.74v-408.74z" fill="#f16529"/>
+    <path d="M142 176h114v45h-64v45h64v45h-114v-135z" fill="white"/>
+    <path d="M256 176v45h69l-5 50h-64v45l114-13 8-127h-122z" fill="white"/>
+    <path d="M256 327l-62 17 4 45 58-16v-46z" fill="#ebebeb"/>
+    <path d="M256 271h-64l-6-45h70v45z" fill="#ebebeb"/>
+  </svg>
+);
+
+const CSSIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <path d="M64 32l34.94 403.21L255.77 480 413 435.15 448 32H64z" fill="#1572b6"/>
+    <path d="M256 48l150.4 0L372.54 420.56 256 456.74v-408.74z" fill="#33a9dc"/>
+    <path d="M142 176h114v45h-64v45h64v45h-114v-135z" fill="white"/>
+    <path d="M256 176v45h69l-5 50h-64v45l114-13 8-127h-122z" fill="white"/>
+    <path d="M256 327l-62 17 4 45 58-16v-46z" fill="#ebebeb"/>
+    <path d="M256 271h-64l-6-45h70v45z" fill="#ebebeb"/>
+  </svg>
+);
+
+const JavaScriptIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <rect width="512" height="512" fill="#f7df1e"/>
+    <path d="M324 370c10 17 24 29 47 29 20 0 33-10 33-24 0-16-13-22-35-32l-12-5c-35-15-58-33-58-72 0-36 27-63 70-63 30 0 52 10 67 37l-37 24c-8-14-17-20-30-20-14 0-23 9-23 20 0 14 9 20 30 29l12 5c41 18 64 35 64 75 0 43-34 67-79 67-44 0-74-21-88-49l40-23z" fill="#323330"/>
+    <path d="M177 377c7 13 14 24 28 24 14 0 23-5 23-25V275h47v102c0 41-24 60-59 60-32 0-50-16-60-36l42-21z" fill="#323330"/>
+  </svg>
+);
+
+const PostgreSQLIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z" fill="#336791"/>
+    <path d="M256 96c-88.4 0-160 71.6-160 160s71.6 160 160 160 160-71.6 160-160S344.4 96 256 96z" fill="#ffffff"/>
+    <text x="256" y="280" textAnchor="middle" fontSize="120" fontFamily="Arial, sans-serif" fontWeight="bold" fill="#336791">P</text>
+  </svg>
+);
+
+const MySQLIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z" fill="#4479a1"/>
+    <path d="M256 96c-88.4 0-160 71.6-160 160s71.6 160 160 160 160-71.6 160-160S344.4 96 256 96z" fill="#ffffff"/>
+    <path d="M180 200h152v24h-152v-24zm0 40h152v24h-152v-24zm0 40h152v24h-152v-24zm0 40h96v24h-96v-24z" fill="#4479a1"/>
+    <circle cx="320" cy="320" r="8" fill="#4479a1"/>
+  </svg>
+);
+
+const SlackIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
+    <path d="M126.12 315.1c0 24.06-19.56 43.62-43.62 43.62s-43.62-19.56-43.62-43.62c0-24.06 19.56-43.62 43.62-43.62h43.62v43.62z" fill="#e01e5a"/>
+    <path d="M147.63 315.1c0-24.06 19.56-43.62 43.62-43.62s43.62 19.56 43.62 43.62v109.9c0 24.06-19.56 43.62-43.62 43.62s-43.62-19.56-43.62-43.62v-109.9z" fill="#e01e5a"/>
+    <path d="M191.25 126.12c-24.06 0-43.62-19.56-43.62-43.62s19.56-43.62 43.62-43.62 43.62 19.56 43.62 43.62v43.62h-43.62z" fill="#36c5f0"/>
+    <path d="M191.25 147.63c24.06 0 43.62 19.56 43.62 43.62s-19.56 43.62-43.62 43.62h-109.9c-24.06 0-43.62-19.56-43.62-43.62s19.56-43.62 43.62-43.62h109.9z" fill="#36c5f0"/>
+    <path d="M380.88 191.25c0-24.06 19.56-43.62 43.62-43.62s43.62 19.56 43.62 43.62-19.56 43.62-43.62 43.62h-43.62v-43.62z" fill="#2eb67d"/>
+    <path d="M359.37 191.25c0 24.06-19.56 43.62-43.62 43.62s-43.62-19.56-43.62-43.62v-109.9c0-24.06 19.56-43.62 43.62-43.62s43.62 19.56 43.62 43.62v109.9z" fill="#2eb67d"/>
+    <path d="M315.75 380.88c24.06 0 43.62 19.56 43.62 43.62s-19.56 43.62-43.62 43.62-43.62-19.56-43.62-43.62v-43.62h43.62z" fill="#ecb22e"/>
+    <path d="M315.75 359.37c-24.06 0-43.62-19.56-43.62-43.62s19.56-43.62 43.62-43.62h109.9c24.06 0 43.62 19.56 43.62 43.62s-19.56 43.62-43.62 43.62h-109.9z" fill="#ecb22e"/>
+  </svg>
+);
+
+// Typewriter Component
+const Typewriter = ({ text, speed = 100 }: { text: string; speed?: number }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, speed);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+
+  return <span>{displayText}</span>;
+};
 
 export default function Home() {
   // Data
   const experiences = useMemo(
     () => [
     {
-      role: "Senior Backend Engineer",
-      company: "Vertis Cloud",
-      period: "2022 — Present",
+      role: "Backend Engineer Intern(Finalist)",
+      company: "HNG12 Internship",
+      period: "February 2025 - April 2025",
       summary:
-      "Led platform migration to event-driven microservices (Kafka + Go), reducing latency by 43% and infra cost by 28%.",
+      "Designed 15+ REST endpoints for AI-powered backend generator, achieving 90%+ test coverage and integrating Anthropic LLM via custom prompts and API orchestration.",
       details: [
-      "Designed multi-tenant auth with fine-grained RBAC; 0 auth P1s in 12 months.",
-      "Shipped observability stack with OpenTelemetry -> Tempo/Loki/Grafana.",
-      "Drove SRE initiative: SLOs, error budgets, and incident runbooks."],
+      "Engineered and deployed 10+ REST APIs with Python, Django, and FastAPI for LLM-integrated plications, enabling seamless data flows",
+      "Optimized CI/CD pipelines and agile processes in remote cross-functional teams, boosting deployment speed by 25%..",
+      "Integrated Anthropic LLM using custom prompts and API orchestration to enhance backend generation capabilities.",
+      "Implemented Google OAuth2 for secure user authentication, authorization and development environment awareness."],
 
-      tech: ["Go", "PostgreSQL", "Kafka", "Kubernetes", "gRPC"]
+      tech: ["Python", "PostgreSQL", "Langchain", "Antropic LLM", "FastAPI", "Git Actions", "Celery", "Docker"]
     },
     {
-      role: "Backend Engineer",
-      company: "Nova Fintech",
-      period: "2020 — 2022",
+      role: "IT Support Officer",
+      company: "Coleman Technical Industries Limited",
+      period: "2024 — 2025",
       summary:
-      "Built reconciliation pipelines moving 120M+ tx/day with verifiable data lineage and audit trails.",
+      "Automated daily ERP backup processes for Oracle and Odoo systems using Python scripts.",
       details: [
-      "Introduced CQRS + outbox pattern; eliminated write races under peak load.",
-      "Cut cold-start by 65% via connection pooling and module graph pruning."],
+      "Implemented security monitoring solutions, significantly reducing endpoint security incidents",
+      "Resolved 100+ user support tickets through systematic troubleshooting, improving system uptime by 25%",
+      "Responsible for documenting Standard of Operation (SOP) for the Odoo application role rights ",
+      "Implemented Automation of adding new staff to the Active Directory using Python scripts"],
 
-      tech: ["Node.js", "TypeScript", "Redis", "AWS", "Serverless"]
+      tech: ["Problem Solving", "Python", "ERP", "Odoo", ""]
     },
     {
-      role: "Software Engineer",
+      role: "Software Developer & IT Support (SIWES) ",
       company: "Arc Labs",
-      period: "2018 — 2020",
+      period: "2023 — 2024",
       summary:
       "Implemented search relevance service with vector embeddings; +18% task success in UX studies.",
       details: [
@@ -49,6 +184,67 @@ export default function Home() {
       tech: ["Python", "FastAPI", "Elasticsearch", "Docker"]
     }],
 
+    []
+  );
+
+  const skills = useMemo(
+    () => [
+      { 
+        name: "Python", 
+        icon: <img src="/icons/python.svg" alt="Python" className="w-6 h-6 object-contain" />, 
+        color: "#3776ab" 
+      },
+      { 
+        name: "AWS", 
+        icon: <img src="/icons/aws.svg" alt="AWS" className="w-6 h-6 object-contain" />, 
+        color: "#ff9900" 
+      },
+      { 
+        name: "Docker", 
+        icon: <img src="/icons/docker.svg" alt="Docker" className="w-6 h-6 object-contain" />, 
+        color: "#2496ed" 
+      },
+      { 
+        name: "Git", 
+        icon: <img src="/icons/git.svg" alt="Git" className="w-6 h-6 object-contain" />, 
+        color: "#f05032" 
+      },
+      { 
+        name: "HTML5", 
+        icon: <img src="/icons/html5.svg" alt="HTML5" className="w-6 h-6 object-contain" />, 
+        color: "#e34f26" 
+      },
+      { 
+        name: "Django", 
+        icon: <img src="/icons/django.svg" alt="Django" className="w-6 h-6 object-contain" />, 
+        color: "#092e20" 
+      },
+      { 
+        name: "Redis", 
+        icon: <img src="/icons/redis.svg" alt="Redis" className="w-6 h-6 object-contain" />, 
+        color: "#dc382d" 
+      },
+      { 
+        name: "Claude AI", 
+        icon: <img src="/icons/claude.svg" alt="Claude AI" className="w-6 h-6 object-contain" />, 
+        color: "#d97757" 
+      },
+      { 
+        name: "Hugging Face", 
+        icon: <img src="/icons/huggingface.svg" alt="Hugging Face" className="w-6 h-6 object-contain" />, 
+        color: "#ff6b35" 
+      },
+      { 
+        name: "LangChain", 
+        icon: <img src="/icons/langchain.svg" alt="LangChain" className="w-6 h-6 object-contain" />, 
+        color: "#1c3c3c" 
+      },
+      { 
+        name: "Slack", 
+        icon: <img src="/icons/slack.svg" alt="Slack" className="w-6 h-6 object-contain" />, 
+        color: "#4a154b" 
+      }
+    ],
     []
   );
 
@@ -107,7 +303,7 @@ export default function Home() {
 
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <Badge variant="secondary" className="/! bg-white/5 text-white/80 backdrop-blur-sm">
-              Backend Developer
+              Backend Engineer
             </Badge>
             <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
               Performance • Reliability
@@ -115,7 +311,7 @@ export default function Home() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-semibold leading-tight tracking-[-0.03em]">
-            Architecting dependable systems with elegant APIs.
+            <Typewriter text="Architecting dependable systems with elegant APIs." speed={80} />
           </h1>
           <p className="mt-5 max-w-2xl text-base sm:text-lg text-white/70">
             I design resilient services, shape data models, and ship
@@ -192,6 +388,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Skills Section */}
+      <section className="relative mt-32 sm:mt-40">
+        <SectionHeader kicker="Core Technologies" title="Building with modern tools" />
+        <SkillsWheel skills={skills} />
+      </section>
+
       {/* Projects */}
       <section id="projects" className="relative mt-24 sm:mt-32">
         <SectionHeader kicker="Selected Work" title="Pragmatic builds with measurable outcomes" />
@@ -207,6 +409,176 @@ export default function Home() {
       </footer>
     </main>);
 
+}
+
+function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode; color: string }[] }) {
+  return (
+    <div className="mt-24 flex items-center justify-center py-20">
+      <div className="relative max-w-4xl mx-auto">
+        {/* Central hub */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full border-2 border-[color:var(--accent)]/40 bg-gradient-to-br from-[color:var(--accent)]/20 to-[color:var(--accent)]/5 backdrop-blur-xl mx-auto"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="flex h-16 w-16 items-center justify-center rounded-full bg-[color:var(--accent)]/10"
+          >
+            <Code size={28} className="text-[color:var(--accent)]" />
+          </motion.div>
+          
+          {/* Central glow effect */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: `radial-gradient(circle, var(--accent)/30 0%, transparent 70%)`
+            }}
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.5, 0.8, 0.5]
+            }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        </motion.div>
+
+        {/* Skills arranged in circle */}
+        {skills.map((skill, index) => {
+          const angle = (index * 360) / skills.length;
+          const radius = 160; // Increased distance from center
+          const x = Math.cos((angle - 90) * (Math.PI / 180)) * radius;
+          const y = Math.sin((angle - 90) * (Math.PI / 180)) * radius;
+
+          return (
+            <motion.div
+              key={skill.name}
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ 
+                duration: 0.6, 
+                delay: 0.4 + (index * 0.1),
+                type: "spring",
+                stiffness: 100
+              }}
+              whileHover={{ 
+                scale: 1.15,
+                zIndex: 20
+              }}
+              className="absolute group cursor-pointer"
+              style={{
+                left: `calc(50% + ${x}px - 32px)`,
+                top: `calc(50% + ${y}px - 32px)`,
+              }}
+              title={skill.name}
+            >
+              {/* Skill icon container */}
+              <div className="relative">
+                <motion.div
+                  className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10"
+                  whileHover={{
+                    boxShadow: `0 0 20px ${skill.color}40, 0 0 40px ${skill.color}20`
+                  }}
+                >
+                  <span style={{ color: skill.color }}>
+                    {skill.icon}
+                  </span>
+                </motion.div>
+
+                {/* Skill name tooltip */}
+                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm border border-white/10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  style={{ zIndex: 30 }}
+                >
+                  {skill.name}
+                </div>
+
+                {/* Connecting line to center */}
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: 0.6 + (index * 0.05) 
+                  }}
+                  className="absolute h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  style={{
+                    width: `${radius - 48}px`,
+                    left: x > 0 ? '-160px' : '64px',
+                    top: '50%',
+                    transformOrigin: x > 0 ? 'right' : 'left',
+                    transform: `rotate(${angle}deg) translateY(-50%)`,
+                  }}
+                />
+
+                {/* Floating particles effect */}
+                <motion.div
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  animate={{
+                    boxShadow: [
+                      `0 0 0px ${skill.color}00`,
+                      `0 0 20px ${skill.color}30`,
+                      `0 0 0px ${skill.color}00`
+                    ]
+                  }}
+                  transition={{
+                    duration: 3,
+                    delay: index * 0.3,
+                    repeat: Infinity,
+                    repeatDelay: 2
+                  }}
+                />
+              </div>
+            </motion.div>
+          );
+        })}
+
+        {/* Outer decorative ring */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2"
+        >
+          <div className="h-full w-full rounded-full border border-white/5">
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              className="h-full w-full rounded-full border-t border-[color:var(--accent)]/20"
+            />
+          </div>
+        </motion.div>
+
+        {/* Background glow */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+          className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            background: `radial-gradient(circle, var(--accent)/10 0%, transparent 70%)`
+          }}
+        >
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 4, repeat: Infinity }}
+            className="h-full w-full rounded-full"
+            style={{
+              background: `radial-gradient(circle, var(--accent)/10 0%, transparent 70%)`
+            }}
+          />
+        </motion.div>
+      </div>
+    </div>
+  );
 }
 
 function SectionHeader({ kicker, title }: {kicker: string;title: string;}) {
