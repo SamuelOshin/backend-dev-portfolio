@@ -5,121 +5,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Download, Mail, Github, Linkedin, Code, Database, Globe, Cpu, GitBranch, Package, Palette, Settings } from "lucide-react";
+import { ArrowRight, Download, Mail, Github, Linkedin, Code, Database, Globe, Cpu, GitBranch, Package, Palette, Settings, ExternalLink, MessageCircle } from "lucide-react";
 
-// Technology Icon Components
-const PythonIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <defs>
-      <linearGradient id="python-blue" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#3776ab" />
-        <stop offset="100%" stopColor="#4b8bbe" />
-      </linearGradient>
-      <linearGradient id="python-yellow" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#ffd43b" />
-        <stop offset="100%" stopColor="#ffe873" />
-      </linearGradient>
-    </defs>
-    <path d="M158.208 225.482c0-47.905 13.21-84.564 35.428-107.137 22.217-22.573 52.977-34.906 89.814-34.906h44.31c36.837 0 67.597 12.333 89.814 34.906 22.218 22.573 35.428 59.232 35.428 107.137v44.31c0 47.905-13.21 84.564-35.428 107.137-22.217 22.573-52.977 34.906-89.814 34.906h-44.31c-36.837 0-67.597-12.333-89.814-34.906-22.218-22.573-35.428-59.232-35.428-107.137v-44.31z" fill="url(#python-blue)"/>
-    <path d="M64 158.208v44.31c0 36.837 12.333 67.597 34.906 89.814 22.573 22.218 59.232 35.428 107.137 35.428h44.31c47.905 0 84.564-13.21 107.137-35.428 22.573-22.217 34.906-52.977 34.906-89.814v-44.31c0-36.837-12.333-67.597-34.906-89.814C335.017 45.821 298.358 32.608 250.453 32.608h-44.31c-47.905 0-84.564 13.213-107.137 35.786C76.333 90.611 64 121.371 64 158.208z" fill="url(#python-yellow)"/>
-    <circle cx="160" cy="128" r="16" fill="white"/>
-    <circle cx="352" cy="384" r="16" fill="white"/>
-  </svg>
-);
-
-const ReactIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <circle cx="256" cy="256" r="40" fill="#61dafb"/>
-    <path d="M256 146.9c67.1 0 121.1 19.4 121.1 43.4s-54 43.4-121.1 43.4-121.1-19.4-121.1-43.4 54-43.4 121.1-43.4zm-142.6 83.5c33.5-58.1 86-103.8 117.7-102.1 31.7 1.7 47.1 61.1 34.4 132.8-12.7 71.7-54.1 123.1-85.8 121.4-31.7-1.7-47.1-61.1-34.4-132.8z" fill="#61dafb"/>
-    <path d="M113.4 313.6c-33.5-58.1-20.8-117.6 11-143.2 31.8-25.6 89.4 2.6 128.8 62.8 39.4 60.2 47.1 126.2 15.3 151.8-31.8 25.6-89.4-2.6-128.8-62.8z" fill="#61dafb"/>
-    <path d="M398.6 313.6c33.5-58.1 20.8-117.6-11-143.2-31.8-25.6-89.4 2.6-128.8 62.8-39.4 60.2-47.1 126.2-15.3 151.8 31.8 25.6 89.4-2.6 128.8-62.8z" fill="#61dafb"/>
-  </svg>
-);
-
-const DockerIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <rect x="55" y="206" width="402" height="200" rx="100" fill="#2496ed"/>
-    <path d="M256 120c-55.228 0-100 44.772-100 100h200c0-55.228-44.772-100-100-100z" fill="#f0f0f0"/>
-    <rect x="147" y="156" width="26" height="20" fill="#2496ed"/>
-    <rect x="177" y="156" width="26" height="20" fill="#2496ed"/>
-    <rect x="207" y="156" width="26" height="20" fill="#2496ed"/>
-    <rect x="237" y="156" width="26" height="20" fill="#2496ed"/>
-    <rect x="267" y="156" width="26" height="20" fill="#2496ed"/>
-    <rect x="177" y="210" width="26" height="20" fill="#2496ed"/>
-    <rect x="207" y="210" width="26" height="20" fill="#2496ed"/>
-    <rect x="237" y="210" width="26" height="20" fill="#2496ed"/>
-    <rect x="267" y="210" width="26" height="20" fill="#2496ed"/>
-    <rect x="207" y="234" width="26" height="20" fill="#2496ed"/>
-    <rect x="237" y="234" width="26" height="20" fill="#2496ed"/>
-    <path d="M410 256c0-20-10-35-30-35s-30 15-30 35c0 15 10 30 30 30s30-15 30-30z" fill="#f0f0f0"/>
-  </svg>
-);
-
-const GitIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <path d="M502.3 159.7L352.3 9.7c-12.9-12.9-33.7-12.9-46.6 0L284.4 31l58.6 58.6c13.7-4.6 29.4-1.5 40.3 9.4 11 11 14 26.8 9.2 40.6L451 198c13.8-4.9 29.6-1.8 40.6 9.2 15.3 15.3 15.3 40.1 0 55.4-15.3 15.3-40.1 15.3-55.4 0-11.4-11.4-14.3-28.1-8.7-42.1l-56.1-56.1v147.6c3.7 1.8 7.2 4.4 10.1 7.3 15.3 15.3 15.3 40.1 0 55.4-15.3 15.3-40.1 15.3-55.4 0-15.3-15.3-15.3-40.1 0-55.4 3.8-3.8 8.1-6.6 12.8-8.4V167.1c-4.7-1.8-9-4.6-12.8-8.4-11.5-11.5-14.3-28.4-8.6-42.5L259.1 58 9.7 305.7c-12.9 12.9-12.9 33.7 0 46.6L159.7 502.3c12.9 12.9 33.7 12.9 46.6 0L502.3 206.3c12.9-12.9 12.9-33.7 0-46.6z" fill="#f14e32"/>
-  </svg>
-);
-
-const HTMLIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <path d="M64 32l34.94 403.21L255.77 480 413 435.15 448 32H64z" fill="#e44d26"/>
-    <path d="M256 48l150.4 0L372.54 420.56 256 456.74v-408.74z" fill="#f16529"/>
-    <path d="M142 176h114v45h-64v45h64v45h-114v-135z" fill="white"/>
-    <path d="M256 176v45h69l-5 50h-64v45l114-13 8-127h-122z" fill="white"/>
-    <path d="M256 327l-62 17 4 45 58-16v-46z" fill="#ebebeb"/>
-    <path d="M256 271h-64l-6-45h70v45z" fill="#ebebeb"/>
-  </svg>
-);
-
-const CSSIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <path d="M64 32l34.94 403.21L255.77 480 413 435.15 448 32H64z" fill="#1572b6"/>
-    <path d="M256 48l150.4 0L372.54 420.56 256 456.74v-408.74z" fill="#33a9dc"/>
-    <path d="M142 176h114v45h-64v45h64v45h-114v-135z" fill="white"/>
-    <path d="M256 176v45h69l-5 50h-64v45l114-13 8-127h-122z" fill="white"/>
-    <path d="M256 327l-62 17 4 45 58-16v-46z" fill="#ebebeb"/>
-    <path d="M256 271h-64l-6-45h70v45z" fill="#ebebeb"/>
-  </svg>
-);
-
-const JavaScriptIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <rect width="512" height="512" fill="#f7df1e"/>
-    <path d="M324 370c10 17 24 29 47 29 20 0 33-10 33-24 0-16-13-22-35-32l-12-5c-35-15-58-33-58-72 0-36 27-63 70-63 30 0 52 10 67 37l-37 24c-8-14-17-20-30-20-14 0-23 9-23 20 0 14 9 20 30 29l12 5c41 18 64 35 64 75 0 43-34 67-79 67-44 0-74-21-88-49l40-23z" fill="#323330"/>
-    <path d="M177 377c7 13 14 24 28 24 14 0 23-5 23-25V275h47v102c0 41-24 60-59 60-32 0-50-16-60-36l42-21z" fill="#323330"/>
-  </svg>
-);
-
-const PostgreSQLIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z" fill="#336791"/>
-    <path d="M256 96c-88.4 0-160 71.6-160 160s71.6 160 160 160 160-71.6 160-160S344.4 96 256 96z" fill="#ffffff"/>
-    <text x="256" y="280" textAnchor="middle" fontSize="120" fontFamily="Arial, sans-serif" fontWeight="bold" fill="#336791">P</text>
-  </svg>
-);
-
-const MySQLIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z" fill="#4479a1"/>
-    <path d="M256 96c-88.4 0-160 71.6-160 160s71.6 160 160 160 160-71.6 160-160S344.4 96 256 96z" fill="#ffffff"/>
-    <path d="M180 200h152v24h-152v-24zm0 40h152v24h-152v-24zm0 40h152v24h-152v-24zm0 40h96v24h-96v-24z" fill="#4479a1"/>
-    <circle cx="320" cy="320" r="8" fill="#4479a1"/>
-  </svg>
-);
-
-const SlackIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 512 512" fill="none">
-    <path d="M126.12 315.1c0 24.06-19.56 43.62-43.62 43.62s-43.62-19.56-43.62-43.62c0-24.06 19.56-43.62 43.62-43.62h43.62v43.62z" fill="#e01e5a"/>
-    <path d="M147.63 315.1c0-24.06 19.56-43.62 43.62-43.62s43.62 19.56 43.62 43.62v109.9c0 24.06-19.56 43.62-43.62 43.62s-43.62-19.56-43.62-43.62v-109.9z" fill="#e01e5a"/>
-    <path d="M191.25 126.12c-24.06 0-43.62-19.56-43.62-43.62s19.56-43.62 43.62-43.62 43.62 19.56 43.62 43.62v43.62h-43.62z" fill="#36c5f0"/>
-    <path d="M191.25 147.63c24.06 0 43.62 19.56 43.62 43.62s-19.56 43.62-43.62 43.62h-109.9c-24.06 0-43.62-19.56-43.62-43.62s19.56-43.62 43.62-43.62h109.9z" fill="#36c5f0"/>
-    <path d="M380.88 191.25c0-24.06 19.56-43.62 43.62-43.62s43.62 19.56 43.62 43.62-19.56 43.62-43.62 43.62h-43.62v-43.62z" fill="#2eb67d"/>
-    <path d="M359.37 191.25c0 24.06-19.56 43.62-43.62 43.62s-43.62-19.56-43.62-43.62v-109.9c0-24.06 19.56-43.62 43.62-43.62s43.62 19.56 43.62 43.62v109.9z" fill="#2eb67d"/>
-    <path d="M315.75 380.88c24.06 0 43.62 19.56 43.62 43.62s-19.56 43.62-43.62 43.62-43.62-19.56-43.62-43.62v-43.62h43.62z" fill="#ecb22e"/>
-    <path d="M315.75 359.37c-24.06 0-43.62-19.56-43.62-43.62s19.56-43.62 43.62-43.62h109.9c24.06 0 43.62 19.56 43.62 43.62s-19.56 43.62-43.62 43.62h-109.9z" fill="#ecb22e"/>
-  </svg>
-);
 
 // Typewriter Component
 const Typewriter = ({ text, speed = 100 }: { text: string; speed?: number }) => {
@@ -254,37 +141,49 @@ export default function Home() {
       title: "Telemetry Mesh",
       image:
       "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?q=80&w=1640&auto=format&fit=crop",
-      tags: ["OpenTelemetry", "Go", "gRPC"]
+      tags: ["OpenTelemetry", "Go", "gRPC"],
+      githubUrl: "https://github.com/SamuelOshin/telemetry-mesh",
+      liveUrl: "https://telemetry-mesh-demo.vercel.app"
     },
     {
       title: "Ledger Engine",
       image:
       "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1640&auto=format&fit=crop",
-      tags: ["PostgreSQL", "Kafka", "CQRS"]
+      tags: ["PostgreSQL", "Kafka", "CQRS"],
+      githubUrl: "https://github.com/SamuelOshin/ledger-engine",
+      liveUrl: "https://ledger-engine-demo.vercel.app"
     },
     {
       title: "Realtime Sync",
       image:
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1640&auto=format&fit=crop",
-      tags: ["WebSocket", "Redis", "TypeScript"]
+      tags: ["WebSocket", "Redis", "TypeScript"],
+      githubUrl: "https://github.com/SamuelOshin/realtime-sync",
+      liveUrl: "https://realtime-sync-demo.vercel.app"
     },
     {
       title: "Policy-as-Code",
       image:
       "https://images.unsplash.com/photo-1488229297570-58520851e868?q=80&w=1640&auto=format&fit=crop",
-      tags: ["OPA", "Kubernetes", "GitOps"]
+      tags: ["OPA", "Kubernetes", "GitOps"],
+      githubUrl: "https://github.com/SamuelOshin/policy-as-code",
+      liveUrl: "https://policy-as-code-demo.vercel.app"
     },
     {
       title: "Feature Flags",
       image:
       "https://images.unsplash.com/photo-1526498460520-4c246339dccb?q=80&w=1640&auto=format&fit=crop",
-      tags: ["Node.js", "DX", "SDK"]
+      tags: ["Node.js", "DX", "SDK"],
+      githubUrl: "https://github.com/SamuelOshin/feature-flags",
+      liveUrl: "https://feature-flags-demo.vercel.app"
     },
     {
       title: "Search Relevance",
       image:
       "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1640&auto=format&fit=crop",
-      tags: ["Embeddings", "Elasticsearch", "Python"]
+      tags: ["Embeddings", "Elasticsearch", "Python"],
+      githubUrl: "https://github.com/SamuelOshin/search-relevance",
+      liveUrl: "https://search-relevance-demo.vercel.app"
     }],
 
     []
@@ -398,6 +297,83 @@ export default function Home() {
       <section id="projects" className="relative mt-24 sm:mt-32">
         <SectionHeader kicker="Selected Work" title="Pragmatic builds with measurable outcomes" />
         <MasonryGrid projects={projects} />
+      </section>
+
+      {/* Get in Touch */}
+      <section className="relative mt-24 sm:mt-32">
+        <SectionHeader kicker="Let's Connect" title="Get in touch" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mt-10 max-w-2xl mx-auto text-center"
+        >
+          <p className="text-lg text-white/70 mb-8">
+            I'm always interested in discussing new opportunities, interesting projects, or just having a chat about technology.
+            Feel free to reach out through any of the channels below.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            {/* Email */}
+            <motion.a
+              href="mailto:samuelt.oshin@gmail.com"
+              className="group flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[color:var(--accent)]/40 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Mail className="w-5 h-5 text-[color:var(--accent)] group-hover:text-[color:var(--accent)]/80" />
+              <div className="text-left">
+                <div className="text-sm font-medium text-white/90">Email</div>
+                <div className="text-xs text-white/60">samuelt.oshin@gmail.com</div>
+              </div>
+            </motion.a>
+
+            {/* LinkedIn */}
+            <motion.a
+              href="https://linkedin.com/in/samuel-oshin-2903611a5/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[color:var(--accent)]/40 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Linkedin className="w-5 h-5 text-[color:var(--accent)] group-hover:text-[color:var(--accent)]/80" />
+              <div className="text-left">
+                <div className="text-sm font-medium text-white/90">LinkedIn</div>
+                <div className="text-xs text-white/60">Let's connect professionally</div>
+              </div>
+            </motion.a>
+
+            {/* WhatsApp */}
+            <motion.a
+              href="https://wa.link/xuf3ul"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[color:var(--accent)]/40 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <MessageCircle className="w-5 h-5 text-[color:var(--accent)] group-hover:text-[color:var(--accent)]/80" />
+              <div className="text-left">
+                <div className="text-sm font-medium text-white/90">WhatsApp</div>
+                <div className="text-xs text-white/60">Quick chat & updates</div>
+              </div>
+            </motion.a>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="mt-12 p-6 bg-gradient-to-r from-[color:var(--accent)]/10 to-transparent border border-[color:var(--accent)]/20 rounded-xl"
+          >
+            <p className="text-sm text-white/80">
+              💡 <strong>Currently available for:</strong> Backend development contracts, consulting, and full-time opportunities
+            </p>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Footer */}
@@ -736,7 +712,7 @@ function MasonryGrid({
   projects
 
 
-}: {projects: {title: string;image: string;tags: string[];}[];}) {
+}: {projects: {title: string;image: string;tags: string[];githubUrl?: string;liveUrl?: string;}[];}) {
   return (
     <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
       {projects.map((p, i) =>
@@ -771,6 +747,30 @@ function MasonryGrid({
                   {tag}
                 </Badge>
             )}
+            </div>
+            <div className="mt-4 flex gap-3">
+              {p.githubUrl && (
+                <a
+                  href={p.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[color:var(--accent)]/40 hover:text-[color:var(--accent)] transition-all duration-200"
+                >
+                  <Github size={16} />
+                  Code
+                </a>
+              )}
+              {p.liveUrl && (
+                <a
+                  href={p.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-[color:var(--accent)]/20 border border-[color:var(--accent)]/40 rounded-lg hover:bg-[color:var(--accent)]/30 hover:border-[color:var(--accent)]/60 transition-all duration-200"
+                >
+                  <ExternalLink size={16} />
+                  Live Demo
+                </a>
+              )}
             </div>
           </div>
         </motion.article>
