@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  outputFileTracingRoot: path.resolve(__dirname, '../../'),
+  // outputFileTracingRoot: path.resolve(__dirname, '../../'), // Commented out - causing Vercel build issues
   turbopack: {
     rules: {
       "*.{jsx,tsx}": {
