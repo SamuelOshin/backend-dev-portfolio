@@ -885,7 +885,7 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10 flex h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 items-center justify-center rounded-full border-2 border-[color:var(--accent)]/40 bg-gradient-to-br from-[color:var(--accent)]/20 to-[color:var(--accent)]/5 backdrop-blur-xl mx-auto"
+          className="relative z-10 flex h-20 w-20 sm:h-28 sm:w-28 lg:h-32 lg:w-32 items-center justify-center rounded-full border-2 border-[color:var(--accent)]/40 bg-gradient-to-br from-[color:var(--accent)]/20 to-[color:var(--accent)]/5 backdrop-blur-xl mx-auto"
         >
           <motion.div
             animate={{ rotate: 360 }}
@@ -910,9 +910,17 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
         </motion.div>        {/* Skills arranged in circle */}
         {skills.map((skill, index) => {
           const angle = (index * 360) / skills.length;
-          const radius = 120; // Base radius, will be adjusted with CSS transforms
-          const x = Math.cos((angle - 90) * (Math.PI / 180)) * radius;
-          const y = Math.sin((angle - 90) * (Math.PI / 180)) * radius;
+          
+          // Responsive radius values for better breathing space
+          const getRadius = () => ({
+            mobile: 140,   // Increased from 120*0.75 = 90
+            tablet: 160,   // Increased from 120*0.9 = 108  
+            desktop: 180   // Increased from 120*1.0 = 120
+          });
+          
+          const radius = getRadius();
+          const x = Math.cos((angle - 90) * (Math.PI / 180));
+          const y = Math.sin((angle - 90) * (Math.PI / 180));
 
           return (
             <motion.div
@@ -930,17 +938,20 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
                 scale: 1.15,
                 zIndex: 20
               }}
-              className="absolute group cursor-pointer transform scale-75 sm:scale-90 lg:scale-100"
+              className="absolute group cursor-pointer skill-responsive"
               style={{
-                left: `calc(50% + ${x * 0.75}px - 24px)`, // Adjusted for smaller icons
-                top: `calc(50% + ${y * 0.75}px - 24px)`,
-              }}
+                // Base mobile positioning
+                '--x-multiplier': x.toString(),
+                '--y-multiplier': y.toString(),
+                left: `calc(50% + ${x * radius.mobile}px - 24px)`,
+                top: `calc(50% + ${y * radius.mobile}px - 24px)`,
+              } as React.CSSProperties & Record<string, string>}
               title={skill.name}
             >
               {/* Skill icon container */}
               <div className="relative">
                 <motion.div
-                  className="flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10"
+                  className="flex h-12 w-12 sm:h-16 sm:w-16 lg:h-18 lg:w-18 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10"
                   whileHover={{
                     boxShadow: `0 0 20px ${skill.color}40, 0 0 40px ${skill.color}20`
                   }}
@@ -951,32 +962,28 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
                 </motion.div>
 
                 {/* Skill name tooltip */}
-                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm border border-white/10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/90 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm border border-white/10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   style={{ zIndex: 30 }}
                 >
                   {skill.name}
                 </div>
 
-                {/* Connecting line to center */}
+                {/* Subtle connecting line to center - positioned in middle of icon */}
                 <motion.div
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.8,
-                    delay: 0.6 + (index * 0.05)
-                  }}
-                  className="absolute h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  whileHover={{ scaleX: 1, opacity: 0.4 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute h-px bg-gradient-to-r from-white/20 via-white/40 to-transparent"
                   style={{
-                    width: `${radius * 0.75 - 36}px`, // Adjusted for responsive radius
-                    left: x > 0 ? `${-radius * 0.75 + 24}px` : '48px',
+                    width: `${radius.mobile * 0.5}px`, // Shorter line length
+                    left: x > 0 ? `${-radius.mobile * 0.5 + 24}px` : '24px', // Position from center of icon
                     top: '50%',
                     transformOrigin: x > 0 ? 'right' : 'left',
                     transform: `rotate(${angle}deg) translateY(-50%)`,
                   }}
                 />
 
-                {/* Floating particles effect */}
+                {/* Enhanced floating particles effect */}
                 <motion.div
                   className="absolute inset-0 rounded-full pointer-events-none"
                   animate={{
@@ -998,21 +1005,40 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
           );
         })}
 
-        {/* Outer decorative ring */}
+        {/* Outer decorative ring - scaled inward for better proportion */}
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="absolute left-1/2 top-1/2 h-64 w-64 sm:h-80 sm:w-80 lg:h-96 lg:w-96 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 h-72 w-72 sm:h-80 sm:w-80 lg:h-96 lg:w-96 -translate-x-1/2 -translate-y-1/2"
         >
-          <div className="h-full w-full rounded-full border border-white/5">
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="h-full w-full rounded-full border-t border-[color:var(--accent)]/20"
+          {/* Perfect circle using SVG */}
+          <svg className="h-full w-full" viewBox="0 0 100 100">
+            {/* Static circle */}
+            <circle
+              cx="50"
+              cy="50"
+              r="49"
+              fill="none"
+              stroke="rgba(255, 255, 255, 0.1)"
+              strokeWidth="0.5"
             />
-          </div>
+            {/* Animated rotating accent */}
+            <motion.circle
+              cx="50"
+              cy="50"
+              r="49"
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="0.5"
+              strokeOpacity="0.3"
+              strokeDasharray="20 80"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "50% 50%" }}
+            />
+          </svg>
         </motion.div>
 
         {/* Background glow */}
