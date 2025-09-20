@@ -6,7 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ArrowRight, Download, Mail, Github, Linkedin, Code, Database, Globe, Cpu, GitBranch, Package, Palette, Settings, ExternalLink, MessageCircle } from "lucide-react";
+import { ArrowRight, Download, Mail, Github, Linkedin, Code, Database, ExternalLink, MessageCircle, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import EmailService, { ContactFormData } from "@/lib/email-service";
+
+// Type definitions
+interface Experience {
+  role: string;
+  company: string;
+  period: string;
+  summary: string;
+  details: string[];
+  tech: string[];
+}
 
 
 // Typewriter Component with Layout Stability
@@ -64,6 +75,17 @@ export default function Home() {
   const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
   const badgeTitles = ["Backend Engineer", "Fullstack Developer", "Python Developer"];
 
+  // Contact form state
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+
   // Cycle through badge titles every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,6 +94,79 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [badgeTitles.length]);
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear errors when user starts typing
+    if (formErrors.length > 0) {
+      setFormErrors([]);
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setFormErrors([]);
+
+    try {
+      // Check if EmailJS is configured
+      if (!EmailService.isConfigured()) {
+        setFormErrors(['Email service is not configured. Please contact the administrator.']);
+        setSubmitStatus('error');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Sanitize form data
+      const sanitizedData = EmailService.sanitizeFormData(formData);
+
+      // Validate form data
+      const validation = EmailService.validateFormData(sanitizedData);
+
+      if (!validation.isValid) {
+        setFormErrors(validation.errors);
+        setSubmitStatus('error');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Send email using EmailJS
+      const result = await EmailService.sendContactForm(sanitizedData);
+
+      if (result.success) {
+        setSubmitStatus('success');
+
+        // Reset form after successful submission
+        setTimeout(() => {
+          setFormData({
+            name: '',
+            email: '',
+            subject: '',
+            message: ''
+          });
+          setSubmitStatus('idle');
+        }, 3000);
+      } else {
+        setFormErrors([result.message]);
+        setSubmitStatus('error');
+      }
+
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setFormErrors(['An unexpected error occurred. Please try again or contact me directly at samuelt.oshin@gmail.com']);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const experiences = useMemo(
     () => [
     {
@@ -436,7 +531,7 @@ export default function Home() {
             <TimelineRail />
           </div>
           <div className="lg:col-span-7 space-y-6">
-            {experiences.map((exp, idx) =>
+            {experiences.map((exp: Experience, idx: number) =>
             <ExpandableCard key={idx} {...exp} />
             )}
           </div>
@@ -458,77 +553,314 @@ export default function Home() {
       {/* Get in Touch */}
       <section id="contact" className="relative mt-24 sm:mt-32">
         <SectionHeader kicker="Let's Connect" title="Get in touch" />
+
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          {/* Contact Info & Methods */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
+          >
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold text-white/90">Ready to start a conversation?</h3>
+              <p className="text-lg text-white/70 leading-relaxed">
+                I'm always excited to discuss new opportunities, collaborate on innovative projects,
+                or share insights about backend development and system architecture.
+              </p>
+            </div>
+
+            {/* Availability Status */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl"
+            >
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <div>
+                <div className="text-sm font-medium text-green-400">Available for new projects</div>
+                <div className="text-xs text-white/60">Typically responds within 24 hours</div>
+              </div>
+            </motion.div>
+
+            {/* Contact Methods */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-white/90">Connect with me</h4>
+
+              {/* Email */}
+              <motion.a
+                href="mailto:samuelt.oshin@gmail.com"
+                className="group relative overflow-hidden flex items-center gap-4 p-6 bg-gradient-to-r from-white/5 to-white/10 border border-white/10 rounded-2xl hover:border-[color:var(--accent)]/40 transition-all duration-500 hover:shadow-2xl hover:shadow-[color:var(--accent)]/10"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 flex items-center justify-center w-12 h-12 bg-[color:var(--accent)]/20 rounded-xl group-hover:bg-[color:var(--accent)]/30 transition-colors duration-300">
+                  <Mail className="w-6 h-6 text-[color:var(--accent)]" />
+                </div>
+                <div className="relative z-10 flex-1">
+                  <div className="text-base font-medium text-white/90 group-hover:text-white">Email</div>
+                  <div className="text-sm text-white/60">samuelt.oshin@gmail.com</div>
+                  <div className="text-xs text-[color:var(--accent)] mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Send me a message →</div>
+                </div>
+              </motion.a>
+
+              {/* LinkedIn */}
+              <motion.a
+                href="https://linkedin.com/in/samuel-oshin-2903611a5/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative overflow-hidden flex items-center gap-4 p-6 bg-gradient-to-r from-blue-500/5 to-blue-500/10 border border-blue-500/20 rounded-2xl hover:border-blue-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 flex items-center justify-center w-12 h-12 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors duration-300">
+                  <Linkedin className="w-6 h-6 text-blue-400" />
+                </div>
+                <div className="relative z-10 flex-1">
+                  <div className="text-base font-medium text-white/90 group-hover:text-white">LinkedIn</div>
+                  <div className="text-sm text-white/60">Professional networking</div>
+                  <div className="text-xs text-blue-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Let's connect →</div>
+                </div>
+              </motion.a>
+
+              {/* WhatsApp */}
+              <motion.a
+                href="https://wa.link/xuf3ul"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative overflow-hidden flex items-center gap-4 p-6 bg-gradient-to-r from-green-500/5 to-green-500/10 border border-green-500/20 rounded-2xl hover:border-green-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-green-500/10"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 flex items-center justify-center w-12 h-12 bg-green-500/20 rounded-xl group-hover:bg-green-500/30 transition-colors duration-300">
+                  <MessageCircle className="w-6 h-6 text-green-400" />
+                </div>
+                <div className="relative z-10 flex-1">
+                  <div className="text-base font-medium text-white/90 group-hover:text-white">WhatsApp</div>
+                  <div className="text-sm text-white/60">Quick conversations</div>
+                  <div className="text-xs text-green-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Start chatting →</div>
+                </div>
+              </motion.a>
+            </div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10"
+            >
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[color:var(--accent)]">15+</div>
+                <div className="text-xs text-white/60">Projects</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[color:var(--accent)]">1+</div>
+                <div className="text-xs text-white/60">Years Exp</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[color:var(--accent)]">24h</div>
+                <div className="text-xs text-white/60">Response</div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative"
+          >
+            <div className="relative p-8 bg-gradient-to-br from-white/5 to-white/10 border border-white/10 rounded-3xl backdrop-blur-xl">
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[color:var(--accent)]/20 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-full blur-2xl"></div>
+
+              <div className="relative z-10">
+                <h3 id="contact-form-title" className="text-2xl font-semibold text-white/90 mb-2">Send me a message</h3>
+                <p className="text-white/60 mb-8">Fill out the form below and I'll get back to you soon.</p>
+
+                <form className="space-y-6" role="form" aria-labelledby="contact-form-title" onSubmit={handleSubmit}>
+                  {/* Error Messages */}
+                  {formErrors.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="w-4 h-4 text-red-400" />
+                        <span className="text-sm font-medium text-red-400">Please fix the following errors:</span>
+                      </div>
+                      <ul className="text-sm text-red-300 space-y-1">
+                        {formErrors.map((error, index) => (
+                          <li key={index}>• {error}</li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+
+                  {/* Success Message */}
+                  {submitStatus === 'success' && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl"
+                    >
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <span className="text-sm font-medium text-green-400">Message sent successfully!</span>
+                      </div>
+                      <p className="text-sm text-green-300 mt-1">Your message has been sent successfully! I'll get back to you within 24 hours.</p>
+                    </motion.div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                    >
+                      <label htmlFor="contact-name" className="block text-sm font-medium text-white/80 mb-2">Name</label>
+                      <input
+                        id="contact-name"
+                        name="name"
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-[color:var(--accent)]/50 focus:ring-2 focus:ring-[color:var(--accent)]/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="Your name"
+                        aria-describedby="name-help"
+                      />
+                      <span id="name-help" className="sr-only">Enter your full name</span>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
+                    >
+                      <label htmlFor="contact-email" className="block text-sm font-medium text-white/80 mb-2">Email</label>
+                      <input
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-[color:var(--accent)]/50 focus:ring-2 focus:ring-[color:var(--accent)]/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        placeholder="your@email.com"
+                        aria-describedby="email-help"
+                      />
+                      <span id="email-help" className="sr-only">Enter your email address for contact</span>
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <label htmlFor="contact-subject" className="block text-sm font-medium text-white/80 mb-2">Subject</label>
+                    <input
+                      id="contact-subject"
+                      name="subject"
+                      type="text"
+                      required
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-[color:var(--accent)]/50 focus:ring-2 focus:ring-[color:var(--accent)]/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      placeholder="What's this about?"
+                      aria-describedby="subject-help"
+                    />
+                    <span id="subject-help" className="sr-only">Brief description of your message topic</span>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                  >
+                    <label htmlFor="contact-message" className="block text-sm font-medium text-white/80 mb-2">Message</label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      rows={4}
+                      required
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-[color:var(--accent)]/50 focus:ring-2 focus:ring-[color:var(--accent)]/20 transition-all duration-300 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                      placeholder="Tell me about your project or idea..."
+                      aria-describedby="message-help"
+                    ></textarea>
+                    <span id="message-help" className="sr-only">Detailed message about your inquiry or project</span>
+                  </motion.div>
+
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.7 }}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 px-6 bg-gradient-to-r from-[color:var(--accent)] to-[color:var(--accent)]/80 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[color:var(--accent)]/25 transition-all duration-300 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
+                    aria-describedby="submit-help"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : submitStatus === 'success' ? (
+                      <>
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Message Sent!</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Send Message</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </motion.button>
+                  <span id="submit-help" className="sr-only">Submit your contact form to send a message</span>
+                </form>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Bottom CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mt-10 max-w-2xl mx-auto text-center"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-20 text-center"
         >
-          <p className="text-lg text-white/70 mb-8">
-            I'm always interested in discussing new opportunities, interesting projects, or just having a chat about technology.
-            Feel free to reach out through any of the channels below.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            {/* Email */}
-            <motion.a
-              href="mailto:samuelt.oshin@gmail.com"
-              className="group flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[color:var(--accent)]/40 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Mail className="w-5 h-5 text-[color:var(--accent)] group-hover:text-[color:var(--accent)]/80" />
-              <div className="text-left">
-                <div className="text-sm font-medium text-white/90">Email</div>
-                <div className="text-xs text-white/60">samuelt.oshin@gmail.com</div>
-              </div>
-            </motion.a>
-
-            {/* LinkedIn */}
-            <motion.a
-              href="https://linkedin.com/in/samuel-oshin-2903611a5/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[color:var(--accent)]/40 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Linkedin className="w-5 h-5 text-[color:var(--accent)] group-hover:text-[color:var(--accent)]/80" />
-              <div className="text-left">
-                <div className="text-sm font-medium text-white/90">LinkedIn</div>
-                <div className="text-xs text-white/60">Let's connect professionally</div>
-              </div>
-            </motion.a>
-
-            {/* WhatsApp */}
-            <motion.a
-              href="https://wa.link/xuf3ul"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[color:var(--accent)]/40 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <MessageCircle className="w-5 h-5 text-[color:var(--accent)] group-hover:text-[color:var(--accent)]/80" />
-              <div className="text-left">
-                <div className="text-sm font-medium text-white/90">WhatsApp</div>
-                <div className="text-xs text-white/60">Quick chat & updates</div>
-              </div>
-            </motion.a>
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[color:var(--accent)]/10 to-transparent border border-[color:var(--accent)]/20 rounded-full text-[color:var(--accent)] text-sm font-medium">
+            <div className="w-2 h-2 bg-[color:var(--accent)] rounded-full animate-pulse"></div>
+            Open to exciting backend development opportunities
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-12 p-6 bg-gradient-to-r from-[color:var(--accent)]/10 to-transparent border border-[color:var(--accent)]/20 rounded-xl"
-          >
-            <p className="text-sm text-white/80">
-              💡 <strong>Currently available for:</strong> Backend development contracts, and full-time opportunities
-            </p>
-          </motion.div>
         </motion.div>
       </section>
 
@@ -545,24 +877,24 @@ export default function Home() {
 
 function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode; color: string }[] }) {
   return (
-    <div className="mt-24 flex items-center justify-center py-20">
-      <div className="relative max-w-4xl mx-auto">
+    <div className="mt-24 flex items-center justify-center py-20 px-2 sm:px-4">
+      <div className="relative max-w-4xl mx-auto w-full">
         {/* Central hub */}
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full border-2 border-[color:var(--accent)]/40 bg-gradient-to-br from-[color:var(--accent)]/20 to-[color:var(--accent)]/5 backdrop-blur-xl mx-auto"
+          className="relative z-10 flex h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 items-center justify-center rounded-full border-2 border-[color:var(--accent)]/40 bg-gradient-to-br from-[color:var(--accent)]/20 to-[color:var(--accent)]/5 backdrop-blur-xl mx-auto"
         >
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="flex h-16 w-16 items-center justify-center rounded-full bg-[color:var(--accent)]/10"
+            className="flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full bg-[color:var(--accent)]/10"
           >
-            <Code size={28} className="text-[color:var(--accent)]" />
+            <Code size={20} className="sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-[color:var(--accent)]" />
           </motion.div>
-          
+
           {/* Central glow effect */}
           <motion.div
             className="absolute inset-0 rounded-full"
@@ -575,12 +907,10 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
             }}
             transition={{ duration: 3, repeat: Infinity }}
           />
-        </motion.div>
-
-        {/* Skills arranged in circle */}
+        </motion.div>        {/* Skills arranged in circle */}
         {skills.map((skill, index) => {
           const angle = (index * 360) / skills.length;
-          const radius = 160; // Increased distance from center
+          const radius = 120; // Base radius, will be adjusted with CSS transforms
           const x = Math.cos((angle - 90) * (Math.PI / 180)) * radius;
           const y = Math.sin((angle - 90) * (Math.PI / 180)) * radius;
 
@@ -590,32 +920,32 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
               initial={{ scale: 0, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ 
-                duration: 0.6, 
+              transition={{
+                duration: 0.6,
                 delay: 0.4 + (index * 0.1),
                 type: "spring",
                 stiffness: 100
               }}
-              whileHover={{ 
+              whileHover={{
                 scale: 1.15,
                 zIndex: 20
               }}
-              className="absolute group cursor-pointer"
+              className="absolute group cursor-pointer transform scale-75 sm:scale-90 lg:scale-100"
               style={{
-                left: `calc(50% + ${x}px - 32px)`,
-                top: `calc(50% + ${y}px - 32px)`,
+                left: `calc(50% + ${x * 0.75}px - 24px)`, // Adjusted for smaller icons
+                top: `calc(50% + ${y * 0.75}px - 24px)`,
               }}
               title={skill.name}
             >
               {/* Skill icon container */}
               <div className="relative">
                 <motion.div
-                  className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10"
+                  className="flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10"
                   whileHover={{
                     boxShadow: `0 0 20px ${skill.color}40, 0 0 40px ${skill.color}20`
                   }}
                 >
-                  <span style={{ color: skill.color }}>
+                  <span style={{ color: skill.color }} className="text-lg sm:text-xl lg:text-2xl">
                     {skill.icon}
                   </span>
                 </motion.div>
@@ -632,14 +962,14 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
-                  transition={{ 
-                    duration: 0.8, 
-                    delay: 0.6 + (index * 0.05) 
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.6 + (index * 0.05)
                   }}
                   className="absolute h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
                   style={{
-                    width: `${radius - 48}px`,
-                    left: x > 0 ? '-160px' : '64px',
+                    width: `${radius * 0.75 - 36}px`, // Adjusted for responsive radius
+                    left: x > 0 ? `${-radius * 0.75 + 24}px` : '48px',
                     top: '50%',
                     transformOrigin: x > 0 ? 'right' : 'left',
                     transform: `rotate(${angle}deg) translateY(-50%)`,
@@ -674,7 +1004,7 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 h-64 w-64 sm:h-80 sm:w-80 lg:h-96 lg:w-96 -translate-x-1/2 -translate-y-1/2"
         >
           <div className="h-full w-full rounded-full border border-white/5">
             <motion.div
@@ -691,7 +1021,7 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: 0.3 }}
-          className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="absolute left-1/2 top-1/2 h-80 w-80 sm:h-96 sm:w-96 lg:h-[500px] lg:w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
             background: `radial-gradient(circle, var(--accent)/10 0%, transparent 70%)`
           }}
@@ -836,13 +1166,6 @@ function ExpandableCard({
   summary,
   details,
   tech
-
-
-
-
-
-
-
 }: {role: string;company: string;period: string;summary: string;details: string[];tech: string[];}) {
   const [open, setOpen] = useState(false);
   return (
@@ -906,7 +1229,7 @@ function ProjectCarousel({
   projects
 }: {projects: {title: string;image: string;tags: string[];githubUrl?: string;liveUrl?: string;apiUrl?: string;}[];}) {
   return (
-    <div className="mt-10 relative px-4 sm:px-0">
+    <div className="mt-10 relative px-0 sm:px-0">
       <Carousel
         opts={{
           align: "start",
@@ -994,7 +1317,7 @@ function ProjectCarousel({
                   </motion.div>
 
                   <motion.div
-                    className="flex gap-2 mt-auto"
+                    className="flex flex-wrap gap-1.5 sm:gap-2 mt-auto"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -1005,11 +1328,11 @@ function ProjectCarousel({
                         href={p.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-[color:var(--accent)]/40 hover:text-[color:var(--accent)] transition-all duration-200"
+                        className="inline-flex items-center gap-1 sm:gap-1.5 px-1.5 py-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm font-medium text-white/80 bg-white/5 border border-white/10 rounded-md sm:rounded-lg hover:bg-white/10 hover:border-[color:var(--accent)]/40 hover:text-[color:var(--accent)] transition-all duration-200 whitespace-nowrap"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <Github size={16} />
+                        <Github size={12} className="sm:w-4 sm:h-4" />
                         Code
                       </motion.a>
                     )}
@@ -1018,11 +1341,11 @@ function ProjectCarousel({
                         href={p.apiUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-blue-500/20 border border-blue-500/40 rounded-lg hover:bg-blue-500/30 hover:border-blue-500/60 transition-all duration-200"
+                        className="inline-flex items-center gap-1 sm:gap-1.5 px-1.5 py-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm font-medium text-white/80 bg-blue-500/20 border border-blue-500/40 rounded-md sm:rounded-lg hover:bg-blue-500/30 hover:border-blue-500/60 transition-all duration-200 whitespace-nowrap"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <Database size={16} />
+                        <Database size={12} className="sm:w-4 sm:h-4" />
                         API Docs
                       </motion.a>
                     )}
@@ -1031,11 +1354,11 @@ function ProjectCarousel({
                         href={p.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-white/80 bg-[color:var(--accent)]/20 border border-[color:var(--accent)]/40 rounded-lg hover:bg-[color:var(--accent)]/30 hover:border-[color:var(--accent)]/60 transition-all duration-200"
+                        className="inline-flex items-center gap-1 sm:gap-1.5 px-1.5 py-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm font-medium text-white/80 bg-[color:var(--accent)]/20 border border-[color:var(--accent)]/40 rounded-md sm:rounded-lg hover:bg-[color:var(--accent)]/30 hover:border-[color:var(--accent)]/60 transition-all duration-200 whitespace-nowrap"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <ExternalLink size={16} />
+                        <ExternalLink size={12} className="sm:w-4 sm:h-4" />
                         Live Demo
                       </motion.a>
                     )}
