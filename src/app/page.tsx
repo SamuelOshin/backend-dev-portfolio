@@ -73,7 +73,7 @@ const Typewriter = ({ text, speed = 100 }: { text: string; speed?: number }) => 
 export default function Home() {
   // Badge cycling state
   const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
-  const badgeTitles = ["Backend Engineer", "Fullstack Developer", "Python Developer"];
+  const badgeTitles = ["Python Backend Engineer", "AI/LLM Infrastructure", "Distributed Systems"];
 
   // Contact form state
   const [formData, setFormData] = useState<ContactFormData>({
@@ -169,106 +169,123 @@ export default function Home() {
   };
   const experiences = useMemo(
     () => [
-    {
-      role: "Backend Engineer Intern(Finalist)",
-      company: "HNG12 Internship",
-      period: "February 2025 - April 2025",
-      summary:
-      "Designed 15+ REST endpoints for AI-powered backend generator, achieving 90%+ test coverage and integrating Anthropic LLM via custom prompts and API orchestration.",
-      details: [
-      "Engineered and deployed 10+ REST APIs with Python, Django, and FastAPI for LLM-integrated plications, enabling seamless data flows",
-      "Optimized CI/CD pipelines and agile processes in remote cross-functional teams, boosting deployment speed by 25%..",
-      "Integrated Anthropic LLM using custom prompts and API orchestration to enhance backend generation capabilities.",
-      "Implemented Google OAuth2 for secure user authentication, authorization and development environment awareness."],
+      {
+        role: "Backend Engineer",
+        company: "Emerj LLC (Remote)",
+        period: "Dec 2025 – Present",
+        summary:
+          "Architecting Legal Watch Dog — an AI-powered regulatory monitoring platform processing 1,000+ global regulatory updates daily with a high-performance distributed pipeline.",
+        details: [
+          "Defined complete system architecture by authoring the Technical Requirements Document (TRD) and designing the ERD for multi-tenant scalability.",
+          "Engineered a high-performance 4-stage distributed pipeline for real-time web scraping and semantic analysis using FastAPI, Celery, and Redis.",
+          "Implemented robust concurrency control through Redis distributed locks and SQLAlchemy transactional integrity (FOR UPDATE SKIP LOCKED).",
+          "Reduced manual document review time by ~40% with AI-driven semantic change detection leveraging LLMs (OpenRouter/OpenAI/Gemini).",
+          "Optimized storage and processing costs by 30% with custom SHA-256 content deduplication and MinIO high-availability storage.",
+          "Engineered secure authentication with JWT flows and multi-provider OAuth (Google, Microsoft, Apple) integrations."],
 
-      tech: ["Python", "PostgreSQL", "Langchain", "Antropic LLM", "FastAPI", "Git Actions", "Celery", "Docker"]
-    },
-    {
-      role: "IT Support Officer",
-      company: "Coleman Technical Industries Limited",
-      period: "2024 — 2025",
-      summary:
-      "Automated daily ERP backup processes for Oracle and Odoo systems using Python scripts.",
-      details: [
-      "Implemented security monitoring solutions, significantly reducing endpoint security incidents",
-      "Resolved 100+ user support tickets through systematic troubleshooting, improving system uptime by 25%",
-      "Responsible for documenting Standard of Operation (SOP) for the Odoo application role rights ",
-      "Implemented Automation of adding new staff to the Active Directory using Python scripts"],
+        tech: ["Python", "FastAPI", "Celery", "Redis", "PostgreSQL", "OpenAI", "MinIO", "Docker"]
+      },
+      {
+        role: "Backend Python Engineer Intern",
+        company: "HNG Internship (Remote) — 2× Finalist",
+        period: "Oct 2025 – Dec 2025 (HNG13) & Jan – Apr 2025 (HNG12)",
+        summary:
+          "Awarded Mentor's Choice — Best Backend Intern (HNG13). Ranked Top 5% of 10,000+ developers (HNG12). Built production-grade payment, RAG, and notification systems.",
+        details: [
+          "Achieved zero fund loss for the Wallet Service with atomic transactions, idempotent webhooks, and background recovery jobs using Redis.",
+          "Improved retrieval precision by ~25% for internal RAG pipeline with advanced document chunking, OpenRouter embeddings, and hybrid vector search in Pinecone.",
+          "Scaled notification throughput to 1,000+/min with 99.5% delivery rate using RabbitMQ, circuit breakers, and dead-letter queues.",
+          "Reduced data endpoint latency by 16× (156s → 9.6s) by refactoring to asyncio parallelism and bulk SQL updates (ON DUPLICATE KEY UPDATE).",
+          "Built 'PRRover', an AI tool using A2A protocol and Google Gemini 2.0 for automated security reviews with sub-second code analysis."],
 
-      tech: ["Problem Solving", "Python", "ERP", "Odoo", ""]
-    },
-    {
-      role: "Software Developer & IT Support (SIWES) ",
-      company: "Arc Labs",
-      period: "2023 — 2024",
-      summary:
-      "Implemented search relevance service with vector embeddings; +18% task success in UX studies.",
-      details: [
-      "Productionized feature flags and gradual rollout across 30+ services.",
-      "Wrote internal SDKs improving DX and reducing boilerplate by ~35%."],
+        tech: ["Python", "FastAPI", "Redis", "RabbitMQ", "Pinecone", "Google Gemini", "Celery", "Docker"]
+      },
+      {
+        role: "IT Support Officer (NYSC)",
+        company: "Coleman Technical Industries",
+        period: "Aug 2024 – May 2025",
+        summary:
+          "Improved system uptime by 25% by automating Oracle/Odoo ERP backups using custom Python scripts with scheduled cron jobs and error-handling.",
+        details: [
+          "Reduced downtime incidents by 20% by resolving 100+ user support tickets through systematic troubleshooting and Group Policy implementations.",
+          "Automated ERP backup processes for Oracle and Odoo systems using Python scripts with cron job scheduling.",
+          "Documented Standard Operating Procedures (SOPs) for Odoo application role rights and access management.",
+          "Implemented automation for adding new staff to Active Directory using Python scripts."],
 
-      tech: ["Python", "FastAPI", "Elasticsearch", "Docker"]
-    }],
+        tech: ["Python", "Oracle", "Odoo", "Active Directory"]
+      },
+      {
+        role: "Software Developer",
+        company: "WML-Integrated Solutions @ PZ Cussons",
+        period: "Nov 2023 – Apr 2024",
+        summary:
+          "Reduced IT issue resolution time by 40% by developing a custom Django-based ticketing system with automated workflows and real-time notifications.",
+        details: [
+          "Built a custom Django-based ticketing system with automated workflows, reducing IT issue resolution time by 40%.",
+          "Prevented 15+ potential network outages by building internal Python monitoring tools with proactive alerting and data logging."],
+
+        tech: ["Python", "Django", "PostgreSQL"]
+      }],
 
     []
   );
 
   const skills = useMemo(
     () => [
-      { 
-        name: "Python", 
-        icon: <img src="/icons/python.svg" alt="Python" className="w-6 h-6 object-contain" />, 
-        color: "#3776ab" 
+      {
+        name: "Python",
+        icon: <img src="/icons/python.svg" alt="Python" className="w-6 h-6 object-contain" />,
+        color: "#3776ab"
       },
-      { 
-        name: "AWS", 
-        icon: <img src="/icons/aws.svg" alt="AWS" className="w-6 h-6 object-contain" />, 
-        color: "#ff9900" 
+      {
+        name: "FastAPI",
+        icon: <img src="/icons/fastapi.svg" alt="FastAPI" className="w-6 h-6 object-contain" />,
+        color: "#009688"
       },
-      { 
-        name: "Docker", 
-        icon: <img src="/icons/docker.svg" alt="Docker" className="w-6 h-6 object-contain" />, 
-        color: "#2496ed" 
+      {
+        name: "PostgreSQL",
+        icon: <img src="/icons/postgresql.svg" alt="PostgreSQL" className="w-6 h-6 object-contain" />,
+        color: "#336791"
       },
-      { 
-        name: "Git", 
-        icon: <img src="/icons/git.svg" alt="Git" className="w-6 h-6 object-contain" />, 
-        color: "#f05032" 
+      {
+        name: "Redis",
+        icon: <img src="/icons/redis.svg" alt="Redis" className="w-6 h-6 object-contain" />,
+        color: "#dc382d"
       },
-      { 
-        name: "HTML5", 
-        icon: <img src="/icons/html5.svg" alt="HTML5" className="w-6 h-6 object-contain" />, 
-        color: "#e34f26" 
+      {
+        name: "Docker",
+        icon: <img src="/icons/docker.svg" alt="Docker" className="w-6 h-6 object-contain" />,
+        color: "#2496ed"
       },
-      { 
-        name: "Django", 
-        icon: <img src="/icons/django.svg" alt="Django" className="w-6 h-6 object-contain" />, 
-        color: "#092e20" 
+      {
+        name: "Django",
+        icon: <img src="/icons/django.svg" alt="Django" className="w-6 h-6 object-contain" />,
+        color: "#092e20"
       },
-      { 
-        name: "Redis", 
-        icon: <img src="/icons/redis.svg" alt="Redis" className="w-6 h-6 object-contain" />, 
-        color: "#dc382d" 
+      {
+        name: "Celery",
+        icon: <img src="/icons/celery.svg" alt="Celery" className="w-6 h-6 object-contain" />,
+        color: "#37b24d"
       },
-      { 
-        name: "Claude AI", 
-        icon: <img src="/icons/claude.svg" alt="Claude AI" className="w-6 h-6 object-contain" />, 
-        color: "#d97757" 
+      {
+        name: "LangChain",
+        icon: <img src="/icons/langchain.svg" alt="LangChain" className="w-6 h-6 object-contain" />,
+        color: "#1c3c3c"
       },
-      { 
-        name: "Hugging Face", 
-        icon: <img src="/icons/huggingface.svg" alt="Hugging Face" className="w-6 h-6 object-contain" />, 
-        color: "#ff6b35" 
+      {
+        name: "RabbitMQ",
+        icon: <img src="/icons/rabbitmq.svg" alt="RabbitMQ" className="w-6 h-6 object-contain" />,
+        color: "#ff6600"
       },
-      { 
-        name: "LangChain", 
-        icon: <img src="/icons/langchain.svg" alt="LangChain" className="w-6 h-6 object-contain" />, 
-        color: "#1c3c3c" 
+      {
+        name: "Kafka",
+        icon: <img src="/icons/kafka.svg" alt="Kafka" className="w-6 h-6 object-contain" />,
+        color: "#231f20"
       },
-      { 
-        name: "Slack", 
-        icon: <img src="/icons/slack.svg" alt="Slack" className="w-6 h-6 object-contain" />, 
-        color: "#4a154b" 
+      {
+        name: "Git",
+        icon: <img src="/icons/git.svg" alt="Git" className="w-6 h-6 object-contain" />,
+        color: "#f05032"
       }
     ],
     []
@@ -276,48 +293,78 @@ export default function Home() {
 
   const projects = useMemo(
     () => [
-    {
-      title: "MockBox",
-      image:
-      "https://i.postimg.cc/hjHxDtdY/image.png",
-      tags: ["FullStack", "Python", "FastAPI", "RESTAPI", "NextJS", "TypeScript", "Antropric LLM", "Supabase"],
-      githubUrl: "https://github.com/SamuelOshin/MockBox",
-      liveUrl: "https://mock-box.vercel.app",
-      apiUrl: "https://mockbox-yspt.onrender.com/docs"
-    },
-    {
-      title: "XlideLand",
-      image:
-      "https://i.postimg.cc/9fQHx8sh/image.png",
-      tags: ["Fullstack", "PostgreSQL", "DjangoREST", "NeonDB", "OAuth", "ReactJS"],
-      githubUrl: "https://github.com/SamuelOshin/XlideLand",
-      liveUrl: "https://xlideland.vercel.app",
-      apiUrl: "https://xlideland-realestate.onrender.com/api/docs/"
-    },
-    {
-      title: "CodeBEGen",
-      image:
-      "https://images.unsplash.com/photo-1690683789978-3cf73960d650?q=80&w=1209&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      tags: ["FastAPI", "Redis", "Celery"],
-      githubUrl: "https://github.com/codebege_be",
-      liveUrl: "https://codebegen-be.onrender.com/docs"
-    },
-    {
-    title: "Church Administrative System Application",
-    image:
-    "https://i.postimg.cc/Ss848Xw2/image.png",
-    tags: ["DjangoMVT", "PostgresSQL", "Fullstack", "Monolith"],
-    githubUrl: "https://github.com/SamuelOshin/CCC-Admin-App",
-    liveUrl: "#"
-    },
-    {
-    title: "Network Downtime Alerts(Telex)",
-    image:
-    "https://i.postimg.cc/Z5BwJX2H/image.png",
-    tags: ["OpenSource", "Python", "Django", "Telex Integration"],
-    githubUrl: "https://github.com/telexintegrations/telex_network_alerts",
-    liveUrl: "#"
-    }],
+      {
+        title: "Wallet Service System",
+        image:
+          "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1200&auto=format&fit=crop",
+        tags: ["Python", "FastAPI", "Redis", "JWT", "OAuth", "Paystack", "PostgreSQL"],
+        githubUrl: "https://github.com/SamuelOshin/wallet-service",
+        description: "Comprehensive backend processing 250+ transactions with zero fund loss. JWT/Google OAuth security, API key management, and Paystack webhook verification."
+      },
+      {
+        title: "RAG AI Service",
+        image:
+          "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop",
+        tags: ["Python", "FastAPI", "LangChain", "ChromaDB", "Docker"],
+        githubUrl: "https://github.com/SamuelOshin/rag-ai-service",
+        description: "Retrieval-Augmented Generation service with top-K retrieval, PDF/DOCX uploads, semantic search via ChromaDB, and Docker deployment."
+      },
+      {
+        title: "SSL Certificate Checker Agent",
+        image:
+          "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=1200&auto=format&fit=crop",
+        tags: ["Python", "A2A Protocol", "Google Gemini", "JSON-RPC", "Telex"],
+        githubUrl: "https://github.com/SamuelOshin/ssl-checker-agent",
+        description: "AI-powered A2A-compliant agent for multi-domain SSL analysis in sub-seconds with natural language security reports."
+      },
+      {
+        title: "Country Currency & Exchange API",
+        image:
+          "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1200&auto=format&fit=crop",
+        tags: ["Python", "FastAPI", "MySQL", "httpx", "Redis"],
+        githubUrl: "https://github.com/SamuelOshin/country-currency-api",
+        description: "RESTful API with 16× performance improvement (156s → 9.6s) through MySQL caching and httpx parallel fetches."
+      },
+      {
+        title: "MockBox",
+        image:
+          "https://i.postimg.cc/hjHxDtdY/image.png",
+        tags: ["FastAPI", "Python", "Anthropic LLM", "NextJS", "TypeScript", "Supabase"],
+        githubUrl: "https://github.com/SamuelOshin/MockBox",
+        liveUrl: "https://mock-box.vercel.app",
+        apiUrl: "https://mockbox-yspt.onrender.com/docs"
+      },
+      {
+        title: "XlideLand",
+        image:
+          "https://i.postimg.cc/9fQHx8sh/image.png",
+        tags: ["Django REST", "PostgreSQL", "NeonDB", "OAuth", "ReactJS"],
+        githubUrl: "https://github.com/SamuelOshin/XlideLand",
+        liveUrl: "https://xlideland.vercel.app",
+        apiUrl: "https://xlideland-realestate.onrender.com/api/docs/"
+      },
+      {
+        title: "CodeBEGen",
+        image:
+          "https://images.unsplash.com/photo-1690683789978-3cf73960d650?q=80&w=1209&auto=format&fit=crop",
+        tags: ["FastAPI", "Redis", "Celery"],
+        githubUrl: "https://github.com/codebege_be",
+        liveUrl: "https://codebegen-be.onrender.com/docs"
+      },
+      {
+        title: "Church Administrative System",
+        image:
+          "https://i.postimg.cc/Ss848Xw2/image.png",
+        tags: ["Django", "PostgreSQL", "Fullstack"],
+        githubUrl: "https://github.com/SamuelOshin/CCC-Admin-App"
+      },
+      {
+        title: "Network Downtime Alerts (Telex)",
+        image:
+          "https://i.postimg.cc/Z5BwJX2H/image.png",
+        tags: ["Python", "Django", "Telex", "Open Source"],
+        githubUrl: "https://github.com/telexintegrations/telex_network_alerts"
+      }],
 
     []
   );
@@ -358,8 +405,8 @@ export default function Home() {
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 className="relative"
               >
-                <Badge 
-                  variant="secondary" 
+                <Badge
+                  variant="secondary"
                   className="/! bg-white/5 text-white/80 backdrop-blur-sm border border-white/20 shadow-lg"
                   style={{
                     boxShadow: '0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
@@ -392,7 +439,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
-                Performance • Reliability
+                AI Backends • Scalability
               </Badge>
             </motion.div>
           </motion.div>
@@ -409,7 +456,7 @@ export default function Home() {
             }}
           >
             <h1 className="text-3xl sm:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight tracking-[-0.03em] w-full">
-              <Typewriter text="Architecting dependable systems with elegant APIs." speed={80} />
+              <Typewriter text="Building resilient AI backends and distributed systems." speed={80} />
             </h1>
           </motion.div>
           <motion.p
@@ -417,9 +464,9 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
             className="mt-3 lg:mt-4 max-w-2xl text-sm sm:text-base text-white/70">
-            I design resilient services, shape data models, and ship
-            observability-first platforms. Clean contracts. Predictable latency.
-            Zero drama deploys.
+            Award-winning Python Backend Engineer (2× HNG Finalist, Top 1–5% of 10,000+).
+            Specializing in RAG pipelines, vector search, and event-driven architectures.
+            16× performance gains. Zero-fund-loss transaction systems. Production-grade AI backends.
           </motion.p>
 
           <motion.div
@@ -498,7 +545,7 @@ export default function Home() {
             className="relative aspect-[4/3] w-full max-w-sm md:max-w-md lg:max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[color:var(--accent)]/20 via-transparent to-white/5"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
-            
+
           >
             <motion.img
               src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/headshotbychatgpt-1758178525713.png"
@@ -532,7 +579,7 @@ export default function Home() {
           </div>
           <div className="lg:col-span-7 space-y-6">
             {experiences.map((exp: Experience, idx: number) =>
-            <ExpandableCard key={idx} {...exp} />
+              <ExpandableCard key={idx} {...exp} />
             )}
           </div>
         </div>
@@ -658,11 +705,11 @@ export default function Home() {
               className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10"
             >
               <div className="text-center">
-                <div className="text-2xl font-bold text-[color:var(--accent)]">15+</div>
+                <div className="text-2xl font-bold text-[color:var(--accent)]">20+</div>
                 <div className="text-xs text-white/60">Projects</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-[color:var(--accent)]">1+</div>
+                <div className="text-2xl font-bold text-[color:var(--accent)]">2+</div>
                 <div className="text-xs text-white/60">Years Exp</div>
               </div>
               <div className="text-center">
@@ -910,14 +957,14 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
         </motion.div>        {/* Skills arranged in circle */}
         {skills.map((skill, index) => {
           const angle = (index * 360) / skills.length;
-          
+
           // Responsive radius values for better breathing space
           const getRadius = () => ({
             mobile: 140,   // Increased from 120*0.75 = 90
             tablet: 160,   // Increased from 120*0.9 = 108  
             desktop: 180   // Increased from 120*1.0 = 120
           });
-          
+
           const radius = getRadius();
           const x = Math.cos((angle - 90) * (Math.PI / 180));
           const y = Math.sin((angle - 90) * (Math.PI / 180));
@@ -1069,7 +1116,7 @@ function SkillsWheel({ skills }: { skills: { name: string; icon: React.ReactNode
   );
 }
 
-function SectionHeader({ kicker, title }: {kicker: string;title: string;}) {
+function SectionHeader({ kicker, title }: { kicker: string; title: string; }) {
   return (
     <motion.div
       className="max-w-3xl"
@@ -1105,9 +1152,9 @@ function GlowButton({
   href,
   icon,
   variant = "solid",
-  
+
   download
-}: {children: React.ReactNode;href: string;icon?: React.ReactNode;variant?: "solid" | "outline";download?: boolean;}) {
+}: { children: React.ReactNode; href: string; icon?: React.ReactNode; variant?: "solid" | "outline"; download?: boolean; }) {
   return (
     <motion.a
       href={href}
@@ -1123,9 +1170,9 @@ function GlowButton({
       <Button
         variant={variant === "outline" ? "outline" : "default"}
         className={
-        variant === "outline" ?
-        "bg-transparent border-[color:var(--accent)]/40 text-white hover:bg-[color:var(--accent)]/10 hover:text-white" :
-        "bg-[color:var(--accent)] text-[color:var(--accent-foreground)] hover:bg-[color:var(--accent)]/90"
+          variant === "outline" ?
+            "bg-transparent border-[color:var(--accent)]/40 text-white hover:bg-[color:var(--accent)]/10 hover:text-white" :
+            "bg-[color:var(--accent)] text-[color:var(--accent-foreground)] hover:bg-[color:var(--accent)]/90"
         }>
 
         <span className="mr-2 inline-flex items-center justify-center">{icon}</span>
@@ -1141,45 +1188,45 @@ function TimelineRail() {
       <div className="flex flex-col items-center space-y-12">
         {/* Timeline items */}
         {[
-        // { label: "2022", sub: "Started Learning" },
-        // { label: "2020", sub: "Nova" },
-        // { label: "2022", sub: "Vertis" },
-        { label: "Now", sub: "Impact" }].
-        map((n, i) =>
-        <div key={i} className="flex flex-col items-center space-y-4 relative">
-            {/* Timeline point with connecting line */}
-            <div className="relative flex flex-col items-center">
-              {/* Connecting line from previous item (except for first item) */}
-              {i > 0 && (
-                <div className="absolute -top-8 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
-              )}
+          { label: "2023", sub: "First Dev Role" },
+          { label: "2024", sub: "NYSC + Open Source" },
+          { label: "2025", sub: "2× HNG Finalist" },
+          { label: "Now", sub: "Emerj LLC (AI)" }].
+          map((n, i) =>
+            <div key={i} className="flex flex-col items-center space-y-4 relative">
+              {/* Timeline point with connecting line */}
+              <div className="relative flex flex-col items-center">
+                {/* Connecting line from previous item (except for first item) */}
+                {i > 0 && (
+                  <div className="absolute -top-8 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
+                )}
 
-              {/* Timeline point */}
-              <div className="relative flex items-center justify-center">
-                <div className="h-4 w-4 rounded-full bg-[color:var(--accent)] shadow-[0_0_0_10px_rgba(0,0,0,0.4)]" />
-                {/* Glow effect */}
-                <div className="absolute inset-0 rounded-full bg-[color:var(--accent)]/30 blur-sm" />
+                {/* Timeline point */}
+                <div className="relative flex items-center justify-center">
+                  <div className="h-4 w-4 rounded-full bg-[color:var(--accent)] shadow-[0_0_0_10px_rgba(0,0,0,0.4)]" />
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 rounded-full bg-[color:var(--accent)]/30 blur-sm" />
+                </div>
+
+                {/* Connecting line to next item (except for last item) */}
+                {i < 3 && (
+                  <div className="absolute top-6 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
+                )}
               </div>
 
-              {/* Connecting line to next item (except for last item) */}
-              {i < 3 && (
-                <div className="absolute top-6 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
-              )}
+              {/* Content */}
+              <div className="text-center space-y-1 min-w-[120px]">
+                <div className="text-sm font-medium text-white/90">{n.label}</div>
+                <div className="text-xs text-white/60">{n.sub}</div>
+              </div>
             </div>
-
-            {/* Content */}
-            <div className="text-center space-y-1 min-w-[120px]">
-              <div className="text-sm font-medium text-white/90">{n.label}</div>
-              <div className="text-xs text-white/60">{n.sub}</div>
-            </div>
-          </div>
-        )}
+          )}
       </div>
 
       {/* Bottom description */}
       <div className="mt-12 text-center">
         <p className="text-sm text-white/60 leading-relaxed">
-          Evolving systems with clarity and empathy.
+          From first code to AI-powered backends — building with purpose.
         </p>
       </div>
     </div>);
@@ -1192,7 +1239,7 @@ function ExpandableCard({
   summary,
   details,
   tech
-}: {role: string;company: string;period: string;summary: string;details: string[];tech: string[];}) {
+}: { role: string; company: string; period: string; summary: string; details: string[]; tech: string[]; }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div
@@ -1224,14 +1271,14 @@ function ExpandableCard({
 
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-white/70">
             {details.map((d, i) =>
-            <li key={i}>{d}</li>
+              <li key={i}>{d}</li>
             )}
           </ul>
           <div className="mt-4 flex flex-wrap gap-2">
             {tech.map((t) =>
-            <Badge
-              key={t}
-              className="/! bg-[color:var(--accent)]/15 text-[color:var(--accent)] border-[color:var(--accent)]/30">
+              <Badge
+                key={t}
+                className="/! bg-[color:var(--accent)]/15 text-[color:var(--accent)] border-[color:var(--accent)]/30">
 
                 {t}
               </Badge>
@@ -1253,7 +1300,7 @@ function ExpandableCard({
 
 function ProjectCarousel({
   projects
-}: {projects: {title: string;image: string;tags: string[];githubUrl?: string;liveUrl?: string;apiUrl?: string;}[];}) {
+}: { projects: { title: string; image: string; tags: string[]; githubUrl?: string; liveUrl?: string; apiUrl?: string; }[]; }) {
   return (
     <div className="mt-10 relative px-0 sm:px-0">
       <Carousel
