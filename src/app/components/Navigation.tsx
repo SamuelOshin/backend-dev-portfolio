@@ -7,6 +7,7 @@ import { Github, Linkedin, Mail, Download, Menu, X } from "lucide-react";
 const navigation = [
   { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
+  { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Contact", href: "#contact" },
 ];
@@ -64,11 +65,10 @@ export function Navigation() {
               <button
                 key={item.name}
                 onClick={() => scrollToSection(item.href)}
-                className={`text-sm font-medium transition-colors hover:text-[color:var(--accent)] ${
-                  activeSection === item.href.substring(1)
+                className={`text-sm font-medium transition-colors hover:text-[color:var(--accent)] ${activeSection === item.href.substring(1)
                     ? "text-[color:var(--accent)]"
                     : "text-white/70"
-                }`}
+                  }`}
               >
                 {item.name}
               </button>
@@ -132,11 +132,10 @@ export function Navigation() {
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    activeSection === item.href.substring(1)
+                  className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors ${activeSection === item.href.substring(1)
                       ? "text-[color:var(--accent)] bg-white/5"
                       : "text-white/70 hover:text-[color:var(--accent)] hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   {item.name}
                 </button>

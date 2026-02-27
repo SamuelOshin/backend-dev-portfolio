@@ -7,8 +7,8 @@ import Script from "next/script";
 import { Navigation } from "./components/Navigation";
 
 export const metadata: Metadata = {
-  title: "Backend Developer Portfolio",
-  description: "Modern, performance-focused backend engineering portfolio",
+  title: "Samuel Oshin — Python Backend Engineer | AI/LLM Infrastructure",
+  description: "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends. 2× HNG Finalist, Top 1-5% of 10,000+ developers.",
 };
 
 export default function RootLayout({
