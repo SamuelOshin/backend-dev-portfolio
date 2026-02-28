@@ -2,19 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Github, Linkedin, Mail, Download, Menu, X } from "lucide-react";
 
 const navigation = [
-  { name: "Home", href: "#home" },
-  { name: "About", href: "#about" },
-  { name: "Skills", href: "#skills" },
-  { name: "Projects", href: "#projects" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "#home", isPage: false },
+  { name: "About", href: "#about", isPage: false },
+  { name: "Skills", href: "#skills", isPage: false },
+  { name: "Projects", href: "#projects", isPage: false },
+  { name: "Blog", href: "/blog", isPage: true },
+  { name: "Contact", href: "#contact", isPage: false },
 ];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const pathname = usePathname();
+  const isBlogPage = pathname.startsWith("/blog");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,18 +65,40 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => scrollToSection(item.href)}
-                className={`text-sm font-medium transition-colors hover:text-[color:var(--accent)] ${activeSection === item.href.substring(1)
-                    ? "text-[color:var(--accent)]"
-                    : "text-white/70"
-                  }`}
-              >
-                {item.name}
-              </button>
-            ))}
+            {navigation.map((item) => {
+              if (item.isPage) {
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`text-sm font-medium transition-colors hover:text-[color:var(--accent)] ${pathname.startsWith(item.href)
+                        ? "text-[color:var(--accent)]"
+                        : "text-white/70"
+                      }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              }
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    if (isBlogPage) {
+                      window.location.href = `/${item.href}`;
+                    } else {
+                      scrollToSection(item.href);
+                    }
+                  }}
+                  className={`text-sm font-medium transition-colors hover:text-[color:var(--accent)] ${!isBlogPage && activeSection === item.href.substring(1)
+                      ? "text-[color:var(--accent)]"
+                      : "text-white/70"
+                    }`}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Desktop Contact Actions */}
@@ -128,18 +154,41 @@ export function Navigation() {
         {isOpen && (
           <div className="md:hidden border-t border-white/10">
             <nav className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors ${activeSection === item.href.substring(1)
-                      ? "text-[color:var(--accent)] bg-white/5"
-                      : "text-white/70 hover:text-[color:var(--accent)] hover:bg-white/5"
-                    }`}
-                >
-                  {item.name}
-                </button>
-              ))}
+              {navigation.map((item) => {
+                if (item.isPage) {
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors ${pathname.startsWith(item.href)
+                          ? "text-[color:var(--accent)] bg-white/5"
+                          : "text-white/70 hover:text-[color:var(--accent)] hover:bg-white/5"
+                        }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                }
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      if (isBlogPage) {
+                        window.location.href = `/${item.href}`;
+                      } else {
+                        scrollToSection(item.href);
+                      }
+                    }}
+                    className={`block w-full text-left px-3 py-2 text-base font-medium rounded-md transition-colors ${!isBlogPage && activeSection === item.href.substring(1)
+                        ? "text-[color:var(--accent)] bg-white/5"
+                        : "text-white/70 hover:text-[color:var(--accent)] hover:bg-white/5"
+                      }`}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
 
               {/* Mobile Contact Links */}
               <div className="border-t border-white/10 mt-4 pt-4">

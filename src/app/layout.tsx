@@ -6,9 +6,48 @@ import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { Navigation } from "./components/Navigation";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
+
 export const metadata: Metadata = {
-  title: "Samuel Oshin — Python Backend Engineer | AI/LLM Infrastructure",
-  description: "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends. 2× HNG Finalist, Top 1-5% of 10,000+ developers.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Samuel Oshin — Python Backend Engineer | AI/LLM Infrastructure",
+    template: "%s — Samuel Oshin",
+  },
+  description:
+    "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends. 2× HNG Finalist, Top 1-5% of 10,000+ developers.",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "Samuel Oshin",
+    title: "Samuel Oshin — Python Backend Engineer",
+    description:
+      "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Samuel Oshin — Python Backend Engineer",
+    description:
+      "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends.",
+  },
+  alternates: {
+    canonical: SITE_URL,
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`,
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

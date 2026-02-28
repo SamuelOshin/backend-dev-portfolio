@@ -1,0 +1,131 @@
+---
+title: "Building RAG Pipelines at Scale"
+description: "A deep dive into production RAG pipelines — vector databases, chunking strategies, embedding models, and evaluation frameworks for reliable AI-powered retrieval."
+date: "2026-02-28"
+tags: ["RAG", "AI", "Python", "LangChain", "Vector Databases"]
+published: true
+image: "/blog/rag-pipelines-cover.png"
+---
+
+## Why RAG Matters for Production AI
+
+Retrieval-Augmented Generation (RAG) has emerged as the most practical pattern for building AI applications that need access to private or up-to-date information. Unlike fine-tuning, RAG lets you ground LLM responses in your own data without retraining the model.
+
+But building a RAG pipeline that works reliably in production is far more nuanced than the tutorials suggest. Here's what I've learned deploying RAG systems that serve thousands of queries daily.
+
+## The Architecture
+
+A production RAG pipeline has five core stages:
+
+1. **Document Ingestion** — Loading and parsing documents from various sources
+2. **Chunking** — Splitting documents into semantically meaningful pieces
+3. **Embedding** — Converting chunks into dense vector representations
+4. **Retrieval** — Finding the most relevant chunks for a query
+5. **Generation** — Synthesizing an answer from retrieved context
+
+```python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
+
+# Chunking strategy matters more than most people think
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=512,
+    chunk_overlap=50,
+    separators=["\n\n", "\n", ". ", " "],
+)
+
+chunks = splitter.split_documents(documents)
+```
+
+## Chunking: The Most Underrated Decision
+
+Most RAG tutorials use fixed-size chunks of 1000 characters and move on. In production, your chunking strategy directly impacts retrieval quality.
+
+### What I've Found Works
+
+- **Smaller chunks (256-512 tokens)** for factual Q&A — more precise retrieval
+- **Larger chunks (1024-2048 tokens)** for summarization — more context per retrieval
+- **Semantic chunking** for heterogeneous documents — respects natural boundaries
+- **Parent-child chunking** for the best of both worlds — retrieve on small chunks, return parent context
+
+```python
+# Parent-child retrieval pattern
+from langchain.retrievers import ParentDocumentRetriever
+from langchain.storage import InMemoryStore
+
+parent_splitter = RecursiveCharacterTextSplitter(chunk_size=2000)
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=400)
+
+retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=InMemoryStore(),
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter,
+)
+```
+
+## Embedding Model Selection
+
+The embedding model you choose is the second-most impactful decision. Here's my benchmark across three production datasets:
+
+| Model | MTEB Score | Latency (ms) | Cost |
+|-------|-----------|--------------|------|
+| `text-embedding-3-large` | 64.6 | 45 | $0.13/1M tokens |
+| `text-embedding-3-small` | 62.3 | 30 | $0.02/1M tokens |
+| `voyage-large-2` | 65.1 | 50 | $0.12/1M tokens |
+| `bge-large-en-v1.5` | 63.4 | 15 (local) | Free |
+
+For most production cases, I recommend `text-embedding-3-small` — it offers 95% of the quality at 15% of the cost of the large model.
+
+## Evaluation: The Missing Piece
+
+The hardest part of RAG isn't building it — it's knowing if it works. Here's the evaluation framework I use:
+
+```python
+from ragas import evaluate
+from ragas.metrics import (
+    answer_relevancy,
+    faithfulness,
+    context_precision,
+    context_recall,
+)
+
+result = evaluate(
+    dataset=eval_dataset,
+    metrics=[
+        answer_relevancy,
+        faithfulness,
+        context_precision,
+        context_recall,
+    ],
+)
+
+print(result)
+# {'answer_relevancy': 0.92, 'faithfulness': 0.87, ...}
+```
+
+### Key Metrics to Track
+
+- **Context Precision** — Are the retrieved chunks actually relevant?
+- **Context Recall** — Did we retrieve all the chunks needed to answer?
+- **Faithfulness** — Does the answer stick to what's in the context?
+- **Answer Relevancy** — Does the answer actually address the question?
+
+## Production Lessons
+
+After deploying several RAG systems, here are the non-obvious lessons:
+
+1. **Cache embeddings aggressively** — Embedding the same document twice is wasted compute and money
+2. **Use hybrid search** — Combine dense (vector) and sparse (BM25) retrieval for best results
+3. **Implement fallback strategies** — When retrieval confidence is low, say "I don't know" instead of hallucinating
+4. **Monitor drift** — Your documents change, your queries change. Re-evaluate monthly.
+5. **Chunk metadata matters** — Include source, section headers, and dates in your chunks for better filtering
+
+## What's Next
+
+In my next post, I'll cover **advanced retrieval patterns** — query decomposition, HyDE, and multi-hop retrieval for complex questions.
+
+---
+
+*Want to discuss RAG architecture? Reach out on [GitHub](https://github.com/SamuelOshin) or [LinkedIn](https://linkedin.com/in/samuel-oshin-2903611a5/).*

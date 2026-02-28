@@ -1,0 +1,197 @@
+---
+title: "Python Backend Best Practices in 2026"
+description: "Battle-tested patterns for building production Python backends — async architectures, dependency injection, structured logging, and the tools that actually matter."
+date: "2026-02-25"
+tags: ["Python", "Backend", "FastAPI", "Architecture"]
+published: true
+image: "/blog/python-backend-cover.png"
+---
+
+## The Python Backend Landscape in 2026
+
+Python's backend ecosystem has matured dramatically. FastAPI is now the de facto standard for new projects, async/await is everywhere, and the tooling around type safety has caught up with statically-typed languages. Here are the patterns I use on every production project.
+
+## Project Structure That Scales
+
+After working on multiple production backends, I've converged on this structure:
+
+```
+src/
+├── api/
+│   ├── routes/          # Route handlers (thin — delegate to services)
+│   ├── dependencies.py  # FastAPI dependency injection
+│   └── middleware.py    # Auth, logging, CORS
+├── core/
+│   ├── config.py        # Settings via pydantic-settings
+│   ├── security.py      # JWT, hashing, auth flows
+│   └── exceptions.py    # Custom exception hierarchy
+├── models/
+│   ├── domain/          # Business logic models
+│   └── schemas/         # Pydantic request/response schemas
+├── services/            # Business logic layer
+├── repositories/        # Data access layer
+└── infrastructure/      # External integrations (DB, cache, queues)
+```
+
+The key principle: **routes are thin, services are fat**. A route handler should do three things — validate input, call a service, return a response.
+
+## Async Done Right
+
+The biggest mistake I see is mixing sync and async code without understanding the implications.
+
+```python
+# ❌ BAD: Blocking the event loop
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    # This blocks the entire event loop!
+    user = db.query(User).filter(User.id == user_id).first()
+    return user
+
+# ✅ GOOD: Properly async with async DB driver
+@app.get("/users/{user_id}")
+async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.id == user_id))
+    return result.scalar_one_or_none()
+
+# ✅ ALSO GOOD: Sync function (FastAPI runs it in a thread pool)
+@app.get("/users/{user_id}")
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    return db.query(User).filter(User.id == user_id).first()
+```
+
+**Rule of thumb**: If your handler calls any `await`, make it `async def`. If it's all synchronous, use plain `def` — FastAPI will run it in a thread pool automatically.
+
+## Dependency Injection
+
+FastAPI's `Depends()` is one of its best features, but most codebases underuse it. Here's how I structure dependencies:
+
+```python
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        yield session
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db),
+) -> User:
+    payload = verify_jwt(token)
+    user = await user_repo.get_by_id(db, payload["sub"])
+    if not user:
+        raise HTTPException(401, "User not found")
+    return user
+
+def require_role(role: str):
+    async def _check(user: User = Depends(get_current_user)):
+        if role not in user.roles:
+            raise HTTPException(403, f"Requires {role} role")
+        return user
+    return _check
+
+# Usage — clean and composable
+@app.delete("/admin/users/{id}")
+async def delete_user(
+    id: int,
+    admin: User = Depends(require_role("admin")),
+    db: AsyncSession = Depends(get_db),
+):
+    await user_service.delete(db, id)
+```
+
+## Structured Logging
+
+Print statements and `logging.info("something happened")` don't cut it in production. Use structured logging:
+
+```python
+import structlog
+
+logger = structlog.get_logger()
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    duration = time.perf_counter() - start
+    
+    logger.info(
+        "http_request",
+        method=request.method,
+        path=request.url.path,
+        status=response.status_code,
+        duration_ms=round(duration * 1000, 2),
+        user_agent=request.headers.get("user-agent"),
+    )
+    return response
+```
+
+This outputs JSON logs that your observability stack (Datadog, Grafana, ELK) can parse and query:
+
+```json
+{
+  "event": "http_request",
+  "method": "GET",
+  "path": "/api/users/42",
+  "status": 200,
+  "duration_ms": 12.34,
+  "timestamp": "2026-02-25T10:30:00Z"
+}
+```
+
+## Error Handling Strategy
+
+Define a clear exception hierarchy and handle errors consistently:
+
+```python
+# core/exceptions.py
+class AppError(Exception):
+    def __init__(self, message: str, code: str, status: int = 500):
+        self.message = message
+        self.code = code
+        self.status = status
+
+class NotFoundError(AppError):
+    def __init__(self, resource: str, id: str):
+        super().__init__(
+            message=f"{resource} {id} not found",
+            code="NOT_FOUND",
+            status=404,
+        )
+
+class ValidationError(AppError):
+    def __init__(self, message: str):
+        super().__init__(message=message, code="VALIDATION_ERROR", status=422)
+
+# Register global handler
+@app.exception_handler(AppError)
+async def app_error_handler(request: Request, exc: AppError):
+    return JSONResponse(
+        status_code=exc.status,
+        content={"error": exc.code, "message": exc.message},
+    )
+```
+
+## The Tools That Actually Matter
+
+After years of trying every new tool, here's my opinionated production stack:
+
+| Category | Tool | Why |
+|----------|------|-----|
+| Framework | FastAPI | Type safety, async, auto-docs |
+| ORM | SQLAlchemy 2.0 | Async support, mature, typed |
+| Migrations | Alembic | The only real option |
+| Validation | Pydantic v2 | 5-50x faster than v1 |
+| Testing | pytest + httpx | Async test client support |
+| Linting | Ruff | Replaces flake8, isort, black |
+| Type checking | mypy (strict) | Catches bugs before runtime |
+| Task queue | Celery or ARQ | ARQ for async, Celery for everything else |
+| Caching | Redis | Universal, fast, versatile |
+
+## Final Thoughts
+
+The best backend code is boring code. Use established patterns, keep handlers thin, test the important paths, and invest in observability. The exciting work should happen in your business logic, not your infrastructure.
+
+---
+
+*Have questions about Python backend architecture? Connect with me on [GitHub](https://github.com/SamuelOshin) or [LinkedIn](https://linkedin.com/in/samuel-oshin-2903611a5/).*
