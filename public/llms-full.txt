@@ -1,0 +1,51 @@
+# Samuel Oshin — Backend Engineer Portfolio (Full Content)
+
+> Python Backend Engineer specializing in AI/LLM infrastructure, RAG pipelines, and distributed systems. 2× HNG Finalist, Top 1-5% of 10,000+ developers.
+
+## About Samuel Oshin
+
+Samuel Oshin is a Python Backend Engineer with expertise in:
+- RAG (Retrieval-Augmented Generation) pipeline design and deployment
+- Distributed systems architecture
+- AI-powered backend infrastructure
+- FastAPI, Django, and Python web frameworks
+- Vector databases (Pinecone, Weaviate, ChromaDB)
+- LLM integration and orchestration (LangChain, LlamaIndex)
+- Database design (PostgreSQL, Redis, SQLAlchemy)
+- Cloud infrastructure (AWS, GCP, Vercel)
+
+## Blog Posts
+
+### Building RAG Pipelines at Scale
+URL: https://samueloshin.dev/blog/building-rag-pipelines-at-scale
+Published: 2026-02-28
+Tags: RAG, AI, Python, LangChain, Vector Databases
+
+A comprehensive guide to building production RAG pipelines covering:
+- The five core stages: Document Ingestion, Chunking, Embedding, Retrieval, Generation
+- Chunking strategies: fixed-size vs semantic vs parent-child
+- Embedding model selection and benchmarks (text-embedding-3-large, voyage-large-2, bge-large-en-v1.5)
+- Evaluation framework using RAGAS metrics (answer relevancy, faithfulness, context precision/recall)
+- Production lessons: caching, hybrid search, fallback strategies, drift monitoring
+
+### Python Backend Best Practices in 2026
+URL: https://samueloshin.dev/blog/python-backend-best-practices-2026
+Published: 2026-02-25
+Tags: Python, Backend, FastAPI, Architecture
+
+Battle-tested patterns for production Python backends covering:
+- Project structure that scales (routes → services → repositories pattern)
+- Async done right: avoiding event loop blocking
+- FastAPI dependency injection patterns
+- Structured logging with structlog
+- Error handling strategies with custom exception hierarchies
+- Recommended production tool stack (FastAPI, SQLAlchemy 2.0, Alembic, Pydantic v2, Ruff)
+
+## Links
+
+- Portfolio: https://samueloshin.dev
+- Blog: https://samueloshin.dev/blog
+- GitHub: https://github.com/SamuelOshin
+- LinkedIn: https://linkedin.com/in/samuel-oshin-2903611a5/
+- RSS Feed: https://samueloshin.dev/feed.xml
+- Email: samuelt.oshin@gmail.com
