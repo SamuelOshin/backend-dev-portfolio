@@ -17,7 +17,7 @@ Samuel Oshin is a Python Backend Engineer with expertise in:
 ## Blog Posts
 
 ### Building RAG Pipelines at Scale
-URL: https://samueloshin.dev/blog/building-rag-pipelines-at-scale
+URL: https://samueloshin.vercel.app/blog/building-rag-pipelines-at-scale
 Published: 2026-02-28
 Tags: RAG, AI, Python, LangChain, Vector Databases
 
@@ -29,7 +29,7 @@ A comprehensive guide to building production RAG pipelines covering:
 - Production lessons: caching, hybrid search, fallback strategies, drift monitoring
 
 ### Python Backend Best Practices in 2026
-URL: https://samueloshin.dev/blog/python-backend-best-practices-2026
+URL: https://samueloshin.vercel.app/blog/python-backend-best-practices-2026
 Published: 2026-02-25
 Tags: Python, Backend, FastAPI, Architecture
 
@@ -43,9 +43,9 @@ Battle-tested patterns for production Python backends covering:
 
 ## Links
 
-- Portfolio: https://samueloshin.dev
-- Blog: https://samueloshin.dev/blog
+- Portfolio: https://samueloshin.vercel.app
+- Blog: https://samueloshin.vercel.app/blog
 - GitHub: https://github.com/SamuelOshin
 - LinkedIn: https://linkedin.com/in/samuel-oshin-2903611a5/
-- RSS Feed: https://samueloshin.dev/feed.xml
+- RSS Feed: https://samueloshin.vercel.app/feed.xml
 - Email: samuelt.oshin@gmail.com

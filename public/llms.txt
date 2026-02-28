@@ -4,13 +4,13 @@
 
 ## Blog Posts
 
-- [Building RAG Pipelines at Scale](https://samueloshin.dev/blog/building-rag-pipelines-at-scale): A deep dive into production RAG pipelines — vector databases, chunking strategies, embedding models, and evaluation frameworks.
-- [Python Backend Best Practices in 2026](https://samueloshin.dev/blog/python-backend-best-practices-2026): Battle-tested patterns for building production Python backends — async architectures, dependency injection, structured logging, and more.
+- [Building RAG Pipelines at Scale](https://samueloshin.vercel.app/blog/building-rag-pipelines-at-scale): A deep dive into production RAG pipelines — vector databases, chunking strategies, embedding models, and evaluation frameworks.
+- [Python Backend Best Practices in 2026](https://samueloshin.vercel.app/blog/python-backend-best-practices-2026): Battle-tested patterns for building production Python backends — async architectures, dependency injection, structured logging, and more.
 
 ## Links
 
-- [Portfolio](https://samueloshin.dev): Full portfolio with projects, experience, and contact
-- [Blog](https://samueloshin.dev/blog): All technical articles
+- [Portfolio](https://samueloshin.vercel.app): Full portfolio with projects, experience, and contact
+- [Blog](https://samueloshin.vercel.app/blog): All technical articles
 - [GitHub](https://github.com/SamuelOshin): Open source projects
 - [LinkedIn](https://linkedin.com/in/samuel-oshin-2903611a5/): Professional profile
-- [RSS Feed](https://samueloshin.dev/feed.xml): Subscribe to blog updates
+- [RSS Feed](https://samueloshin.vercel.app/feed.xml): Subscribe to blog updates
