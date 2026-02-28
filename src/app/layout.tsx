@@ -5,6 +5,7 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { Navigation } from "./components/Navigation";
+import { Analytics } from "@vercel/analytics/next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
 
@@ -75,6 +76,7 @@ export default function RootLayout({
         {/* Header Navigation */}
         <Navigation />
         {children}
+        <Analytics />
         <VisualEditsMessenger />
       </body>
     </html>
