@@ -3,11 +3,16 @@ import { getAllSlugs, getPostBySlug } from "@/lib/blog";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypePrettyCode from "rehype-pretty-code";
+import remarkGfm from "remark-gfm";
+import remarkMermaid from "@/lib/remark-mermaid";
+import { Mermaid } from "@/app/components/ui/Mermaid";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -54,6 +59,8 @@ export default async function BlogPostPage({ params }: PageProps) {
     const { slug } = await params;
     const post = getPostBySlug(slug);
     if (!post) notFound();
+
+    const components = { Mermaid };
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -129,12 +136,25 @@ export default async function BlogPostPage({ params }: PageProps) {
                     </Link>
 
                     {/* Post Header */}
-                    <header className="mb-12">
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-6 leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
+                    <header className="mb-10">
+                        {/* Cover Image */}
+                        {post.image && (
+                            <div className="relative w-full aspect-[2/1] rounded-2xl overflow-hidden mb-8 border border-white/10">
+                                <Image
+                                    src={post.image}
+                                    alt={post.title}
+                                    fill
+                                    className="object-cover"
+                                    priority
+                                    sizes="(max-width: 768px) 100vw, 768px"
+                                />
+                            </div>
+                        )}
+                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4 leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
                             {post.title}
                         </h1>
 
-                        <p className="text-lg text-white/60 mb-6">{post.description}</p>
+                        <p className="text-base sm:text-lg text-white/60 mb-6">{post.description}</p>
 
                         {/* Meta */}
                         <div className="flex flex-wrap items-center gap-4 text-sm text-white/40">
@@ -173,30 +193,35 @@ export default async function BlogPostPage({ params }: PageProps) {
                     </header>
 
                     {/* MDX Content */}
-                    <div className="prose prose-invert prose-lg max-w-none
+                    <div className="prose prose-invert max-w-none
             prose-headings:font-bold prose-headings:tracking-tight
             prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
-            prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-            prose-p:text-white/70 prose-p:leading-relaxed
-            prose-a:text-[color:var(--accent)] prose-a:no-underline hover:prose-a:underline
-            prose-strong:text-white prose-strong:font-semibold
-            prose-code:text-[color:var(--accent)] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-            prose-pre:bg-[#1a1a2e] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl
-            prose-blockquote:border-[color:var(--accent)] prose-blockquote:text-white/60
-            prose-li:text-white/70
-            prose-table:text-white/70
-            prose-th:text-white prose-th:font-semibold prose-th:border-white/10
-            prose-td:border-white/10
-            prose-hr:border-white/10
-            prose-img:rounded-xl prose-img:border prose-img:border-white/10"
+            prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
+            prose-p:text-white/80 prose-p:leading-relaxed prose-p:mb-6
+            prose-a:text-[color:var(--accent)] prose-a:font-medium prose-a:underline-offset-4 hover:prose-a:text-white transition-colors
+            prose-strong:text-white prose-strong:font-bold
+            prose-code:text-[color:var(--accent)] prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+            prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:shadow-xl prose-pre:overflow-x-auto prose-pre:text-sm
+            prose-blockquote:border-l-4 prose-blockquote:border-[color:var(--accent)] prose-blockquote:bg-white/[0.02] prose-blockquote:py-1 prose-blockquote:pr-4 prose-blockquote:pl-5 prose-blockquote:rounded-r-lg prose-blockquote:text-white/70 prose-blockquote:font-medium prose-blockquote:italic
+            prose-ul:text-white/80 prose-ul:leading-relaxed prose-ul:list-disc
+            prose-ol:text-white/80 prose-ol:leading-relaxed
+            prose-li:my-1
+            prose-table:text-white/80 prose-table:w-full prose-table:text-sm
+            prose-th:text-white prose-th:font-semibold prose-th:border-b prose-th:border-white/20 prose-th:text-left prose-th:p-3
+            prose-td:border-b prose-td:border-white/10 prose-td:p-3
+            prose-hr:border-white/10 prose-hr:my-12
+            prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-xl"
                     >
                         <MDXRemote
                             source={post.content}
+                            components={components}
                             options={{
                                 mdxOptions: {
+                                    remarkPlugins: [remarkGfm, remarkMermaid],
                                     rehypePlugins: [
                                         rehypeSlug,
                                         [rehypeAutolinkHeadings, { behavior: "wrap" }],
+                                        [rehypePrettyCode, { theme: "github-dark" }],
                                     ],
                                 },
                             }}

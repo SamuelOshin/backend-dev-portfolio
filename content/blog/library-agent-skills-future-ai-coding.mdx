@@ -1,0 +1,172 @@
+---
+title: "FastAPI Agent Skills: The Complete Guide to Library SKILL.md"
+description: "Everything you need to know about FastAPI Agent Skills and the new Library SKILL.md specification — how they work, why they matter, and how to write your own."
+date: "2026-02-28"
+tags: ["FastAPI", "Agent Skills", "SKILL.md", "AI Coding", "Agentic Development"]
+published: true
+image: "/blog/library-agent-skills-cover.png"
+---
+
+**FastAPI agent skills** are here, and they're about to change how every AI coding assistant interacts with your Python backend. Shipped directly inside the FastAPI package itself, this feature allows AI agents to read official, version-accurate instructions bundled with the library you have installed — no prompting, no copy-pasting docs, no hallucinated APIs.
+
+This is part of a broader specification called **Library Agent Skills**, first proposed by Sebastián Ramírez (the creator of FastAPI). It introduces a canonical, standardized way for any library author to ship AI instructions *directly inside their NPM or PyPI packages*.
+
+---
+
+## What Are FastAPI Agent Skills?
+
+When you install FastAPI today, you're not just getting a web framework. You're also getting an official `SKILL.md` file that lives inside the package at:
+
+```bash
+.venv/lib64/python3.14/site-packages/fastapi/.agents/skills/fastapi/SKILL.md
+```
+
+This file contains FastAPI's official best practices — how to create routes, use dependency injection, validate with Pydantic, structure your app — written and maintained by Tiangolo himself. Every time you upgrade FastAPI, the skill updates too.
+
+AI coding agents (Cursor, Copilot, Gemini CLI, and others) can scan your `.venv` or `node_modules` directories and automatically discover these skills. The agent then reads the `SKILL.md` and uses it as authoritative context when writing code for your project.
+
+You can view the actual source code for the [FastAPI Agent Skill on GitHub](https://github.com/tiangolo/fastapi/tree/master/fastapi/.agents/skills/fastapi).
+
+---
+
+## How Library Agent Skills Work
+
+The concept extends beyond just FastAPI. Any library — Python or JavaScript — can ship agent skills using the same standardized directory structure:
+
+### The Directory Convention
+
+```text
+your-library/
+└── .agents/
+    └── skills/
+        └── your-library/
+            └── SKILL.md
+```
+
+For Python packages, the skill is installed alongside the library's source code in your virtual environment. For JavaScript packages, it lands in `node_modules`:
+
+```bash
+# Python
+.venv/lib64/python3.14/site-packages/fastapi/.agents/skills/fastapi/SKILL.md
+
+# JavaScript
+node_modules/@tanstack/react-router/.agents/skills/tanstack-router/SKILL.md
+```
+
+### How Agents Discover and Use Skills
+1. The agent scans your local environment (`.venv` or `node_modules`), just like it scans your source code.
+2. When it finds an `.agents/skills/` directory inside an installed package, it reads the `SKILL.md`.
+3. The agent loads these instructions into its working context — automatically knowing the correct, up-to-date patterns for that specific version of the library.
+
+### Why This Matters for Developers
+- **Zero hallucinations on APIs**: The agent reads docs shipped with your *installed* version. No v4 syntax when you have v3.
+- **Official best practices by default**: Code is written exactly how the library author intended — not based on outdated StackOverflow answers.
+- **No manual prompting**: You don't need to paste documentation into your LLM's context.
+
+> **Pro Tip**: Some agents can auto-suggest available skills. If the agent detects FastAPI installed in your project, it can quietly load the FastAPI skill behind the scenes without you doing anything.
+
+---
+
+## FastAPI Agent Skills vs Other Approaches
+
+Library Agent Skills don't exist in a vacuum. Here's how FastAPI's approach compares to other methods of giving AI agents context:
+
+| Approach | Scope | Maintained By | Auto-Updated? | Best For |
+|----------|-------|---------------|---------------|----------|
+| **Library Agent Skills** (`.agents/skills/`) | Per-library, bundled with package | Library author | ✅ Yes, with each release | Framework-specific best practices |
+| **AGENTS.md** | Per-project, in repo root | Your team | ❌ Manual | Project conventions & boundaries |
+| **Rules files** (`.cursorrules`, etc.) | Per-project, IDE-specific | Your team | ❌ Manual | IDE-specific behavior tuning |
+| **MCP Servers** | External APIs & tools | Tool provider | ✅ Yes, via server | Live data, external integrations |
+| **System prompts** | Per-session, ephemeral | User | ❌ Manual | One-off instructions |
+
+The key insight: **Library Skills and AGENTS.md are complementary, not competing**. The skill tells the agent *how to use FastAPI correctly*, while your `AGENTS.md` tells it *how your specific project uses FastAPI*. I use both in every project — you can see my AGENTS.md approach in detail in my post on [building FastAPI templates for AI agents](/blog/fastapi-ai-agents-architecture).
+
+---
+
+## What About Security?
+
+A valid concern when giving AI agents permission to read files from installed packages is security — specifically [prompt injection attacks](https://owasp.org/www-project-top-10-for-large-language-model-applications/). Could a malicious npm package ship a `SKILL.md` that instructs an agent to act dangerously?
+
+Ramírez addresses this directly:
+
+> "As the libraries found in the local environment are already installed and can be executed, the risk of prompt injection is not higher than the risk of executing code from those libraries."
+
+If you trust a package enough to `pip install` or `npm install` it into your project, you already trust it to run arbitrary code on your machine. Reading its markdown file poses no additional threat — though agent builders should still enforce their own sandbox policies.
+
+---
+
+## How to Write Your Own SKILL.md
+
+If you maintain an open-source library (or even an internal package), you can start shipping agent skills today. Here's a step-by-step guide:
+
+### Step 1: Create the Directory
+
+```bash
+mkdir -p your-library/.agents/skills/your-library
+```
+
+### Step 2: Write the SKILL.md
+
+The format uses YAML frontmatter (for discoverability) followed by markdown instructions:
+
+```markdown
+---
+name: your-library
+description: Official agent skill for your-library
+---
+
+# Your Library
+
+## Quick Start
+Always import from the main package:
+
+from your_library import create_app, Router
+
+## Best Practices
+- Always use `Router()` for grouping related endpoints
+- Never call `app.run()` directly in production — use uvicorn
+- All handlers must return a `Response` object
+
+## Anti-Patterns (DO NOT)
+- ❌ Do not use `app.state` for dependency injection
+- ❌ Do not import internal modules like `your_library._internal`
+```
+
+### Step 3: Include It in Your Package
+
+For **Python**, ensure the `.agents/` directory is included in your distribution. In `pyproject.toml`:
+```toml
+[tool.setuptools.package-data]
+your_library = [".agents/**/*"]
+```
+
+For **JavaScript**, make sure `.agents/` is not listed in your `.npmignore`.
+
+> **The key principle**: Write SKILL.md as if you're instructing a very capable but very literal junior developer. Be explicit about what to do **and** what not to do.
+
+---
+
+## Frequently Asked Questions
+
+### Does FastAPI support agent skills?
+**Yes.** As of the latest release, FastAPI ships an official `SKILL.md` bundled directly inside the `fastapi` Python package. When you install FastAPI, the skill is automatically available for any compatible AI coding agent to discover and use.
+
+### What is SKILL.md?
+`SKILL.md` is a markdown file placed inside a library's `.agents/skills/` directory. It contains official instructions, best practices, and anti-patterns written by the library's maintainers. AI coding agents read this file to generate accurate, idiomatic code for that library.
+
+### Which AI tools support Library Agent Skills?
+The specification is designed to work with any agentic coding tool that scans local environments. Cursor, GitHub Copilot, Gemini CLI, and other AI-powered IDEs can all be configured to discover and use these skills. The ecosystem is rapidly adopting the standard.
+
+### How is this different from AGENTS.md?
+`AGENTS.md` defines rules for your *specific project* (coding conventions, architecture boundaries, what the AI should and shouldn't do). Library Agent Skills define rules for a *specific library* (correct API usage, best practices, anti-patterns). You should use both together. See my post on [AGENTS.md for FastAPI projects](/blog/fastapi-ai-agents-architecture) for a detailed example.
+
+### Can I write agent skills for my private library?
+Absolutely. The `.agents/skills/` convention works for any installable package — public or private. If your team uses an internal Python package, adding a `SKILL.md` ensures that every developer's AI assistant writes code that follows your internal standards.
+
+---
+
+If you're interested in how I structure my own FastAPI projects for AI-readability, check out my post on [building FastAPI templates for AI agents](/blog/fastapi-ai-agents-architecture) and my [Python backend best practices guide](/blog/python-backend-best-practices-2026).
+
+---
+
+*Have thoughts on FastAPI agent skills or want to discuss AI-assisted development? [Let's connect](/#contact).*
