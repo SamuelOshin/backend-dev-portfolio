@@ -7,7 +7,7 @@ import Script from "next/script";
 import { Navigation } from "./components/Navigation";
 import { Analytics } from "@vercel/analytics/next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
