@@ -33,7 +33,7 @@ src/
 └── infrastructure/      # External integrations (DB, cache, queues)
 ```
 
-The key principle: **routes are thin, services are fat**. A route handler should do three things — validate input, call a service, return a response.
+The key principle: **routes are thin, services are fat**. A route handler should do three things — validate input, call a service, return a response. I go deeper into this pattern in my post on [building FastAPI templates for AI agents](/blog/fastapi-ai-agents-architecture).
 
 ## Async Done Right
 
@@ -145,31 +145,278 @@ Define a clear exception hierarchy and handle errors consistently:
 
 ```python
 # core/exceptions.py
-class AppError(Exception):
-    def __init__(self, message: str, code: str, status: int = 500):
-        self.message = message
-        self.code = code
-        self.status = status
+class CustomDomainException(Exception):
+    code: str = "INTERNAL_ERROR"
+    message: str = "An unexpected error occurred"
+    status_code: int = 500
 
-class NotFoundError(AppError):
-    def __init__(self, resource: str, id: str):
-        super().__init__(
-            message=f"{resource} {id} not found",
-            code="NOT_FOUND",
-            status=404,
-        )
+class NotFoundError(CustomDomainException):
+    code = "NOT_FOUND"
+    message = "Resource not found"
+    status_code = 404
 
-class ValidationError(AppError):
-    def __init__(self, message: str):
-        super().__init__(message=message, code="VALIDATION_ERROR", status=422)
+class InvalidCredentialsError(CustomDomainException):
+    code = "INVALID_CREDENTIALS"
+    message = "Invalid username or password"
+    status_code = 401
 
-# Register global handler
-@app.exception_handler(AppError)
-async def app_error_handler(request: Request, exc: AppError):
+# Register a global handler — all exceptions funnel here
+@app.exception_handler(CustomDomainException)
+async def domain_error_handler(request: Request, exc: CustomDomainException):
     return JSONResponse(
-        status_code=exc.status,
-        content={"error": exc.code, "message": exc.message},
+        status_code=exc.status_code,
+        content=error_response(exc.status_code, exc.message, exc.code),
     )
+```
+
+Services raise, routes never catch. The global handler converts every domain error into the standard response shape — clients never see a raw Python exception.
+
+## API Response Format: The Standard Your Clients Deserve
+
+One of the most impactful (and most overlooked) production decisions is **locking down your response envelope**. If every endpoint returns a slightly different shape, your frontend team lives in constant pain and your API is unpredictable to AI agents and third-party clients.
+
+### The Rules
+
+**REST Naming Conventions**
+- Use **plural nouns** for resources: `GET /users`, `POST /orders`, `DELETE /projects/{id}`
+- Nest for ownership: `GET /organizations/{org_id}/projects`
+- Use query params for filtering: `GET /projects?status=active&page=2`
+- **Never use verbs in paths**: `/get-user` or `/create_user` are wrong. The HTTP method *is* the verb.
+
+**HTTP Status Codes That Matter**
+
+| Code | Meaning | When to Use |
+|------|---------|-------------|
+| 200 | OK | Successful GET / action with response body |
+| 201 | Created | Successful POST (resource created) |
+| 204 | No Content | Successful DELETE with no body |
+| 400 | Bad Request | Malformed input / business rule violation |
+| 401 | Unauthorized | Missing or invalid auth token |
+| 403 | Forbidden | Authenticated but lacks permission |
+| 404 | Not Found | Resource doesn't exist |
+| 409 | Conflict | Duplicate resource (e.g., email already registered) |
+| 422 | Unprocessable Entity | Pydantic / semantic validation failure |
+| 429 | Too Many Requests | Rate limit exceeded |
+| 500 | Internal Server Error | Unexpected server-side failure |
+| 503 | Service Unavailable | Downstream dependency unreachable |
+
+### Standard Success Response Shape
+
+Every success response uses the same four keys — no exceptions:
+
+```json
+{
+  "status": "success",
+  "status_code": 200,
+  "message": "Users retrieved",
+  "data": {
+    "items": [{ "id": 1, "name": "Alice" }]
+  },
+  "meta": { "page": 1, "per_page": 20, "total": 120 }
+}
+```
+
+- `data` is **always an object**, never `null` and never a raw array. This makes responses schema-stable — adding fields doesn't break existing clients.
+- `meta` is optional and used for pagination.
+- For auth flows, include tokens under `data`:
+
+```json
+{
+  "status": "success",
+  "status_code": 201,
+  "message": "Authenticated",
+  "data": {
+    "access_token": "eyJhbGc...",
+    "user": { "id": 42, "email": "alice@example.com" }
+  }
+}
+```
+
+### Standard Error Response Shape
+
+Errors are equally predictable — and framework-agnostic (no `detail` key from FastAPI's default, no stack traces):
+
+```json
+{
+  "status": "failure",
+  "status_code": 422,
+  "message": "Validation failed",
+  "error_code": "VALIDATION_ERROR",
+  "errors": {
+    "email": ["Invalid email format"],
+    "password": ["Must be at least 8 characters"]
+  }
+}
+```
+
+```json
+{
+  "status": "failure",
+  "status_code": 404,
+  "message": "Project not found",
+  "error_code": "NOT_FOUND",
+  "errors": {}
+}
+```
+
+`errors` is **always an object or array**, never omitted and never `null`. This way clients can always safely iterate it.
+
+### Implementation: Centralized Response Helpers
+
+Never return raw dicts from your routes. Centralize the shape in helper functions:
+
+```python
+# core/response_payloads.py
+from fastapi.responses import JSONResponse
+from typing import Any
+
+def success_response(
+    status_code: int,
+    message: str,
+    data: dict = {},
+    meta: dict | None = None,
+) -> JSONResponse:
+    body = {
+        "status": "success",
+        "status_code": status_code,
+        "message": message,
+        "data": data,
+    }
+    if meta:
+        body["meta"] = meta
+    return JSONResponse(status_code=status_code, content=body)
+
+def error_response(
+    status_code: int,
+    message: str,
+    error_code: str = "INTERNAL_ERROR",
+    errors: dict | list = {},
+) -> dict:
+    return {
+        "status": "failure",
+        "status_code": status_code,
+        "message": message,
+        "error_code": error_code,
+        "errors": errors,
+    }
+```
+
+Your routes become one-liners:
+
+```python
+@router.get("/users")
+async def list_users(db: AsyncSession = Depends(get_db)):
+    users = await user_service.get_all(db)
+    return success_response(200, "Users retrieved", data={"items": users})
+```
+
+### Writing Framework-Agnostic Error Messages
+
+This matters more than it sounds. Your error responses **must not reveal which framework or language you're using**. If you switch from FastAPI to Django tomorrow, no client should be able to tell.
+
+```python
+# ❌ BAD: leaks internal Python details
+raise HTTPException(422, detail={"loc": ["body", "email"], "msg": "value is not a valid email"})
+
+# ❌ BAD: exposes DB internals
+raise ValueError("User record not found in users table")
+
+# ✅ GOOD: user-facing, framework-agnostic
+raise InvalidInputError("Please enter a valid email address.")
+raise NotFoundError("The requested project could not be found.")
+```
+
+**Exception message rules:**
+- ✅ Use clear, non-technical language: *"Invalid username or password"*
+- ✅ Be specific about next steps: *"Your account is locked. Try again in 30 minutes."*
+- ❌ Never reveal DB structure: *"User not found in users table"*
+- ❌ Never expose infrastructure: *"Redis connection timeout"*
+- ❌ Never include raw tracebacks or exception class names
+
+**Error code naming convention** — always `UPPERCASE_SNAKE_CASE`:
+
+| Pattern | Example | Use Case |
+|---------|---------|----------|
+| `{PROBLEM}` | `INVALID_CREDENTIALS`, `NOT_FOUND` | Specific problem |
+| `{RESOURCE}_{STATE}` | `ACCOUNT_INACTIVE`, `RESOURCE_LOCKED` | Resource state |
+| `{ACTION}_ERROR` | `PROCESSING_ERROR`, `EXTRACTION_FAILED` | Operation failed |
+| `{ACTION}_{TYPE}` | `TOKEN_EXPIRED`, `RATE_LIMIT_EXCEEDED` | Specific scenario |
+
+
+## Common Mistakes I See in Production Codebases
+
+These are the anti-patterns I encounter most frequently when reviewing Python backends. Avoid them.
+
+### 1. Catching Every Exception Silently
+
+```python
+# ❌ BAD: This swallows bugs and makes debugging a nightmare
+try:
+    result = await some_critical_operation()
+except Exception:
+    pass  # "it's fine, probably"
+```
+
+If you catch `Exception`, at minimum **log it** and **re-raise** a domain-specific error. Silent failures are the most expensive bugs to diagnose in production.
+
+### 2. Business Logic in Route Handlers
+
+```python
+# ❌ BAD: 80 lines of logic jammed into a route
+@router.post("/orders")
+async def create_order(payload: OrderRequest, db = Depends(get_db)):
+    user = await db.execute(select(User).where(...))
+    inventory = await db.execute(select(Product).where(...))
+    if inventory.quantity < payload.quantity:
+        raise HTTPException(400, "Not enough stock")
+    # ... 60 more lines of pricing, discounts, notifications ...
+```
+
+This makes it untestable (you need a running HTTP server), unreusable (can't call from a background job), and makes AI agents terrified to touch it. Extract to a service class. I wrote an entire post on [how to architect this properly for AI agents](/blog/fastapi-ai-agents-architecture).
+
+### 3. Hardcoding Configuration Values
+
+```python
+# ❌ BAD: Magic numbers and strings everywhere
+redis_client = Redis(host="172.16.0.5", port=6379, db=2)
+JWT_SECRET = "my-super-secret-key-123"
+```
+
+Use `pydantic-settings` to load config from environment variables with type validation and defaults. Never commit secrets.
+
+### 4. Ignoring Database Connection Pooling
+
+```python
+# ❌ BAD: Creating a new connection per request
+async def get_db():
+    engine = create_async_engine(DATABASE_URL)  # new engine every time!
+    async with AsyncSession(engine) as session:
+        yield session
+```
+
+Create the engine **once** at startup. Set sane pool sizes (`pool_size=20`, `max_overflow=10`). Connection creation is expensive — a misconfigured pool under load will bring your service down faster than any bug.
+
+### 5. No Request Validation Beyond Pydantic
+
+Pydantic validates shape and types, but not business rules. Don't rely on it alone:
+
+```python
+# Pydantic will accept this, but it's bad data
+class TransferRequest(BaseModel):
+    amount: float  # ❌ Allows 0.0, -500, 999999999
+    
+# ✅ GOOD: Add business validation
+class TransferRequest(BaseModel):
+    amount: float
+
+    @field_validator("amount")
+    @classmethod
+    def validate_amount(cls, v):
+        if v <= 0:
+            raise ValueError("Amount must be positive")
+        if v > 100_000:
+            raise ValueError("Amount exceeds single transfer limit")
+        return round(v, 2)
 ```
 
 ## The Tools That Actually Matter
@@ -192,6 +439,8 @@ After years of trying every new tool, here's my opinionated production stack:
 
 The best backend code is boring code. Use established patterns, keep handlers thin, test the important paths, and invest in observability. The exciting work should happen in your business logic, not your infrastructure.
 
+If you're building systems that AI agents need to work with, check out my guide on [structuring FastAPI for AI assistants](/blog/fastapi-ai-agents-architecture) and how [Library Agent Skills](/blog/library-agent-skills-future-ai-coding) are changing the way libraries communicate with LLMs.
+
 ---
 
-*Have questions about Python backend architecture? Connect with me on [GitHub](https://github.com/SamuelOshin) or [LinkedIn](https://linkedin.com/in/samuel-oshin-2903611a5/).*
+*Have questions about Python backend architecture? [Let's connect](/#contact) — I'm always up for a good architecture debate.*

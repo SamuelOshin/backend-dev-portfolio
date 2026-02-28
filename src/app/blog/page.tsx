@@ -2,7 +2,7 @@ import { getAllPosts } from "@/lib/blog";
 import { BlogCard } from "@/app/components/ui/BlogCard";
 import type { Metadata } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
 export const metadata: Metadata = {
     title: "Blog — Samuel Oshin | Python Backend & AI Engineering",
