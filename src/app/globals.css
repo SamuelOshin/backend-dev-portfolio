@@ -150,26 +150,17 @@ nextjs-portal {
   display: none !important;
 }
 
-/* Skills Wheel Responsive Positioning */
-.skill-responsive {
-  --mobile-offset: 24px;
-  --tablet-offset: 32px;
-  --desktop-offset: 36px;
-  --mobile-radius: 140px;
-  --tablet-radius: 160px;
-  --desktop-radius: 180px;
-}
-
-@media (min-width: 640px) {
-  .skill-responsive {
-    left: calc(50% + var(--tablet-radius) * var(--x-multiplier) - var(--tablet-offset)) !important;
-    top: calc(50% + var(--tablet-radius) * var(--y-multiplier) - var(--tablet-offset)) !important;
+/* Skills Marquee Animation */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }
 
-@media (min-width: 1024px) {
-  .skill-responsive {
-    left: calc(50% + var(--desktop-radius) * var(--x-multiplier) - var(--desktop-offset)) !important;
-    top: calc(50% + var(--desktop-radius) * var(--y-multiplier) - var(--desktop-offset)) !important;
-  }
+/* Pause marquee on hover for readability */
+.group:hover > [style*="marquee-scroll"] {
+  animation-play-state: paused;
 }
