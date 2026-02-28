@@ -11,6 +11,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: "vGt07LDFWrD3BzBrHtktoJLFo_8Npwidwqe-xy_H4Lk",
+  },
   title: {
     default: "Samuel Oshin — Python Backend Engineer | AI/LLM Infrastructure",
     template: "%s — Samuel Oshin",

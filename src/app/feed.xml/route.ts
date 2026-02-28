@@ -1,7 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
 import RSS from "rss";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.dev";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
 export async function GET() {
     const posts = getAllPosts();
