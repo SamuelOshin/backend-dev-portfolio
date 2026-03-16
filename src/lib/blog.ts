@@ -3,6 +3,8 @@ import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
 
+// Resolve BLOG_DIR reliably. In Next.js/Vercel serverless functions, process.cwd() is
+// the root of the project but sometimes `fs` misses static traces.
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
 export interface BlogPostMeta {

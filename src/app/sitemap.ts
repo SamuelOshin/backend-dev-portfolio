@@ -4,7 +4,12 @@ import { getAllPosts } from "@/lib/blog";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const posts = getAllPosts();
+    let posts: ReturnType<typeof getAllPosts> = [];
+    try {
+        posts = getAllPosts();
+    } catch (error) {
+        console.error("Failed to fetch blog posts for sitemap:", error);
+    }
 
     const blogUrls: MetadataRoute.Sitemap = posts.map((post) => ({
         url: `${SITE_URL}/blog/${post.slug}`,
