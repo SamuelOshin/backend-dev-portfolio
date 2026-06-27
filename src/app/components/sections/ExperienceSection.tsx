@@ -9,6 +9,23 @@ export function ExperienceSection() {
     const experiences = useMemo(
         () => [
             {
+                role: "Lead Backend Engineer (Contract)",
+                company: "CR8US (Remote)",
+                period: "Feb 2026 – Present",
+                summary:
+                    "Serving as the sole backend engineer architecting and scaling CR8US Intelligence (app.cr8us.africa) — a generative AI pre-production platform for the Nollywood film industry.",
+                details: [
+                    "Engineered the entire AI-powered backend from scratch using FastAPI, SQLModel, and Celery, deploying a production-ready API serving both guest and authenticated tiers.",
+                    "Designed a real-time Hybrid RAG pipeline combining pgvector cosine similarity and PostgreSQL Full-Text Search (FTS) executed in parallel via asyncio, reducing query latency under 1.5 seconds.",
+                    "Optimized LLM token latency and API billing by 80% using Gemini Prefix Cache-Anchoring, strategically injecting dynamic XML-structured RAG contexts into static system prompts.",
+                    "Built a ChatGPT-like transient guest session model, replacing cookie-based sessions with in-memory state via SSE (Server-Sent Events) yields and implementing secure guest-to-user session migrations on login.",
+                    "Hardened authentication security by implementing Dual-Mode Token Rotation (supporting JSON payloads and secure HttpOnly cookies) and reducing OAuth access token lifetimes to a standard 30 minutes.",
+                    "Developed a secure credit and subscription system integrated with a Paystack transaction ledger to prevent unauthorized balance modifications.",
+                    "Created a highly resilient Celery dataset ingestion pipeline featuring three-stage CSV encoding detection (UTF-8-sig/CP1252), in-memory embedding reuse, and buffered bulk upserts with row-by-row transactional fallbacks."
+                ],
+                tech: ["Python", "FastAPI", "Celery", "Redis", "PostgreSQL (pgvector)", "Gemini", "OAuth 2.0", "Paystack", "Docker"]
+            },
+            {
                 role: "Backend Engineer",
                 company: "Emerj LLC (Remote)",
                 period: "Dec 2025 – Present",
