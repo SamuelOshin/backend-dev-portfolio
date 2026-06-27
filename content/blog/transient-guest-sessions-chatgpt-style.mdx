@@ -1,0 +1,166 @@
+---
+title: "Architecting Transient Guest Sessions like ChatGPT"
+description: "How we migrated from cookie-persisted guest sessions to transient in-memory state using FastAPI, SSE, and Redis, with seamless login migration."
+date: "2026-06-27"
+tags: ["FastAPI", "Authentication", "Redis", "Session Management"]
+published: true
+image: "/blog/guest-sessions-cover.png"
+---
+
+When building conversational AI interfaces, the user experience (UX) should feel seamless. Users expect to jump straight into a chat without signing up. However, managing guest sessions introduces unique architectural challenges.
+
+For **CR8US Intelligence**, we initially tracked guest sessions using a standard backend-issued `HttpOnly` cookie. However, this introduced several issues that degraded the user experience. This post details how we migrated to **transient, client-owned guest sessions**—matching the design of platforms like ChatGPT—using FastAPI, Server-Sent Events (SSE), and Redis.
+
+---
+
+## The Cookie Problem
+
+Our initial implementation relied on a cookie named `cr8us_guest_session_id`. While simple to implement, cookies have two major limitations in conversational AI apps:
+1. **Lack of Tab Isolation**: Browsers automatically share cookies across all tabs of the same domain. If a guest user opened a second tab to start a new analysis, both tabs shared the same session ID, causing their chat histories to collide.
+2. **State Persistence on Refresh**: Refreshing the page sent the same cookie, resuming the old chat. For a tool like ours, users expect a page refresh to clear the screen and start a clean, blank chat session.
+
+To solve this, we shifted the ownership of the guest `session_id` from browser-managed cookies to **in-memory frontend state**.
+
+---
+
+## 1. The Transient Session Lifecycle
+
+By moving the session ID into the frontend's in-memory state, we isolate each tab. A new tab or a page refresh naturally clears the state, starting a fresh session.
+
+Here is how a session is initiated and maintained:
+
+```
+[Client (Frontend)]                             [FastAPI Backend]
+         │                                              │
+         ├─────── 1. First Turn: POST /chat/stream ─────>
+         │          (session_id = null)                 │
+         │                                              │
+         │                                      [Generates UUID]
+         │                                      [Saves to Redis]
+         │                                              │
+         <─── 2. Yields SSE event: "session" ───────────┤
+         │       {"session_id": "8a7b3c2d-..."}         │
+         │                                              │
+         │ (Saves session_id in state)                  │
+         │                                              │
+         <─── 3. Streams "status" & "response" ─────────┤
+         │                                              │
+         │                                              │
+         ├─────── 4. Subsequent Turn: POST /stream ─────>
+         │          (session_id = "8a7b3c2d-...")       │
+```
+
+### The SSE Session Yield
+To avoid an extra round-trip REST call (like `POST /chat/session`) before the user can send their first message, we generate the session ID on the fly during the first stream. The backend yields the newly generated `session_id` as the very first chunk in the SSE stream:
+
+```javascript
+// The first SSE chunk yielded in the stream is a typed session event
+event: session
+data: {"session_id": "8a7b3c2d-e89b-12d3-a456-426614174000"}
+```
+
+The frontend intercepts this event, saves the ID in component state, and includes it in all subsequent payloads.
+
+---
+
+## 2. Resolving Sessions in the Backend
+
+In our FastAPI backend, the chat streaming endpoint must resolve the session ID in a flexible order. It needs to support both explicit session IDs (from authenticated users or transient guests) and legacy cookies (for backward compatibility).
+
+Here is the session resolution logic in our route handler:
+
+```python
+@router.post("/stream", response_class=EventSourceResponse)
+async def chat_stream(
+    payload: ChatRequest,
+    response: Response,
+    db: DbDep,
+    redis_client: RedisDep,
+    user: OptionalCurrentUserDep,
+    session_cookie: Annotated[
+        Optional[str], Cookie(alias="cr8us_guest_session_id")
+    ] = None,
+) -> AsyncIterable[ServerSentEvent]:
+    if user is not None:
+        # Authenticated users must provide an explicit session_id
+        if not payload.session_id:
+            raise BadRequestError("session_id is required for authenticated users.")
+        session_id = payload.session_id
+    else:
+        # Guests: resolve via payload, fallback to legacy cookie, or create a new one
+        session_id = (
+            payload.session_id
+            or session_cookie
+            or await SessionService.create_session(redis_client)
+        )
+
+    # Backward compatibility: if we read a legacy cookie, delete it
+    # to migrate the client to the transient model smoothly
+    if session_cookie:
+        response.delete_cookie("cr8us_guest_session_id", path="/")
+
+    return ChatService.stream(payload, session_id, db, redis_client, user)
+```
+
+---
+
+## 3. Seamless Session Migration on Login
+
+One of the biggest friction points in guest sessions is losing history upon registration. If a guest user generates a valuable report and decides to sign up, they expect that report to be saved to their new account.
+
+We solved this by implementing a **session migration step** during the login/registration flow:
+1. The frontend passes the transient guest `session_id` in the `POST /login` or `POST /verify-otp` payload.
+2. The backend verifies the user's credentials.
+3. The backend retrieves the conversation history from Redis, attributes the turns to the new user ID, and registers the session in our PostgreSQL database.
+
+Here is how we handle this migration in the `AuthService`:
+
+```python
+# Part of the AuthService.login implementation
+async def login(
+    db: AsyncSession,
+    redis_client: Redis,
+    payload: LoginRequest,
+    session_id: Optional[str] = None
+) -> tuple[User, str, str]:
+    # 1. Authenticate user credentials
+    user = await authenticate_user(db, payload.email, payload.password)
+    
+    # 2. Generate JWT tokens
+    access_token = create_access_token(user.id)
+    refresh_token = create_refresh_token(user.id)
+    
+    # 3. Migrate guest session if provided
+    if session_id:
+        # Retrieve the guest session from Redis
+        session_data = await SessionService.get_session(redis_client, session_id)
+        if session_data and not session_data.get("user_id"):
+            # Attribute the Redis session to the authenticated user
+            await SessionService.associate_user(redis_client, session_id, str(user.id))
+            
+            # Persist the session metadata and turns to PostgreSQL
+            await ChatSessionService.persist_guest_session(
+                db=db,
+                session_id=session_id,
+                user_id=user.id,
+                turns=session_data.get("turns", [])
+            )
+            logger.info("Migrated guest session %s to user %s", session_id, user.id)
+            
+    return user, access_token, refresh_token
+```
+
+---
+
+## 4. Comparing Session Strategies
+
+| Dimension | Cookie-Based | Transient (In-Memory) |
+| :--- | :--- | :--- |
+| **Tab Isolation** | None (tabs share the same session) | **Complete** (each tab is isolated) |
+| **Clean Slate on Refresh** | No (resumes previous session) | **Yes** (starts a fresh session) |
+| **Security** | Stored in browser cookie storage | **High** (stored in-memory only) |
+| **Frontend Complexity** | Low (handled implicitly by browser) | Moderate (must pass ID explicitly) |
+
+By shifting the session ID to in-memory state and yielding the ID during the initial Server-Sent Events stream, we achieved tab isolation and clean-slate refreshes while keeping the first-turn latency down to a single round-trip.
+
+For more on session management and API design, check out our guide on [Python Backend Best Practices in 2026](/blog/python-backend-best-practices-2026) or learn about [Building a Real-Time RAG Pipeline for Nollywood AI](/blog/building-nollywood-rag-pipeline).

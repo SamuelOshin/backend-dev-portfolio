@@ -1,0 +1,165 @@
+---
+title: "Resilient Data Ingestion with FastAPI and Celery"
+description: "How we built a highly resilient, batching dataset upload pipeline using FastAPI, Celery, Redis, and PostgreSQL for vector embeddings."
+date: "2026-06-27"
+tags: ["FastAPI", "Celery", "PostgreSQL", "Data Engineering"]
+published: true
+image: "/blog/dataset-upload-cover.png"
+---
+
+When building AI applications, data ingestion is often the primary bottleneck. Ingesting large datasets of historical film records and generating vector embeddings requires interfacing with external LLM APIs and databases. Doing this synchronously during an HTTP request is a recipe for timeouts, API rate limits, and data corruption.
+
+For **CR8US Intelligence**, we built a resilient, asynchronous dataset upload pipeline. It handles CSV uploads, validates schemas, generates embeddings, and bulk-upserts data. This post details the architecture that ensures a single bad row cannot crash the entire pipeline.
+
+---
+
+## Architecture Overview
+
+The system is split across two distinct execution boundaries:
+1. **Synchronous HTTP Layer (FastAPI)**: Validates the CSV encoding and schema, creates a tracking job, and queues the task.
+2. **Asynchronous Processing Layer (Celery + Redis)**: Processes the dataset in the background using sliding windows, batch embedding calls, and buffered database transactions.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        SYNCHRONOUS BOUNDARY (FastAPI)                   │
+│                                                                         │
+│   Admin Client ──POST /admin/datasets/upload──►  Route Handler          │
+│                                                       │                 │
+│                                              ┌────────▼──────────┐      │
+│                                              │  CSV Validator    │      │
+│                                              │  · Encoding       │      │
+│                                              │  · Header schema  │      │
+│                                              └────────┬──────────┘      │
+│                                                       │                 │
+│                                              ┌────────▼──────────┐      │
+│                                              │  DatasetService   │      │
+│                                              │  ──► PostgreSQL   │      │
+│                                              └────────┬──────────┘      │
+│                                                       │                 │
+│                                              ◄────────┘ 202 Accepted    │
+└─────────────────────────────────────────────────────────────────────────┘
+                                        │
+                              task.delay(job_id, rows)
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                       ASYNCHRONOUS BOUNDARY (Celery + Redis)            │
+│                                                                         │
+│   Redis Broker ──► Celery Worker                                        │
+│                         │                                               │
+│                    task_process_dataset_upload                          │
+│                         │                                               │
+│       ┌─────────────────▼─────────────────────────────────────────┐     │
+│       │  Window Loop (EMBEDDING_BATCH_SIZE = 100 rows)            │     │
+│       │                                                           │     │
+│       │  Phase 1: Sanitize, Validate, and Batch DB Reuse Lookup   │     │
+│       │  Phase 2: Batch Embedding & Typed Fallback                │     │
+│       │  Phase 3: DB Buffer Accumulation & Flush                  │     │
+│       └───────────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 1. The Synchronous HTTP Layer
+
+The FastAPI route handler validates incoming files in milliseconds without touching the embedding API.
+
+### Encoding Detection
+CSV files uploaded from different operating systems often use different encodings. Windows Excel commonly uses `cp1252` (especially when handling currency symbols like `₦`), while modern systems use `utf-8`. We implement a three-stage decoding fallback:
+1. Try `utf-8-sig` (handles UTF-8 with or without a Byte Order Mark).
+2. Fall back to `cp1252` (Excel on Windows).
+3. Fall back to `utf-8` with `errors="replace"` to prevent crashing on corrupt bytes.
+
+### Header Validation
+The CSV headers are validated immediately against our system's required fields (e.g., `title`, `release_year`, `genre`). If any are missing, the API returns a `400 Bad Request` immediately—no background job is created.
+
+If validation passes, we insert a job record in PostgreSQL with a `pending` status, dispatch the rows to Celery via Redis, and return a `202 Accepted` response with the `job_id`.
+
+---
+
+## 2. Sliding Window Processing & Embedding Reuse
+
+To minimize database and network roundtrips, the Celery task processes the CSV rows in sliding windows of `EMBEDDING_BATCH_SIZE = 100`.
+
+Inside each window, we perform an **in-memory partitioning** to save API costs:
+- We run a single batch `SELECT` query against PostgreSQL to check if the films in the current window already exist in our database.
+- If a film exists and its metadata matches the CSV row, we **reuse the existing embedding**.
+- If the film is new or the content has changed, we add it to the list of texts that need to be embedded.
+
+This simple check saves up to **90% in API costs** when re-uploading datasets with minor corrections.
+
+---
+
+## 3. Resilient Batch Embedding with Typed Fallbacks
+
+Batching embedding requests is highly efficient, but a single bad row (e.g., a row triggering a content safety filter) or a rate limit (HTTP 429) can fail the entire batch.
+
+We implemented a **typed fallback mechanism** in our Celery task:
+- **Rate Limits & Transient Errors (429/503)**: The task pauses for 5 seconds and retries the batch once. If it fails again, it falls back to row-by-row processing.
+- **Permanent Errors (400 / Safety Blocks)**: The task immediately falls back to individual row-by-row embedding calls. This isolates the offending row, allowing all other valid rows in the batch to be embedded successfully.
+
+Here is the core implementation of this fallback strategy:
+
+```python
+# Processing embeddings for the current window of rows
+to_embed_entries: list[tuple[int, dict[str, Any]]] = [...] # (row_index, sanitized_row)
+texts = [assemble_chunk_content(s) for _, s in to_embed_entries]
+embeddings = None
+
+try:
+    # Attempt to embed the entire batch in one network call
+    embeddings = await generate_embeddings_batch(texts)
+except httpx.HTTPStatusError as http_err:
+    status_code = http_err.response.status_code
+    if status_code in (429, 503):
+        # Transient rate limit: wait and retry the batch once
+        logger.warning("Rate limit hit. Retrying batch after backoff...")
+        await asyncio.sleep(5)
+        try:
+            embeddings = await generate_embeddings_batch(texts)
+        except Exception:
+            logger.error("Retry failed. Falling back to row-by-row.")
+            
+    if not embeddings:
+        # Fallback to row-by-row embedding for permanent errors or failed retries
+        logger.info("Processing rows individually to isolate the error...")
+        for idx, sanitized in to_embed_entries:
+            try:
+                chunk = assemble_chunk_content(sanitized)
+                vector = await generate_embedding(chunk)
+                newly_embedded_records.append(build_record(sanitized, vector))
+            except Exception as row_err:
+                failed_count += 1
+                failures.append({
+                    "row": idx,
+                    "title": sanitized.get("title"),
+                    "error": f"Embedding failed: {str(row_err)}"
+                })
+```
+
+---
+
+## 4. Buffered Database Ingestion
+
+Once embeddings are resolved (either reused or newly generated), they are appended to a `db_buffer`.
+
+To prevent locking the database with constant single-row inserts, we buffer commits:
+- When the buffer reaches `DB_BATCH_SIZE = 50`, we execute a single bulk upsert transaction using PostgreSQL's `ON CONFLICT DO UPDATE`.
+- If the bulk transaction fails (e.g., due to a database constraint violation in one of the rows), the transaction rolls back.
+- The pipeline then falls back to **row-by-row database upserts** for that buffer. This isolates the bad database record while successfully committing the other 49 records.
+
+---
+
+## Summary of Resilience Patterns
+
+| Failure Scenario | System Behaviour | Rationale |
+|---|---|---|
+| **Missing CSV headers** | `400 Bad Request` | Prevent queuing invalid work. |
+| **API Rate Limit (429)** | 5s backoff + retry, then row-by-row | Mitigates transient network bottlenecks. |
+| **Content Safety Block (400)** | Individual row-by-row fallback | Prevents one flagged row from blocking 99 valid rows. |
+| **Database Constraint Error** | Individual transaction fallback | Isolates data anomalies without losing the entire batch. |
+
+By separating the synchronous HTTP validation from the asynchronous Celery processing, and implementing granular fallback levels, we built a data ingestion pipeline capable of processing thousands of film records with high reliability.
+
+For more backend engineering patterns, check out our article on [Building a Real-Time RAG Pipeline for Nollywood AI](/blog/building-nollywood-rag-pipeline) or explore [Python Backend Best Practices in 2026](/blog/python-backend-best-practices-2026).
