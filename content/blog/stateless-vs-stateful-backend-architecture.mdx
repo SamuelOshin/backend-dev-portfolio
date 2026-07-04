@@ -53,9 +53,35 @@ Most of the friction discussed in this guide — cross-service identity propagat
 
 Stateless authentication shifts the burden of storing session state from the server to the client. The server generates a cryptographically signed token—most commonly a **JSON Web Token (JWT)**—and hands it to the client.
 
-The client stores this token (in a secure `HttpOnly` cookie, or in memory to reduce XSS exposure) and attaches it to the `Authorization` header of every subsequent request. The backend verifies the token's validity using a shared secret key (symmetric) or a public key (asymmetric) without querying any database or cache for the *verification* step itself.
+The client stores this token either in a secure `HttpOnly` cookie or keeps it only in application memory. Keeping a token in memory avoids persistent browser storage, while an `HttpOnly` cookie prevents JavaScript from directly accessing it and is generally preferred for browser-based applications. When stored in memory, clients typically send the token in the `Authorization` header. When stored in an `HttpOnly` cookie, the browser automatically includes it with eligible requests.
+
+The backend verifies the token's validity using a shared secret key (symmetric) or a public key (asymmetric) without querying any database or cache for the *verification* step itself.
 
 It's worth separating two things that get conflated: **authentication** (is this token validly signed and unexpired?) is genuinely stateless. **Authorization** (what is this user actually allowed to do right now?) frequently is not — loading permissions, org membership, or feature flags after the token checks out usually means downstream I/O regardless of which auth model you use.
+
+```
+                Incoming Request
+                       │
+                       ▼
+             JWT Signature Validation
+          (CPU-only, no external I/O)
+                       │
+                       ▼
+             Identity Successfully Verified
+                       │
+                       ▼
+         Authorization Decision (RBAC/ABAC)
+                       │
+            ┌──────────┴──────────┐
+            ▼                     ▼
+     Redis / Database      Feature Flags
+      Permissions          Organization Data
+                       │
+                       ▼
+                  Business Logic
+```
+
+For this reason, many production systems intentionally keep access tokens small, containing only relatively stable identity claims such as `sub`, `iss`, `aud`, and `exp`. Frequently changing authorization data—roles, permissions, organization membership, feature flags—is often resolved separately during authorization to avoid stale claims living for the lifetime of the token.
 
 ### FastAPI Implementation: Stateless JWT Verification
 
@@ -125,7 +151,7 @@ async def get_current_user_stateless(
 ```
 
 ### The Pros of Stateless Auth
-* **Near-Linear Horizontal Scalability**: Because verification requires no database lookups, your compute nodes scale close to linearly to handle very high request volumes. You are bound primarily by CPU throughput for cryptographic verification — not infinite, but the ceiling is far higher than a database-bound design, and it's rarely the first thing that breaks.
+* **Near-Linear Horizontal Scalability**: Because verification requires no database lookups, your compute nodes scale close to linearly to handle very high request volumes. You are bound primarily by CPU throughput for cryptographic verification — not infinite, but the ceiling is far higher than a database-bound design. As systems grow, authentication itself rarely becomes the bottleneck; the limiting factors usually shift downstream to databases, caches, message brokers, or other application services.
 * **Edge Compatibility**: You can verify JWTs at the CDN edge (e.g., Cloudflare Workers, AWS Lambda@Edge). This allows you to reject unauthorized requests before they ever reach your origin servers, drastically reducing infrastructure costs.
 * **Decoupled Microservices**: Microservices do not need to share a session database. They only need the public key to verify that the incoming request is authenticated.
 
@@ -211,7 +237,7 @@ async def get_current_user_stateful(
 * **Instant Revocation**: Need to log a user out? Delete the key from Redis. Need to ban a malicious actor? Delete their sessions. The revocation takes effect globally, instantly.
 * **Immediate Authorization Freshness**: If a user's role or permissions change mid-session, a stateful lookup reflects that on the very next request. A JWT, by contrast, keeps the old claims baked in until it expires — this is one of the most concrete real-world reasons teams choose sessions over pure JWTs.
 * **Granular Session Management**: You can query the database to show the user a list of their active devices ("Chrome on macOS", "Safari on iPhone") and allow them to selectively revoke specific sessions.
-* **Security & Minimal Payload**: Sensitive user data (like roles and permissions) never leaves the server. The client only holds an opaque, random Session ID, preventing tampering and minimizing network overhead.
+* **Security & Minimal Payload**: Sensitive authorization state is typically maintained server-side. Clients hold only an opaque Session ID, while roles, permissions, organization membership, and other mutable authorization data remain under server control and can be updated immediately without waiting for token expiration.
 
 ### The Cons of Stateful Auth
 * **A Critical Dependency**: A poorly designed session store is a single point of failure — if it's down, nobody can authenticate. In practice, this is mitigated with Redis Sentinel, Redis Cluster, multi-AZ replication, and managed failover, but it's still one more piece of infrastructure that has to be kept highly available.
@@ -224,12 +250,12 @@ async def get_current_user_stateful(
 
 | Architectural Dimension | Stateless (JWT) | Stateful (Redis Sessions) |
 | :--- | :--- | :--- |
-| **Scaling Compute** | **Excellent** (No shared state, near-linear scaling) | **Moderate** (Bound by session store capacity) |
+| **Scaling Compute** | **Excellent** (No shared state, near-linear scaling) | **Moderate** (Bound by session infrastructure capacity) |
 | **Revocation Speed** | **Delayed** (Must wait for JWT to expire, or add a denylist) | **Instant** (O(1) deletion from cache) |
 | **Authorization Freshness** | **Weak** (Stale claims persist until token expiry) | **Strong** (Permission changes apply immediately) |
 | **Network Overhead** | **High** (JWT payload sent on every request) | **Low** (Only a small Session ID is sent) |
 | **Database/Cache I/O** | **Low** (Verification is CPU-only; downstream authorization may still need I/O) | **High** (Read on every incoming request) |
-| **Microservices Isolation**| **High** (Services only need public keys) | **Low** (Services must query shared cache) |
+| **Microservices Isolation**| **High** (Services only need public keys) | **Low** (Services depend on centralized session infrastructure) |
 | **Multi-Region Friendly** | **Excellent** (Local verification at the edge) | **Difficult** (Requires replication tradeoffs) |
 
 ---
@@ -267,24 +293,6 @@ When a user logs out or changes their password, you write the JWT's unique ident
 
 When deciding between stateless, stateful, or hybrid architectures, do not default to what is trendy. Evaluate these three architectural triggers:
 
-### Trigger 1: The Cost of Delayed Revocation
-* **Ask**: *If a user's account is compromised, banned, or has their permissions changed, what is the maximum acceptable time they can remain active with stale access?*
-* **Decision**: If the answer is "zero seconds" (e.g., banking, health records, enterprise B2B), use **Stateful Sessions** or a **Hybrid Model with an immediate revocation check**. If "a short window is acceptable," a **Hybrid Model** with short-lived JWTs is ideal.
-
-### Trigger 2: Scale and Traffic Distribution
-* **Ask**: *What are our peak request-per-second (RPS) targets, and are our users globally distributed?*
-* **Decision**: If you are building a global consumer application with high read traffic (e.g., social media feeds, streaming, public APIs) where requests are routed to the nearest edge location, a **Stateless JWT** model verified at the CDN edge will save you significant money in database scaling and reduce latency.
-
-### Trigger 3: System Complexity & Team Size
-* **Ask**: *Do we have the operational capacity to maintain, scale, and secure a highly available Redis cluster?*
-* **Decision**: If you are a small team building a standard SaaS application, **Stateful Sessions** using a managed Redis instance are the safest default. They prevent common JWT security pitfalls (like unpinned algorithms or missing audience checks) and are significantly easier to debug.
-
-### Trigger 4: Monolith or Distributed System?
-* **Ask**: *Do multiple independently-deployed services need to verify identity without querying a shared database?*
-* **Decision**: If you're a monolith, this is largely moot — use your framework's built-in session handling and don't introduce JWTs just because they're trendy. If you genuinely have several services that need to agree on identity across process and network boundaries, that's the scenario JWTs (or the hybrid model) were designed to solve.
-
-## Summary
-
-There is no silver bullet in backend session management. Stateless systems scale compute. Stateful systems centralize control. Most production systems intentionally combine both.
-
-For most modern enterprise systems, the **hybrid approach**—combining short-lived stateless JWTs with stateful refresh tokens, and a fast revocation prefilter when the security model demands it—provides the optimal sweet spot between performance and security.
+### Trigger 1: The Cost of Delayed Revocation and Stale Authorization
+* **Ask**: *If a user's account is compromised, banned, or has their role, subscription, or permissions changed, what is the maximum acceptable time they can remain active with stale access?*
+* **Decision**: If the answer is "zero seconds" (e.g., banking, health records, enterprise B2B), use **Stateful Sessions** or a **Hybrid Model with an immediate revocation check**. If "a short window is acceptable," a **Hybrid Model** with short-lived JWTs is ideal. If users in your product frequently change organizations, subscriptions, or roles, weigh this heavily — a purely stateless JWT model will keep serving those stale claims until the token expires, which is one of the most common sources
