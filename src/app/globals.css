@@ -1,8 +1,4 @@
-/* Updated: 2025-09-18T06:35:40.540Z */
-/* Updated: 2025-09-18T06:18:43.853Z */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&display=swap");
-@import url("https://fonts.cdnfonts.com/css/monument-extended");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -14,7 +10,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  --font-heading: var(--font-heading);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -23,11 +18,6 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -51,100 +41,55 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Light theme (kept minimal; site defaults to dark via .dark on <html>) */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", Menlo, Monaco, Consolas, monospace;
+  --radius: 0.75rem;
+  /* Light theme fallback */
   --background: oklch(0.98 0 0);
-  --foreground: oklch(0.17 0 0);
+  --foreground: oklch(0.14 0.01 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.17 0 0);
+  --card-foreground: oklch(0.14 0.01 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.17 0 0);
-  --primary: oklch(0.58 0.18 245);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.58 0.18 245);
-  --accent-foreground: oklch(0.98 0 0);
+  --popover-foreground: oklch(0.14 0.01 260);
+  --primary: oklch(0.58 0.2 250);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.48 0 0);
+  --accent: oklch(0.58 0.2 250);
+  --accent-foreground: oklch(0.99 0 0);
   --destructive: oklch(0.65 0.2 25);
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.9 0 0);
-  --ring: oklch(0.65 0.1 245);
-  --chart-1: oklch(0.64 0.22 41);
-  --chart-2: oklch(0.6 0.12 185);
-  --chart-3: oklch(0.4 0.07 227);
-  --chart-4: oklch(0.83 0.19 84);
-  --chart-5: oklch(0.77 0.19 70);
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: oklch(0.17 0 0);
-  --sidebar-primary: oklch(0.58 0.18 245);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.96 0 0);
-  --sidebar-accent-foreground: oklch(0.25 0 0);
-  --sidebar-border: oklch(0.9 0 0);
-  --sidebar-ring: oklch(0.65 0.1 245);
-
-  /* Font variables */
-  --font-sans: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-heading: "Clash Display", "Monument Extended", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --border: oklch(0.88 0 0);
+  --input: oklch(0.88 0 0);
+  --ring: oklch(0.58 0.2 250 / 50%);
 }
 
 .dark {
-  /* Charcoal canvas + electric blue accents */
-  --background: oklch(0.17 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.22 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.22 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.72 0.18 245);
-  /* electric blue */
-  --primary-foreground: oklch(0.16 0.05 245);
-  --secondary: oklch(0.28 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.28 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.72 0.18 245);
-  --accent-foreground: oklch(0.1 0.03 245);
-  --destructive: oklch(0.7 0.2 22);
-  --border: oklch(0.98 0 0 / 9%);
-  --input: oklch(0.98 0 0 / 12%);
-  --ring: oklch(0.72 0.18 245 / 60%);
-  --chart-1: oklch(0.48 0.24 264);
-  --chart-2: oklch(0.7 0.17 162);
-  --chart-3: oklch(0.77 0.19 70);
-  --chart-4: oklch(0.63 0.26 304);
-  --chart-5: oklch(0.65 0.24 16);
-  --sidebar: oklch(0.22 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.72 0.18 245);
-  --sidebar-primary-foreground: oklch(0.1 0.03 245);
-  --sidebar-accent: oklch(0.28 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.98 0 0 / 9%);
-  --sidebar-ring: oklch(0.72 0.18 245 / 60%);
+  /* Ultra-refined deep charcoal / OLED slate with electric cobalt accent */
+  --background: oklch(0.12 0.01 260);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.15 0.01 260);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.15 0.01 260);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.72 0.18 250);
+  --primary-foreground: oklch(0.12 0.02 250);
+  --secondary: oklch(0.2 0.01 260);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.18 0.01 260);
+  --muted-foreground: oklch(0.72 0.01 260);
+  --accent: oklch(0.72 0.18 250);
+  --accent-foreground: oklch(0.1 0.02 250);
+  --destructive: oklch(0.65 0.22 25);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.72 0.18 250 / 50%);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-  }
-
-  html,
-  body {
-    font-family: var(--font-sans);
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-heading);
-    letter-spacing: -0.02em;
   }
 
   body {
@@ -157,9 +102,21 @@
   }
 }
 
-/* Hide Next.js error overlay portal */
-nextjs-portal {
-  display: none !important;
+/* Double-Bezel nested architecture */
+.bezel-shell {
+  @apply relative rounded-3xl p-1.5 bg-white/[0.03] border border-white/10 transition-all duration-300;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+.bezel-core {
+  @apply relative rounded-[1.25rem] bg-zinc-950/80 border border-white/5 p-6 backdrop-blur-xl transition-all duration-300;
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Subtle glass surface */
+.glass-panel {
+  @apply relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Skills Marquee Animation */
@@ -167,13 +124,16 @@ nextjs-portal {
   0% {
     transform: translateX(0);
   }
-
   100% {
     transform: translateX(-50%);
   }
 }
 
-/* Pause marquee on hover for readability */
-.group:hover>[style*="marquee-scroll"] {
+.group:hover > [style*="marquee-scroll"] {
   animation-play-state: paused;
+}
+
+/* Hide Next.js error overlay portal */
+nextjs-portal {
+  display: none !important;
 }

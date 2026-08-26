@@ -3,53 +3,62 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+const milestones = [
+  { label: "2026", sub: "Lead Backend Engineer @ CR8US", current: true },
+  { label: "2025", sub: "Emerj LLC & 2x HNG Finalist", current: false },
+  { label: "2024", sub: "NYSC & ERP Automation", current: false },
+  { label: "2023", sub: "Django & IT Systems", current: false },
+];
+
 export function TimelineRail() {
-    return (
-        <div className="relative rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-8 backdrop-blur">
-            <div className="flex flex-col items-center space-y-12">
-                {/* Timeline items */}
-                {[
-                    { label: "2023", sub: "First Dev Role" },
-                    { label: "2024", sub: "NYSC + Open Source" },
-                    { label: "2025", sub: "2× HNG Finalist" },
-                    { label: "Now", sub: "Emerj LLC (AI)" }
-                ].map((n, i) =>
-                    <div key={i} className="flex flex-col items-center space-y-4 relative">
-                        {/* Timeline point with connecting line */}
-                        <div className="relative flex flex-col items-center">
-                            {/* Connecting line from previous item (except for first item) */}
-                            {i > 0 && (
-                                <div className="absolute -top-8 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
-                            )}
-
-                            {/* Timeline point */}
-                            <div className="relative flex items-center justify-center">
-                                <div className="h-4 w-4 rounded-full bg-[color:var(--accent)] shadow-[0_0_0_10px_rgba(0,0,0,0.4)]" />
-                                {/* Glow effect */}
-                                <div className="absolute inset-0 rounded-full bg-[color:var(--accent)]/30 blur-sm" />
-                            </div>
-
-                            {/* Connecting line to next item (except for last item) */}
-                            {i < 3 && (
-                                <div className="absolute top-6 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
-                            )}
-                        </div>
-
-                        {/* Content */}
-                        <div className="text-center space-y-1 min-w-[120px]">
-                            <div className="text-sm font-medium text-white/90">{n.label}</div>
-                            <div className="text-xs text-white/60">{n.sub}</div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Bottom description */}
-            <div className="mt-12 text-center">
-                <p className="text-sm text-white/60 leading-relaxed">
-                    From first code to AI-powered backends — building with purpose.
-                </p>
-            </div>
+  return (
+    <div className="bezel-shell">
+      <div className="bezel-core p-6">
+        <div className="text-xs font-mono uppercase tracking-wider text-white/40 mb-6 text-center">
+          Career Milestones
         </div>
-    );
+
+        <div className="flex flex-col space-y-8 relative">
+          {/* Vertical connecting line */}
+          <div className="absolute left-[17px] top-3 bottom-3 w-px bg-white/10" />
+
+          {milestones.map((n, i) => (
+            <div key={i} className="flex items-start gap-4 relative z-10">
+              {/* Node Indicator */}
+              <div className="relative flex items-center justify-center shrink-0 mt-0.5">
+                <div
+                  className={`h-9 w-9 rounded-full flex items-center justify-center border transition-all ${
+                    n.current
+                      ? "bg-blue-500/20 border-blue-400 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                      : "bg-zinc-900 border-white/15 text-white/50"
+                  }`}
+                >
+                  <span className="text-[10px] font-mono font-bold">{n.label.slice(2)}</span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="space-y-0.5 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-semibold text-white">{n.label}</span>
+                  {n.current && (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Active
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-white/60 leading-tight">{n.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 pt-4 border-t border-white/5 text-center">
+          <p className="text-xs text-white/40 leading-relaxed font-mono">
+            Continuous engineering impact across production systems.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

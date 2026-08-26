@@ -9,7 +9,7 @@ import { ContactSection } from "./components/sections/ContactSection";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-4 sm:px-6 lg:px-8 pb-8 overflow-hidden">
+    <main className="flex min-h-[100dvh] flex-col items-center justify-between px-4 sm:px-6 lg:px-8 pb-12 overflow-x-hidden">
       <div className="w-full max-w-6xl mx-auto">
         <HeroSection />
         <ExperienceSection />

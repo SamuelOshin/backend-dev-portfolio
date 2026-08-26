@@ -1,72 +1,120 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Sparkles } from "lucide-react";
+
+interface ExpandableCardProps {
+  role: string;
+  company: string;
+  period: string;
+  summary: string;
+  metrics?: string[];
+  details: string[];
+  tech: string[];
+}
 
 export function ExpandableCard({
-    role,
-    company,
-    period,
-    summary,
-    details,
-    tech
-}: { role: string; company: string; period: string; summary: string; details: string[]; tech: string[]; }) {
-    const [open, setOpen] = useState(false);
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}>
+  role,
+  company,
+  period,
+  summary,
+  metrics,
+  details,
+  tech,
+}: ExpandableCardProps) {
+  const [open, setOpen] = useState(false);
 
-            <Card
-                className="group relative overflow-hidden border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl transition hover:border-[color:var(--accent)]/30 hover:bg-white/[0.06]"
-                onClick={() => setOpen((v) => !v)}>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="bezel-shell"
+    >
+      <div className="bezel-core">
+        {/* Card Header */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <span className="text-xs font-mono text-white/50">{period}</span>
+              <span className="text-white/20">/</span>
+              <span className="text-xs font-medium text-blue-400">{company}</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white">{role}</h3>
+          </div>
 
-                <div className="flex items-start justify-between gap-4">
-                    <div>
-                        <div className="text-sm text-white/60">{period}</div>
-                        <h3 className="mt-1 text-xl font-semibold tracking-[-0.02em]">{role}</h3>
-                        <div className="text-sm text-white/70">{company}</div>
-                    </div>
-                    <span className="mt-1 inline-flex h-8 items-center gap-2 rounded-full border border-white/10 px-3 text-xs text-white/70 transition group-hover:border-[color:var(--accent)]/40 group-hover:text-[color:var(--accent)]">
-                        Details
-                        <ArrowRight size={14} className={`transition ${open ? "rotate-90" : ""}`} />
-                    </span>
+          <button
+            onClick={() => setOpen(!open)}
+            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer"
+            aria-expanded={open}
+          >
+            <span>{open ? "Hide Architecture" : "View Architecture"}</span>
+            <ChevronDown
+              size={14}
+              className={`transition-transform duration-300 ${open ? "rotate-180 text-blue-400" : ""}`}
+            />
+          </button>
+        </div>
+
+        {/* Summary Description */}
+        <p className="mt-3 text-sm text-white/70 leading-relaxed">{summary}</p>
+
+        {/* Highlighted Key Metrics (Always Visible) */}
+        {metrics && metrics.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {metrics.map((m, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-blue-500/10 border border-blue-500/20 text-blue-300"
+              >
+                <Sparkles size={11} className="text-blue-400" />
+                {m}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Expandable Technical Deep-Dive */}
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="mt-5 pt-4 border-t border-white/10 space-y-3">
+                <div className="text-xs font-mono uppercase tracking-wider text-white/40">
+                  Engineered Solutions &amp; System Details
                 </div>
-                <p className="mt-4 text-white/75">{summary}</p>
-                <motion.div
-                    initial={false}
-                    animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-                    className="overflow-hidden">
+                <ul className="space-y-2 text-xs sm:text-sm text-white/70">
+                  {details.map((d, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-blue-400 mt-1 shrink-0">▸</span>
+                      <span>{d}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-                    <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-white/70">
-                        {details.map((d, i) =>
-                            <li key={i}>{d}</li>
-                        )}
-                    </ul>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                        {tech.map((t) =>
-                            <Badge
-                                key={t}
-                                className="/! bg-[color:var(--accent)]/15 text-[color:var(--accent)] border-[color:var(--accent)]/30">
-                                {t}
-                            </Badge>
-                        )}
-                    </div>
-                </motion.div>
-                {/* Accent hover bar */}
-                <motion.div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px]"
-                    style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
-                    animate={{ opacity: [0.2, 0.7, 0.2] }}
-                    transition={{ duration: 3, repeat: Infinity }} />
-
-            </Card>
-        </motion.div>
-    );
+        {/* Tech Stack Pills */}
+        <div className="mt-5 pt-4 border-t border-white/5 flex flex-wrap gap-1.5">
+          {tech.map((t) => (
+            <span
+              key={t}
+              className="px-2.5 py-1 rounded-full text-[11px] font-mono text-white/60 bg-white/[0.04] border border-white/10 hover:border-white/20 transition-colors"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
 }

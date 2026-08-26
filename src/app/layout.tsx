@@ -11,29 +11,34 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/favicon.ico",
+    apple: "/icon.svg",
+  },
   verification: {
     google: "vGt07LDFWrD3BzBrHtktoJLFo_8Npwidwqe-xy_H4Lk",
   },
   title: {
-    default: "Samuel Oshin — Python Backend Engineer | AI/LLM Infrastructure",
-    template: "%s — Samuel Oshin",
+    default: "Samuel Oshin | Python Backend Engineer & AI Infrastructure",
+    template: "%s | Samuel Oshin",
   },
   description:
-    "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends. 2× HNG Finalist, Top 1-5% of 10,000+ developers.",
+    "Python Backend Engineer specializing in RAG pipelines, distributed systems, and high-performance AI infrastructure. 2x HNG Finalist, Top 1-5% of 10,000+ engineers.",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
     siteName: "Samuel Oshin",
-    title: "Samuel Oshin — Python Backend Engineer",
+    title: "Samuel Oshin | Python Backend Engineer",
     description:
-      "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends.",
+      "Python Backend Engineer specializing in RAG pipelines, distributed systems, and high-performance AI infrastructure.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Samuel Oshin — Python Backend Engineer",
+    title: "Samuel Oshin | Python Backend Engineer",
     description:
-      "Award-winning Python Backend Engineer specializing in RAG pipelines, distributed systems, and AI-powered backends.",
+      "Python Backend Engineer specializing in RAG pipelines, distributed systems, and high-performance AI infrastructure.",
   },
   alternates: {
     canonical: SITE_URL,
@@ -60,8 +65,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased">
+    <html lang="en" className="dark scroll-smooth">
+      <body className="font-sans antialiased bg-background text-foreground selection:bg-[color:var(--accent)] selection:text-white">
         <ErrorReporter />
         <Script
           src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
