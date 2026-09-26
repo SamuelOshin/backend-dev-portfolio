@@ -10,11 +10,11 @@ export function GlowButton({
     icon,
     variant = "solid",
     download
-}: { children: React.ReactNode; href: string; icon?: React.ReactNode; variant?: "solid" | "outline"; download?: boolean; }) {
+}: { children: React.ReactNode; href: string; icon?: React.ReactNode; variant?: "solid" | "outline"; download?: boolean | string; }) {
     return (
         <motion.a
             href={href}
-            download={download ? "" : undefined}
+            download={download ? (typeof download === 'string' ? download : '') : undefined}
             whileHover={{ y: -2 }}
             whileTap={{ y: 0 }}
             className="group relative inline-flex">

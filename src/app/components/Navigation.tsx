@@ -7,7 +7,7 @@ import { Github, Linkedin, Mail, Download, Menu, X } from "lucide-react";
 
 const navigation = [
   { name: "Home", href: "#home", isPage: false },
-  { name: "About", href: "#about", isPage: false },
+  { name: "Experience", href: "#experience", isPage: false },
   { name: "Skills", href: "#skills", isPage: false },
   { name: "Projects", href: "#projects", isPage: false },
   { name: "Blog", href: "/blog", isPage: true },
@@ -21,26 +21,27 @@ export function Navigation() {
   const isBlogPage = pathname.startsWith("/blog");
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = navigation.map(item => item.href.substring(1));
-      const scrollPosition = window.scrollY + 100;
+    const sectionIds = navigation
+      .filter((item) => !item.isPage)
+      .map((item) => item.href.substring(1));
 
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
           }
         }
-      }
-    };
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check initial position
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (href: string) => {
@@ -130,7 +131,7 @@ export function Navigation() {
             </a>
             <a
               href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
-              download
+              download="Samuel_Oshin_Backend_Engineer_CV.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="ml-2 px-4 py-2 text-sm font-medium text-white border border-white/20 rounded-lg hover:border-[color:var(--accent)]/50 hover:text-[color:var(--accent)] transition-all"
@@ -223,7 +224,7 @@ export function Navigation() {
                   </div>
                   <a
                     href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
-                    download
+                    download="Samuel_Oshin_Backend_Engineer_CV.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-3 inline-flex items-center px-4 py-2 text-sm font-medium text-white border border-white/20 rounded-lg hover:border-[color:var(--accent)]/50 hover:text-[color:var(--accent)] transition-all"
