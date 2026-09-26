@@ -11,9 +11,10 @@ export function ExpandableCard({
     company,
     period,
     summary,
+    highlights,
     details,
     tech
-}: { role: string; company: string; period: string; summary: string; details: string[]; tech: string[]; }) {
+}: { role: string; company: string; period: string; summary: string; highlights?: string[]; details: string[]; tech: string[]; }) {
     const [open, setOpen] = useState(false);
     return (
         <motion.div
@@ -38,6 +39,22 @@ export function ExpandableCard({
                     </span>
                 </div>
                 <p className="mt-4 text-white/75">{summary}</p>
+
+                {/* Always-visible metric highlights */}
+                {highlights && highlights.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        {highlights.map((h) => (
+                            <span
+                                key={h}
+                                className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--accent)]/10 border border-[color:var(--accent)]/25 px-3 py-1 text-xs font-medium text-[color:var(--accent)]"
+                            >
+                                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
+                                {h}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
                 <motion.div
                     initial={false}
                     animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
@@ -52,7 +69,7 @@ export function ExpandableCard({
                         {tech.map((t) =>
                             <Badge
                                 key={t}
-                                className="/! bg-[color:var(--accent)]/15 text-[color:var(--accent)] border-[color:var(--accent)]/30">
+                                className="bg-[color:var(--accent)]/15 text-[color:var(--accent)] border-[color:var(--accent)]/30">
                                 {t}
                             </Badge>
                         )}

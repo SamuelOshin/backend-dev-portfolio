@@ -9,10 +9,11 @@ export function TimelineRail() {
             <div className="flex flex-col items-center space-y-12">
                 {/* Timeline items */}
                 {[
-                    { label: "2023", sub: "First Dev Role" },
-                    { label: "2024", sub: "NYSC + Open Source" },
-                    { label: "2025", sub: "2× HNG Finalist" },
-                    { label: "Now", sub: "Emerj LLC (AI)" }
+                    { label: "2023", sub: "WML @ PZ Cussons" },
+                    { label: "2024", sub: "NYSC · Coleman Tech" },
+                    { label: "2025", sub: "2× HNG Finalist · Emerj" },
+                    { label: "2026", sub: "Lead @ CR8US" },
+                    { label: "Now", sub: "Building AI Backends" }
                 ].map((n, i) =>
                     <div key={i} className="flex flex-col items-center space-y-4 relative">
                         {/* Timeline point with connecting line */}
@@ -30,7 +31,7 @@ export function TimelineRail() {
                             </div>
 
                             {/* Connecting line to next item (except for last item) */}
-                            {i < 3 && (
+                            {i < 4 && (
                                 <div className="absolute top-6 left-1/2 w-[2px] h-8 -translate-x-1/2 bg-white/10" />
                             )}
                         </div>

@@ -110,7 +110,7 @@ export function ContactSection() {
                             </div>
 
                             <div className="space-y-6">
-                                <div className="text-sm font-medium text-white/40 uppercase tracking-widest">Connect</div>
+                                <div className="text-sm font-medium text-white/60 uppercase tracking-widest">Connect</div>
                                 <div className="flex gap-4">
                                     <a
                                         href="https://github.com/SamuelOshin"
@@ -121,7 +121,7 @@ export function ContactSection() {
                                         <Github size={20} />
                                     </a>
                                     <a
-                                        href="https://linkedin.com/in/samuel-oshin-88574121a"
+                                        href="https://linkedin.com/in/samuel-oshin-2903611a5/"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all hover:border-[color:var(--accent)] hover:bg-[color:var(--accent)]/10 hover:text-[color:var(--accent)]"
@@ -150,11 +150,11 @@ export function ContactSection() {
                         >
                             <div>
                                 <div className="text-2xl font-bold text-white mb-1">20+</div>
-                                <div className="text-xs font-medium uppercase tracking-wider text-white/40">Projects</div>
+                                <div className="text-xs font-medium uppercase tracking-wider text-white/60">Projects</div>
                             </div>
                             <div>
                                 <div className="text-2xl font-bold text-white mb-1">2+</div>
-                                <div className="text-xs font-medium uppercase tracking-wider text-white/40">Years Exp</div>
+                                <div className="text-xs font-medium uppercase tracking-wider text-white/60">Years Exp</div>
                             </div>
                         </motion.div>
                     </div>
@@ -283,7 +283,7 @@ export function ContactSection() {
             </section>
 
             {/* Footer */}
-            <footer className="mt-32 border-t border-white/10 py-12 text-center text-sm text-white/40">
+            <footer className="mt-32 border-t border-white/10 py-12 text-center text-sm text-white/60">
                 <p>© {new Date().getFullYear()} Samuel Oshin. Built with Next.js, Framer Motion & Tailwind CSS.</p>
                 <p>Inspired by the best. Designed for the web.</p>
             </footer>

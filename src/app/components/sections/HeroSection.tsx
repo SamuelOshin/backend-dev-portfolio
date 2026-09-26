@@ -4,21 +4,21 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Typewriter } from "../ui/Typewriter";
 import { GlowButton } from "../ui/GlowButton";
+
+const BADGE_TITLES = ["Python Backend Engineer", "AI/LLM Infrastructure", "Distributed Systems"];
 
 export function HeroSection() {
     const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
-    const badgeTitles = ["Python Backend Engineer", "AI/LLM Infrastructure", "Distributed Systems"];
 
     // Cycle through badge titles every 3 seconds
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentBadgeIndex((prev) => (prev + 1) % badgeTitles.length);
+            setCurrentBadgeIndex((prev) => (prev + 1) % BADGE_TITLES.length);
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [badgeTitles.length]);
+    }, []);
 
     return (
         <section id="home" className="relative grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 pt-8 sm:pt-9 lg:pt-10 min-h-[60vh] md:min-h-[50vh] lg:min-h-[55vh]">
@@ -51,12 +51,12 @@ export function HeroSection() {
                         >
                             <Badge
                                 variant="secondary"
-                                className="/! bg-white/5 text-white/80 backdrop-blur-sm border border-white/20 shadow-lg"
+                                className="bg-white/5 text-white/80 backdrop-blur-sm border border-white/20 shadow-lg"
                                 style={{
                                     boxShadow: '0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                                 }}
                             >
-                                {badgeTitles[currentBadgeIndex]}
+                                {BADGE_TITLES[currentBadgeIndex]}
                             </Badge>
                             {/* Animated glow border */}
                             <motion.div
@@ -82,27 +82,20 @@ export function HeroSection() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
                     >
-                        <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
+                        <Badge className="bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
                             AI Backends • Scalability
                         </Badge>
                     </motion.div>
                 </motion.div>
 
-                <motion.div
+                <motion.h1
                     initial={{ opacity: 0, y: 25 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.5 }}
-                    className="relative"
-                    style={{
-                        minHeight: '100px', // Reduced from 120px
-                        display: 'flex',
-                        alignItems: 'center'
-                    }}
+                    className="text-3xl sm:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight tracking-[-0.03em]"
                 >
-                    <h1 className="text-3xl sm:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight tracking-[-0.03em] w-full">
-                        <Typewriter text="Building resilient AI backends and distributed systems." speed={80} />
-                    </h1>
-                </motion.div>
+                    Building resilient AI backends and distributed systems.
+                </motion.h1>
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -125,7 +118,7 @@ export function HeroSection() {
                         variant="outline"
                         href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
                         icon={<Download size={18} />}
-                        download
+                        download="Samuel_Oshin_Backend_Engineer_CV.pdf"
                     >
                         Download CV
                     </GlowButton>

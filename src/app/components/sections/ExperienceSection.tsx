@@ -14,6 +14,7 @@ export function ExperienceSection() {
                 period: "Feb 2026 – Present",
                 summary:
                     "Serving as the sole backend engineer architecting and scaling CR8US Intelligence (app.cr8us.africa) — a generative AI pre-production platform for the Nollywood film industry.",
+                highlights: ["80% Token Cost Reduction", "Hybrid RAG < 1.5s", "Zero Fund Loss"],
                 details: [
                     "Engineered the entire AI-powered backend from scratch using FastAPI, SQLModel, and Celery, deploying a production-ready API serving both guest and authenticated tiers.",
                     "Designed a real-time Hybrid RAG pipeline combining pgvector cosine similarity and PostgreSQL Full-Text Search (FTS) executed in parallel via asyncio, reducing query latency under 1.5 seconds.",
@@ -31,6 +32,7 @@ export function ExperienceSection() {
                 period: "Dec 2025 – Present",
                 summary:
                     "Architecting Legal Watch Dog — an AI-powered regulatory monitoring platform processing 1,000+ global regulatory updates daily with a high-performance distributed pipeline.",
+                highlights: ["1,000+ Updates/Day", "40% Review Time Cut", "30% Storage Savings"],
                 details: [
                     "Defined complete system architecture by authoring the Technical Requirements Document (TRD) and designing the ERD for multi-tenant scalability.",
                     "Engineered a high-performance 4-stage distributed pipeline for real-time web scraping and semantic analysis using FastAPI, Celery, and Redis.",
@@ -47,6 +49,7 @@ export function ExperienceSection() {
                 period: "Oct 2025 – Dec 2025 (HNG13) & Jan – Apr 2025 (HNG12)",
                 summary:
                     "Awarded Mentor's Choice — Best Backend Intern (HNG13). Ranked Top 5% of 10,000+ developers (HNG12). Built production-grade payment, RAG, and notification systems.",
+                highlights: ["16× Latency Reduction", "99.5% Delivery Rate", "Top 5% of 10,000+"],
                 details: [
                     "Achieved zero fund loss for the Wallet Service with atomic transactions, idempotent webhooks, and background recovery jobs using Redis.",
                     "Improved retrieval precision by ~25% for internal RAG pipeline with advanced document chunking, OpenRouter embeddings, and hybrid vector search in Pinecone.",
@@ -62,6 +65,7 @@ export function ExperienceSection() {
                 period: "Aug 2024 – May 2025",
                 summary:
                     "Improved system uptime by 25% by automating Oracle/Odoo ERP backups using custom Python scripts with scheduled cron jobs and error-handling.",
+                highlights: ["25% Uptime Improvement", "100+ Tickets Resolved"],
                 details: [
                     "Reduced downtime incidents by 20% by resolving 100+ user support tickets through systematic troubleshooting and Group Policy implementations.",
                     "Automated ERP backup processes for Oracle and Odoo systems using Python scripts with cron job scheduling.",
@@ -76,6 +80,7 @@ export function ExperienceSection() {
                 period: "Nov 2023 – Apr 2024",
                 summary:
                     "Reduced IT issue resolution time by 40% by developing a custom Django-based ticketing system with automated workflows and real-time notifications.",
+                highlights: ["40% Faster Resolution", "15+ Outages Prevented"],
                 details: [
                     "Built a custom Django-based ticketing system with automated workflows, reducing IT issue resolution time by 40%.",
                     "Prevented 15+ potential network outages by building internal Python monitoring tools with proactive alerting and data logging."
@@ -87,8 +92,8 @@ export function ExperienceSection() {
     );
 
     return (
-        <section id="about" className="relative mt-32 sm:mt-40 scroll-mt-24 w-full">
-            <SectionHeader kicker="Experience" title="Where I've made an impact" />
+        <section id="experience" className="relative mt-32 sm:mt-40 scroll-mt-24 w-full">
+            <SectionHeader kicker="Career" title="Where I've made an impact" />
 
             <div className="mt-16 sm:mt-24 grid gap-12 sm:gap-16 lg:grid-cols-12 lg:gap-8 max-w-7xl mx-auto w-full">
                 {/* Timeline visualization - hidden on mobile, visible on lg screens */}
