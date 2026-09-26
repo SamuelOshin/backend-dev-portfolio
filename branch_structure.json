@@ -1,0 +1,42 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "blog/pagination-techniques",
+    "chore/changes-from-main",
+    "copilot/make-changes-to-blog",
+    "feat-portfolio-redesign",
+    "feat/blog",
+    "fix-sitemap-index-14390877986584396608",
+    "fix/sitemap-vercel-fs-read-crash-1917335603830590355",
+    "main",
+    "origin",
+    "vercel/react-server-components-cve-vu-63ccvj",
+    "vercel/vercel-web-analytics-to-nextjs-qphe4f"
+  ],
+  "parent": {
+    "blog/pagination-techniques": "main",
+    "chore/changes-from-main": "main",
+    "copilot/make-changes-to-blog": "main",
+    "feat-portfolio-redesign": "main",
+    "feat/blog": "main",
+    "fix-sitemap-index-14390877986584396608": "main",
+    "fix/sitemap-vercel-fs-read-crash-1917335603830590355": "main",
+    "main": null,
+    "origin": "main",
+    "vercel/react-server-components-cve-vu-63ccvj": "main",
+    "vercel/vercel-web-analytics-to-nextjs-qphe4f": "main"
+  },
+  "order": [
+    "main",
+    "blog/pagination-techniques",
+    "chore/changes-from-main",
+    "copilot/make-changes-to-blog",
+    "feat-portfolio-redesign",
+    "feat/blog",
+    "fix-sitemap-index-14390877986584396608",
+    "fix/sitemap-vercel-fs-read-crash-1917335603830590355",
+    "origin",
+    "vercel/react-server-components-cve-vu-63ccvj",
+    "vercel/vercel-web-analytics-to-nextjs-qphe4f"
+  ]
+}
