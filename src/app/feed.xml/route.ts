@@ -7,7 +7,7 @@ export async function GET() {
     const posts = getAllPosts();
 
     const feed = new RSS({
-        title: "Samuel Oshin — Blog",
+        title: "Samuel Oshin | Blog",
         description:
             "Technical articles on Python backend development, RAG pipelines, distributed systems, and AI infrastructure.",
         site_url: SITE_URL,

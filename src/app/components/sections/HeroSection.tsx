@@ -1,217 +1,98 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Typewriter } from "../ui/Typewriter";
-import { GlowButton } from "../ui/GlowButton";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { AskConsole } from "../ui/AskConsole";
+import { headlineMetrics, profile } from "@/data/portfolio";
+
+const ease = [0.16, 1, 0.3, 1] as const;
 
 export function HeroSection() {
-    const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
-    const badgeTitles = ["Python Backend Engineer", "AI/LLM Infrastructure", "Distributed Systems"];
+  return (
+    <section id="home" className="relative pt-32 sm:pt-40 pb-8 scroll-mt-24">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-start">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease }}
+          className="lg:col-span-6 lg:pt-6"
+        >
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--signal)]" />
+            Open to AI engineering roles · {profile.location}
+          </div>
 
-    // Cycle through badge titles every 3 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentBadgeIndex((prev) => (prev + 1) % badgeTitles.length);
-        }, 3000);
+          <h1 className="mt-7 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.25rem] font-semibold tracking-[-0.035em] text-white">
+            I build AI systems that hold up{" "}
+            <span className="font-display italic font-normal tracking-[-0.01em] text-[color:var(--signal)]">in production.</span>
+          </h1>
 
-        return () => clearInterval(interval);
-    }, [badgeTitles.length]);
+          <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-white/60">
+            I&apos;m Samuel Oshin, an AI product engineer. I ship whole products, from the retrieval pipeline and
+            the agents to the storefront your customers click: design, frontend, backend and the queues, locks and
+            ledgers that keep it fast, cheap and correct at scale.
+          </p>
 
-    return (
-        <section id="home" className="relative grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 pt-8 sm:pt-9 lg:pt-10 min-h-[60vh] md:min-h-[50vh] lg:min-h-[55vh]">
-            {/* Left copy */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="col-span-1 md:col-span-6 flex flex-col justify-center md:justify-start"
-                style={{ contain: 'layout style' }}
+          <div className="mt-9 flex flex-wrap items-center gap-3">
+            <a
+              href="#systems"
+              className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-zinc-950 transition-colors hover:bg-[color:var(--signal)]"
             >
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="mb-4 flex flex-wrap items-center gap-2">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                    >
-                        <motion.div
-                            key={currentBadgeIndex}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                            className="relative"
-                        >
-                            <Badge
-                                variant="secondary"
-                                className="/! bg-white/5 text-white/80 backdrop-blur-sm border border-white/20 shadow-lg"
-                                style={{
-                                    boxShadow: '0 0 20px rgba(255, 255, 255, 0.1), 0 0 40px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-                                }}
-                            >
-                                {badgeTitles[currentBadgeIndex]}
-                            </Badge>
-                            {/* Animated glow border */}
-                            <motion.div
-                                className="absolute inset-0 rounded-full opacity-60"
-                                style={{
-                                    background: 'linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1))',
-                                    filter: 'blur(8px)',
-                                }}
-                                animate={{
-                                    opacity: [0.3, 0.8, 0.3],
-                                    scale: [1, 1.05, 1],
-                                }}
-                                transition={{
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: "easeInOut"
-                                }}
-                            />
-                        </motion.div>
-                    </motion.div>
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                    >
-                        <Badge className="/! bg-[color:var(--accent)]/20 text-[color:var(--accent)] border-[color:var(--accent)]/40">
-                            AI Backends • Scalability
-                        </Badge>
-                    </motion.div>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 25 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.5 }}
-                    className="relative"
-                    style={{
-                        minHeight: '100px', // Reduced from 120px
-                        display: 'flex',
-                        alignItems: 'center'
-                    }}
-                >
-                    <h1 className="text-3xl sm:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight tracking-[-0.03em] w-full">
-                        <Typewriter text="Building resilient AI backends and distributed systems." speed={80} />
-                    </h1>
-                </motion.div>
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.7 }}
-                    className="mt-3 lg:mt-4 max-w-2xl text-sm sm:text-base text-white/70">
-                    Award-winning Python Backend Engineer (2× HNG Finalist, Top 1–5% of 10,000+).
-                    Specializing in RAG pipelines, vector search, and event-driven architectures.
-                    16× performance gains. Zero-fund-loss transaction systems. Production-grade AI backends.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.9 }}
-                    className="mt-3 flex flex-wrap items-center gap-4">
-                    <GlowButton href="#projects" icon={<ArrowRight size={18} />}>
-                        View Projects
-                    </GlowButton>
-                    <GlowButton
-                        variant="outline"
-                        href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
-                        icon={<Download size={18} />}
-                        download
-                    >
-                        Download CV
-                    </GlowButton>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 1.1 }}
-                    className="mt-6 flex items-center gap-4 text-white/60">
-                    <motion.a
-                        className="hover:text-[color:var(--accent)] transition-colors"
-                        href="mailto:samuelt.oshin@gmail.com"
-                        aria-label="Email"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: 1.2 }}
-                        whileHover={{ scale: 1.1 }}
-                    >
-                        <Mail size={20} />
-                    </motion.a>
-                    <motion.a
-                        className="hover:text-[color:var(--accent)] transition-colors"
-                        href="https://github.com/SamuelOshin"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="GitHub"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: 1.3 }}
-                        whileHover={{ scale: 1.1 }}
-                    >
-                        <Github size={20} />
-                    </motion.a>
-                    <motion.a
-                        className="hover:text-[color:var(--accent)] transition-colors"
-                        href="https://linkedin.com/in/samuel-oshin-2903611a5/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="LinkedIn"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: 1.4 }}
-                        whileHover={{ scale: 1.1 }}
-                    >
-                        <Linkedin size={20} />
-                    </motion.a>
-                </motion.div>
-            </motion.div>
-
-            {/* Right visual */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-                className="col-span-1 md:col-span-6 relative flex items-center justify-center md:justify-end"
-                style={{ contain: 'layout style' }}
+              See the systems
+              <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
+            </a>
+            <a
+              href={profile.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:text-white"
             >
+              Résumé
+              <ArrowUpRight size={14} />
+            </a>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-2 py-2.5 text-sm text-white/50 transition-colors hover:text-white"
+            >
+              GitHub
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </motion.div>
 
-                <motion.div
-                    className="relative aspect-[4/3] w-full max-w-sm md:max-w-md lg:max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[color:var(--accent)]/20 via-transparent to-white/5"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.3 }}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.15, ease }}
+          className="lg:col-span-6 relative"
+        >
+          <div className="pointer-events-none absolute -inset-10 -z-10 rounded-full bg-[color:var(--signal)]/[0.07] blur-3xl" />
+          <AskConsole />
+          <p className="mt-3 px-1 text-xs text-white/40">
+            A real retriever, not a mock. It ranks chunks of this site with BM25 and answers only from what it finds.
+          </p>
+        </motion.div>
+      </div>
 
-                >
-                    <motion.img
-                        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/headshotbychatgpt-1758178525713.png"
-                        alt="Portrait"
-                        className="h-full w-full object-cover object-[center_15%] mix-blend-luminosity opacity-90 grayscale contrast-125"
-                        initial={{ scale: 1.1 }}
-                        animate={{ scale: 1 }}
-                        transition={{ duration: 1.2, delay: 0.5 }}
-                    />
-
-                    {/* Duotone overlay */}
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_600px_at_80%_10%,_color:var(--accent)/35,_transparent_45%),linear-gradient(to_top_right,_#000000_10%,_transparent_40%)]" />
-                    {/* Floating glow */}
-                    <motion.div
-                        aria-hidden
-                        className="absolute -inset-8 rounded-[36px]"
-                        style={{ background: "radial-gradient(600px 240px at 20% 90%, var(--accent)/20, transparent 60%)" }}
-                        animate={{ opacity: [0.4, 0.8, 0.4], y: [0, -8, 0] }}
-                        transition={{ duration: 6, repeat: Infinity }} />
-
-                </motion.div>
-            </motion.div>
-        </section>
-    );
+      {/* Metrics strip */}
+      <motion.dl
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.35 }}
+        className="mt-20 sm:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.08]"
+      >
+        {headlineMetrics.map((m) => (
+          <div key={m.label} className="bg-background p-5 sm:p-7">
+            <dt className="sr-only">{m.label}</dt>
+            <dd className="text-3xl sm:text-4xl font-semibold tracking-tight text-white tabular-nums">{m.value}</dd>
+            <dd className="mt-1.5 text-sm text-white/70">{m.label}</dd>
+            <dd className="mt-0.5 font-mono text-[11px] text-white/35">{m.context}</dd>
+          </div>
+        ))}
+      </motion.dl>
+    </section>
+  );
 }

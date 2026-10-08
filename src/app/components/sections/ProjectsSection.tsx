@@ -1,91 +1,146 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { SectionHeader } from "../ui/SectionHeader";
-import { ProjectCarousel } from "../ui/ProjectCarousel";
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowUpRight, Github, Package } from "lucide-react";
+import { projects, type Project, type ProjectCategory } from "@/data/portfolio";
+
+const FILTERS: { id: ProjectCategory | "all"; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "ai", label: "AI & RAG" },
+  { id: "distributed", label: "Distributed" },
+  { id: "tools", label: "Tools" },
+];
+
+function ProjectLinks({ p, compact = false }: { p: Project; compact?: boolean }) {
+  const cls = "inline-flex items-center gap-1 text-xs text-white/55 transition-colors hover:text-[color:var(--signal)]";
+  return (
+    <div className={`flex items-center ${compact ? "gap-3" : "gap-4"}`}>
+      {p.liveUrl && (
+        <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className={cls} aria-label={`${p.title} live site`}>
+          Live <ArrowUpRight size={12} />
+        </a>
+      )}
+      {p.githubUrl && (
+        <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" className={cls} aria-label={`${p.title} source on GitHub`}>
+          <Github size={12} /> {!compact && "Source"}
+        </a>
+      )}
+      {p.pypiUrl && (
+        <a href={p.pypiUrl} target="_blank" rel="noopener noreferrer" className={cls} aria-label={`${p.title} on PyPI`}>
+          <Package size={12} /> {!compact && "PyPI"}
+        </a>
+      )}
+    </div>
+  );
+}
+
+function FeaturedCard({ p, i }: { p: Project; i: number }) {
+  const steps = p.architecture.split("->").map((s) => s.trim());
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: (i % 2) * 0.08 }}
+      className="group relative flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.015] p-6 sm:p-7 transition-colors hover:border-white/20"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="font-mono text-[11px] uppercase tracking-wider text-white/40">{p.categoryLabel}</div>
+          <h3 className="mt-2 text-xl sm:text-2xl font-semibold tracking-tight text-white">{p.title}</h3>
+        </div>
+        <ProjectLinks p={p} compact />
+      </div>
+
+      <p className="mt-3 text-sm leading-relaxed text-white/60">{p.description}</p>
+
+      {/* Architecture as a flow */}
+      <div className="mt-6 flex flex-wrap items-center gap-1.5">
+        {steps.map((s, j) => (
+          <React.Fragment key={s}>
+            <span className="rounded-md border border-white/10 bg-[color:var(--ink)] px-2 py-1 font-mono text-[10.5px] text-white/70">{s}</span>
+            {j < steps.length - 1 && <span className="text-white/25 text-xs">→</span>}
+          </React.Fragment>
+        ))}
+      </div>
+
+      <div className="mt-auto pt-6 flex items-end justify-between gap-4">
+        <div className="font-mono text-sm text-[color:var(--signal)]">{p.metric}</div>
+        <div className="hidden sm:block text-[11px] text-white/35 text-right">{p.tags.slice(0, 4).join(" · ")}</div>
+      </div>
+    </motion.article>
+  );
+}
 
 export function ProjectsSection() {
-    const projects = useMemo(
-        () => [
-            {
-                title: "Proovia - AI Content Detector",
-                image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1200&auto=format&fit=crop",
-                tags: ["Python", "FastAPI", "Huggingface", "Resnet-18", "Image Detection"],
-                liveUrl: "https://proovia.cloud/landing",
-            },
-            {
-                title: "Code Review Agent (A2A)",
-                image: "https://opengraph.githubassets.com/b2e1751f0a990da5dc9eba6cdb0fa53db6409ffd97448295a11ca4f9c071acb1/SamuelOshin/code_reviewer_agent_a2a",
-                tags: ["Python", "A2A Protocol", "Google Gemini", "Webhooks", "Docker"],
-                githubUrl: "https://github.com/SamuelOshin/code_reviewer_agent_a2a",
-            },
-            {
-                title: "Wallet Service System",
-                image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1200&auto=format&fit=crop",
-                tags: ["Python", "FastAPI", "Redis", "JWT", "OAuth", "Paystack", "PostgreSQL"],
-                githubUrl: "https://github.com/SamuelOshin/hng12-stage2-wallet",
-            },
-            {
-                title: "RAG AI Service",
-                image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop",
-                tags: ["Python", "FastAPI", "LangChain", "ChromaDB", "Docker"],
-                githubUrl: "https://github.com/SamuelOshin/hng12-stage2-rag-ai-service",
-            },
-            {
-                title: "SSL Certificate Checker Agent",
-                image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=1200&auto=format&fit=crop",
-                tags: ["Python", "A2A", "Google Gemini", "JSON-RPC", "Telex"],
-                githubUrl: "https://github.com/SamuelOshin/ssl-checker-telex-integration",
-                liveUrl: "https://ssl-checker.telex.im",
-            },
-            {
-                title: "Country Currency & Exchange API",
-                image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1200&auto=format&fit=crop",
-                tags: ["Python", "FastAPI", "MySQL", "httpx", "Redis"],
-                githubUrl: "https://github.com/SamuelOshin/hng12-stage1-country-api",
-            },
-            {
-                title: "MockBox",
-                image: "https://i.postimg.cc/hjHxDtdY/image.png",
-                tags: ["FullStack", "Python", "FastAPI", "NextJS", "TypeScript", "Antropric LLM", "Supabase"],
-                githubUrl: "https://github.com/Tobi09-17/mockbox",
-                liveUrl: "https://mockbox.vercel.app/",
-            },
-            {
-                title: "XlideLand - Slide Generator Tool",
-                image: "https://i.postimg.cc/9fQHx8sh/image.png",
-                tags: ["FullStack", "Python", "Django", "LLaMA 3 8b", "Marz UI", "React JS"],
-                githubUrl: "https://github.com/SamuelOshin/slide_generator",
-                liveUrl: "https://samueloshin.github.io/slide_generator/",
-            },
-            {
-                title: "CodeBEGen",
-                image: "https://images.unsplash.com/photo-1690683789978-3cf73960d650?q=80&w=1209&auto=format&fit=crop",
-                tags: ["A2A", "Code Generation", "Gemini", "Python", "CLI"],
-                githubUrl: "https://github.com/SamuelOshin/BE-GenAI",
-                liveUrl: "https://pypi.org/project/codebegen/",
-            },
-            {
-                title: "Church Admin App",
-                image: "https://i.postimg.cc/Ss848Xw2/image.png",
-                tags: ["FullStack", "C#", "Blazor", "SQL Server", "Radzen"],
-                githubUrl: "https://github.com/SamuelOshin/ChurchAdminApp",
-                liveUrl: "https://churchadmin.com/",
-            },
-            {
-                title: "Network Downtime Alerts",
-                image: "https://i.postimg.cc/Z5BwJX2H/image.png",
-                tags: ["Python", "FastAPI", "React", "PostgreSQL"],
-                githubUrl: "https://github.com/SamuelOshin/network-downtime-monitor"
-            }
-        ],
-        []
-    );
+  const [filter, setFilter] = useState<ProjectCategory | "all">("all");
+  const featured = projects.filter((p) => p.featured);
+  const rest = useMemo(
+    () => projects.filter((p) => !p.featured && (filter === "all" || p.category === filter)),
+    [filter]
+  );
 
-    return (
-        <section id="projects" className="relative mt-32 sm:mt-40">
-            <SectionHeader kicker="Featured Work" title="Projects & contributions" />
-            <ProjectCarousel projects={projects} />
-        </section>
-    );
+  return (
+    <section id="projects" className="relative mt-32 sm:mt-44 scroll-mt-24">
+      <div className="max-w-2xl">
+        <span className="eyebrow">02 · Selected work</span>
+        <h2 className="mt-4 text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-white">
+          Shipped, <span className="font-display italic font-normal">and in use.</span>
+        </h2>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {featured.map((p, i) => (
+          <FeaturedCard key={p.title} p={p} i={i} />
+        ))}
+      </div>
+
+      {/* Index of everything else */}
+      <div className="mt-16">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
+          <h3 className="text-sm font-medium text-white/80">More projects</h3>
+          <div className="flex gap-1" role="group" aria-label="Filter projects">
+            {FILTERS.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                aria-pressed={filter === f.id}
+                className={`rounded-full px-3 py-1 text-xs transition-colors cursor-pointer ${
+                  filter === f.id ? "bg-white text-zinc-950" : "text-white/55 hover:text-white"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <ul>
+          {rest.length === 0 && <li className="py-8 text-sm text-white/40">Nothing else in this category. The featured work above covers it.</li>}
+          {rest.map((p) => (
+            <li key={p.title} className="group grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 border-b border-white/[0.06] py-5">
+              <div className="md:col-span-4">
+                <div className="text-white font-medium">{p.title}</div>
+                <div className="mt-0.5 text-xs text-white/40">{p.categoryLabel}</div>
+              </div>
+              <p className="md:col-span-5 text-sm leading-relaxed text-white/55">{p.description}</p>
+              <div className="md:col-span-3 flex md:flex-col md:items-end justify-between gap-2">
+                <span className="font-mono text-xs text-white/70">{p.metric}</span>
+                <ProjectLinks p={p} />
+              </div>
+            </li>
+          ))}
+        </ul>
+        <a
+          href={`https://github.com/SamuelOshin`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex items-center gap-1.5 text-sm text-white/55 hover:text-white transition-colors"
+        >
+          Everything else is on GitHub <ArrowUpRight size={14} />
+        </a>
+      </div>
+    </section>
+  );
 }
