@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { GlowButton } from "../ui/GlowButton";
-import { Mail, MessageCircle, CheckCircle, AlertCircle, Loader2, Linkedin, Github, ArrowRight, Sparkles } from "lucide-react";
+import { MessageCircle, CheckCircle, AlertCircle, Loader2, Linkedin, Github, ArrowRight, ArrowUpRight, Copy, Check } from "lucide-react";
+import { profile } from "@/data/portfolio";
 import EmailService, { ContactFormData } from "@/lib/email-service";
 
 export function ContactSection() {
@@ -16,6 +16,17 @@ export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = `mailto:${profile.email}`;
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -81,207 +92,123 @@ export function ContactSection() {
 
   return (
     <>
-      <section id="contact" className="relative mt-28 sm:mt-36 pt-16 border-t border-white/10 scroll-mt-24">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-start">
-          {/* Left Column: Direct Contact Details */}
-          <div className="lg:col-span-5 flex flex-col justify-between h-full">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono text-blue-400 bg-blue-500/10 border border-blue-500/20 mb-4">
-                <Sparkles size={12} />
-                Get in Touch
-              </div>
+      <section id="contact" className="relative mt-32 sm:mt-44 scroll-mt-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-10">
+          <div className="lg:col-span-6">
+            <span className="eyebrow">07 · Contact</span>
+            <h2 className="mt-4 text-4xl sm:text-6xl font-semibold tracking-[-0.035em] text-white leading-[1.02]">
+              Have an AI system that needs to{" "}
+              <span className="font-display italic font-normal text-[color:var(--signal)]">actually work?</span>
+            </h2>
+            <p className="mt-6 max-w-md text-white/60 leading-relaxed">
+              I&apos;m open to full-time AI engineering roles, and I take on client products from design to launch. I usually reply within 24 hours.
+            </p>
 
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight mb-4">
-                Let us build high-performance systems together
-              </h2>
-
-              <p className="text-white/70 text-sm sm:text-base leading-relaxed mb-8">
-                Looking for a backend engineer who designs infrastructure with precision, low latency, and zero fund loss? Open for contract and full-time opportunities.
-              </p>
-
-              {/* Direct Email Action */}
-              <div className="mb-8">
-                <GlowButton href="mailto:samuelt.oshin@gmail.com" icon={<Mail size={16} />}>
-                  samuelt.oshin@gmail.com
-                </GlowButton>
-              </div>
-
-              {/* Social Link Hub */}
-              <div className="space-y-3">
-                <div className="text-xs font-mono uppercase tracking-wider text-white/50">Verified Profiles</div>
-                <div className="flex gap-3">
-                  <a
-                    href="https://github.com/SamuelOshin"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/80 transition-all hover:border-blue-400/40 hover:bg-white/10 hover:text-white"
-                    aria-label="GitHub Profile"
-                  >
-                    <Github size={18} />
-                  </a>
-                  <a
-                    href="https://linkedin.com/in/samuel-oshin-2903611a5/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/80 transition-all hover:border-blue-400/40 hover:bg-white/10 hover:text-white"
-                    aria-label="LinkedIn Profile"
-                  >
-                    <Linkedin size={18} />
-                  </a>
-                  <a
-                    href="https://wa.me/2348148812613"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/80 transition-all hover:border-blue-400/40 hover:bg-white/10 hover:text-white"
-                    aria-label="WhatsApp Contact"
-                  >
-                    <MessageCircle size={18} />
-                  </a>
-                </div>
-              </div>
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${profile.email}`}
+                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-zinc-950 transition-colors hover:bg-[color:var(--signal)]"
+              >
+                {profile.email}
+                <ArrowUpRight size={15} />
+              </a>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-4 py-2.5 text-sm text-white/70 transition-colors hover:border-white/30 hover:text-white cursor-pointer"
+              >
+                {copied ? <Check size={14} className="text-[color:var(--signal)]" /> : <Copy size={14} />}
+                {copied ? "Copied" : "Copy"}
+              </button>
             </div>
 
-            {/* Quick Stats Pill */}
-            <div className="mt-10 pt-6 border-t border-white/10 grid grid-cols-2 gap-4">
-              <div>
-                <div className="text-2xl font-bold text-white font-mono">20+</div>
-                <div className="text-xs font-mono text-white/50 uppercase">Projects Shipped</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-white font-mono">&lt; 24h</div>
-                <div className="text-xs font-mono text-white/50 uppercase">Response Time</div>
-              </div>
+            <div className="mt-8 flex gap-2">
+              <a href={profile.github} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:border-white/30 hover:text-white" aria-label="GitHub profile">
+                <Github size={16} />
+              </a>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:border-white/30 hover:text-white" aria-label="LinkedIn profile">
+                <Linkedin size={16} />
+              </a>
+              <a href={profile.whatsapp} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:border-white/30 hover:text-white" aria-label="WhatsApp">
+                <MessageCircle size={16} />
+              </a>
             </div>
           </div>
 
-          {/* Right Column: Double-Bezel Contact Form */}
-          <div className="lg:col-span-7">
-            <div className="bezel-shell">
-              <div className="bezel-core p-6 sm:p-8">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {formErrors.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 flex flex-col gap-1.5 text-xs text-red-400"
-                    >
-                      {formErrors.map((error, index) => (
-                        <div key={index} className="flex items-start gap-2">
-                          <AlertCircle size={15} className="shrink-0 mt-0.5" />
-                          <span>{error}</span>
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-
-                  {submitStatus === "success" && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-emerald-400 text-xs sm:text-sm font-medium"
-                    >
-                      <CheckCircle size={18} />
-                      <span>Message received successfully. I will get back to you shortly.</span>
-                    </motion.div>
-                  )}
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label htmlFor="name" className="text-xs font-mono uppercase tracking-wider text-white/60">
-                        Your Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        disabled={isSubmitting}
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--accent)] focus:bg-white/10 focus:outline-none transition-all disabled:opacity-50"
-                        placeholder="Ada Lovelace"
-                        required
-                      />
+          <div className="lg:col-span-6">
+            <form onSubmit={handleSubmit} className="rounded-2xl border border-white/[0.08] bg-white/[0.015] p-6 sm:p-8 space-y-6">
+              {formErrors.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-xl border border-red-500/20 bg-red-500/10 p-3.5 flex flex-col gap-1.5 text-xs text-red-400"
+                  role="alert"
+                >
+                  {formErrors.map((error, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <AlertCircle size={15} className="shrink-0 mt-0.5" />
+                      <span>{error}</span>
                     </div>
-                    <div className="space-y-1.5">
-                      <label htmlFor="email" className="text-xs font-mono uppercase tracking-wider text-white/60">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        disabled={isSubmitting}
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--accent)] focus:bg-white/10 focus:outline-none transition-all disabled:opacity-50"
-                        placeholder="ada@example.com"
-                        required
-                      />
-                    </div>
-                  </div>
+                  ))}
+                </motion.div>
+              )}
 
-                  <div className="space-y-1.5">
-                    <label htmlFor="subject" className="text-xs font-mono uppercase tracking-wider text-white/60">
-                      Subject
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      disabled={isSubmitting}
-                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--accent)] focus:bg-white/10 focus:outline-none transition-all disabled:opacity-50"
-                      placeholder="Backend Architecture / Project Inquiry"
-                      required
-                    />
-                  </div>
+              {submitStatus === "success" && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="rounded-xl border border-[color:var(--signal)]/30 bg-[color:var(--signal)]/10 p-4 flex items-center gap-3 text-sm text-[color:var(--signal)]"
+                  role="status"
+                >
+                  <CheckCircle size={18} />
+                  <span>Message received. I&apos;ll get back to you shortly.</span>
+                </motion.div>
+              )}
 
-                  <div className="space-y-1.5">
-                    <label htmlFor="message" className="text-xs font-mono uppercase tracking-wider text-white/60">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      disabled={isSubmitting}
-                      rows={4}
-                      className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--accent)] focus:bg-white/10 focus:outline-none transition-all disabled:opacity-50"
-                      placeholder="Tell me about your system requirements, timeline, and goals..."
-                      required
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-[color:var(--accent)] px-6 py-3.5 text-xs sm:text-sm font-semibold text-zinc-950 transition hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-[0_10px_25px_-5px_rgba(59,130,246,0.5)]"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 size={16} className="animate-spin" />
-                        <span>Transmitting Message...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Send Message</span>
-                        <ArrowRight size={16} />
-                      </>
-                    )}
-                  </button>
-                </form>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="font-mono text-[11px] uppercase tracking-wider text-white/45">Name</label>
+                  <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} disabled={isSubmitting} placeholder="Ada Lovelace" required className="w-full border-0 border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--signal)] focus:outline-none focus:ring-0 transition-colors disabled:opacity-50" />
+                </div>
+                <div>
+                  <label htmlFor="email" className="font-mono text-[11px] uppercase tracking-wider text-white/45">Email</label>
+                  <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isSubmitting} placeholder="ada@company.com" required className="w-full border-0 border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--signal)] focus:outline-none focus:ring-0 transition-colors disabled:opacity-50" />
+                </div>
               </div>
-            </div>
+                <div>
+                  <label htmlFor="subject" className="font-mono text-[11px] uppercase tracking-wider text-white/45">Subject</label>
+                  <input type="text" id="subject" name="subject" value={formData.subject} onChange={handleInputChange} disabled={isSubmitting} placeholder="AI engineering role / project" required className="w-full border-0 border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--signal)] focus:outline-none focus:ring-0 transition-colors disabled:opacity-50" />
+                </div>
+                <div>
+                  <label htmlFor="message" className="font-mono text-[11px] uppercase tracking-wider text-white/45">Message</label>
+                  <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} disabled={isSubmitting} placeholder="What are you building, and where could I help?" required rows={4} className="w-full border-0 border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white placeholder:text-white/25 focus:border-[color:var(--signal)] focus:outline-none focus:ring-0 transition-colors disabled:opacity-50 resize-none" />
+                </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-[color:var(--signal)] px-6 py-3 text-sm font-medium text-[color:var(--accent-foreground)] transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Sending…</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send message</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
+              </button>
+            </form>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-28 border-t border-white/10 py-10 text-center text-xs text-white/50">
-        <p>© {new Date().getFullYear()} Samuel Oshin. Python Backend &amp; AI Infrastructure Engineer.</p>
-        <p className="mt-1 font-mono text-[11px] text-white/35">Built with Next.js, Framer Motion, and Tailwind CSS.</p>
+      <footer className="mt-32 border-t border-white/[0.08] py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-white/40">
+        <p>© {new Date().getFullYear()} {profile.name} · AI Engineer</p>
+        <p className="font-mono text-[11px]">Built with Next.js · the retrieval demo runs client-side</p>
       </footer>
     </>
   );

@@ -5,13 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, Linkedin, Mail, FileText, Menu, X, ArrowUpRight } from "lucide-react";
+import { profile } from "@/data/portfolio";
 
 const navigation = [
-  { name: "Home", href: "#home", isPage: false },
+  { name: "Systems", href: "#systems", isPage: false },
+  { name: "Work", href: "#projects", isPage: false },
+  { name: "Clients", href: "#clients", isPage: false },
   { name: "Experience", href: "#experience", isPage: false },
-  { name: "Skills", href: "#skills", isPage: false },
-  { name: "Projects", href: "#projects", isPage: false },
-  { name: "Blog", href: "/blog", isPage: true },
+  { name: "Writing", href: "/blog", isPage: true },
   { name: "Contact", href: "#contact", isPage: false },
 ];
 
@@ -24,7 +25,7 @@ export function Navigation() {
   useEffect(() => {
     if (isBlogPage) return;
 
-    const sectionIds = ["home", "experience", "skills", "projects", "contact"];
+    const sectionIds = ["home", "systems", "projects", "clients", "experience", "skills", "writing", "contact"];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -72,7 +73,7 @@ export function Navigation() {
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-xs font-mono font-bold text-white border border-white/15">
               SO
             </span>
-            <span className="hidden sm:inline text-xs font-mono text-white/70">samuel.oshin</span>
+            <span className="hidden sm:inline text-xs font-mono text-white/70">samuel.oshin<span className="text-[color:var(--signal)]">/ai</span></span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -151,7 +152,7 @@ export function Navigation() {
               <Mail size={15} />
             </a>
             <a
-              href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
+              href={profile.resume}
               download
               target="_blank"
               rel="noopener noreferrer"
@@ -255,7 +256,7 @@ export function Navigation() {
                   </a>
                 </div>
                 <a
-                  href="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/document-uploads/Samuel Oshin_Junior_Python_Backend_Developer-1758178066590.pdf"
+                  href={profile.resume}
                   download
                   target="_blank"
                   rel="noopener noreferrer"
