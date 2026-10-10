@@ -30,23 +30,23 @@ export const metadata: Metadata = {
     google: "vGt07LDFWrD3BzBrHtktoJLFo_8Npwidwqe-xy_H4Lk",
   },
   title: {
-    default: "Samuel Oshin | AI Engineer — LLM Systems, RAG & Agents",
+    default: "Samuel Oshin | AI Backend Engineer — LLM Systems, RAG & Agents",
     template: "%s | Samuel Oshin",
   },
   description:
-    "AI Engineer building production LLM systems: hybrid RAG under 1.5s, prefix-cached generation at 80% lower cost, and agents on top of distributed Python backends. 2× HNG finalist, top 5% of 10,000+ engineers.",
+    "AI Backend Engineer building production LLM systems: hybrid RAG with pgvector and full-text search, prefix-cached generation at 80% lower cost, and agents on top of distributed Python backends. Sole backend engineer on a live generative AI platform.",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
     siteName: "Samuel Oshin",
-    title: "Samuel Oshin | AI Engineer",
+    title: "Samuel Oshin | AI Backend Engineer",
     description:
       "Production LLM systems: hybrid RAG, cached generation, agents, and the distributed backends underneath them.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Samuel Oshin | AI Engineer",
+    title: "Samuel Oshin | AI Backend Engineer",
     description:
       "Production LLM systems: hybrid RAG, cached generation, agents, and the distributed backends underneath them.",
   },
@@ -78,7 +78,7 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Samuel Oshin",
-  jobTitle: "AI Engineer",
+  jobTitle: "AI Backend Engineer",
   url: SITE_URL,
   email: "mailto:samuelt.oshin@gmail.com",
   sameAs: ["https://github.com/SamuelOshin", "https://linkedin.com/in/samuel-oshin-2903611a5/"],

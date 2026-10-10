@@ -8,7 +8,7 @@ import { ResultPanel, StartPanel, useBestScore } from "./shared";
 // Pick the 3 most relevant snippets for a question, then compare with BM25.
 
 const QUESTIONS = [
-  "How did you get RAG under 1.5 seconds?",
+  "How does your hybrid RAG search work?",
   "How do you cut LLM token costs?",
   "How do you stop workers processing the same job twice?",
   "How do you make sure payments never lose money?",

@@ -8,7 +8,7 @@ import { OPEN_ARCADE_EVENT } from "../sections/ArcadeSection";
 const PLAY_COMMAND = /^\/?(play|game|games|arcade)$/i;
 
 const SUGGESTIONS = [
-  "How did you get RAG under 1.5s?",
+  "How does your hybrid RAG work?",
   "How do you cut LLM costs?",
   "Have you built AI agents?",
   "What have you built for clients?",

@@ -20,7 +20,7 @@ export function HeroSection() {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/70">
             <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--signal)]" />
-            Open to AI engineering roles · {profile.location}
+            Open to AI backend roles · {profile.location}
           </div>
 
           <h1 className="mt-7 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.25rem] font-semibold tracking-[-0.035em] text-white">
@@ -29,9 +29,9 @@ export function HeroSection() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-white/60">
-            I&apos;m Samuel Oshin, an AI product engineer. I ship whole products, from the retrieval pipeline and
-            the agents to the storefront your customers click: design, frontend, backend and the queues, locks and
-            ledgers that keep it fast, cheap and correct at scale.
+            I&apos;m Samuel Oshin, an AI backend engineer. I build LLM systems end to end: hybrid retrieval,
+            cache-aware generation and tool-using agents, plus the queues, locks and ledgers underneath that keep
+            them fast, cheap and correct. For clients, I also ship complete products from design to deployment.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">

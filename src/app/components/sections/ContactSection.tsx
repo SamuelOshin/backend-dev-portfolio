@@ -101,7 +101,7 @@ export function ContactSection() {
               <span className="font-display italic font-normal text-[color:var(--signal)]">actually work?</span>
             </h2>
             <p className="mt-6 max-w-md text-white/60 leading-relaxed">
-              I&apos;m open to full-time AI engineering roles, and I take on client products from design to launch. I usually reply within 24 hours.
+              I&apos;m open to full-time AI backend roles, and I take on client products from design to launch. I usually reply within 24 hours.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -207,7 +207,7 @@ export function ContactSection() {
       </section>
 
       <footer className="mt-32 border-t border-white/[0.08] py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-white/40">
-        <p>© {new Date().getFullYear()} {profile.name} · AI Engineer</p>
+        <p>© {new Date().getFullYear()} {profile.name} · AI Backend Engineer</p>
         <p className="font-mono text-[11px]">Built with Next.js · the retrieval demo runs client-side</p>
       </footer>
     </>

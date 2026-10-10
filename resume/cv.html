@@ -72,7 +72,7 @@
 <h2>Professional Summary</h2>
 <p>
   AI Backend Engineer with 2+ years of experience shipping production LLM systems end to end. Sole backend engineer
-  on a live generative AI platform: built a hybrid RAG pipeline that answers in under 1.5s and cut LLM billing by 80%
+  on a live generative AI platform: built a hybrid RAG pipeline (pgvector and full-text search in parallel) and cut LLM billing by 80%
   through Gemini prefix-cache anchoring. Designed a distributed regulatory-monitoring pipeline that processes 1,000+
   updates daily, and ships complete client products from design to deployment. Strong in async Python (FastAPI), vector search (pgvector, Pinecone, ChromaDB), agents (A2A, MCP),
   and the queues, locks and ledgers that keep AI features reliable. Mentor’s Choice — Best Backend Intern (HNG13);
@@ -104,7 +104,7 @@
   <div class="product">Product: CR8US Intelligence, a generative AI pre-production platform for the Nollywood film industry</div>
   <ul>
     <li><strong>Built the entire AI backend from scratch as sole backend engineer</strong> using FastAPI, SQLModel and Celery, serving guest and authenticated tiers in production.</li>
-    <li><strong>Kept RAG query latency under 1.5s</strong> by running pgvector cosine similarity and PostgreSQL full-text search in parallel via asyncio.</li>
+    <li><strong>Kept end-to-end query latency under 1.5s</strong> by running pgvector cosine similarity and PostgreSQL full-text search in parallel via asyncio.</li>
     <li><strong>Cut LLM token billing by 80%</strong> with Gemini prefix-cache anchoring: dynamic, XML-structured RAG context is appended after a static system prompt so the prefix is served from cache.</li>
     <li><strong>Replaced cookie-based guest sessions</strong> with transient in-memory state streamed over SSE, with secure guest-to-user session migration on login.</li>
     <li><strong>Hardened authentication</strong> with dual-mode token rotation (JSON payloads and HttpOnly cookies) and 30-minute OAuth access tokens.</li>
@@ -130,7 +130,7 @@
 </div>
 
 <div class="role">
-  <div class="role-head"><span><strong>Freelance Product Engineer</strong> <span class="org">| Self-employed | Remote</span></span><span class="when">Nov 2025 – Present</span></div>
+  <div class="role-head"><span><strong>Freelance Full-Stack Engineer</strong> <span class="org">| Selected client projects | Remote</span></span><span class="when">Nov 2025 – Present</span></div>
   <div class="product">Design, frontend, backend and deployment for client products</div>
   <ul>
     <li><strong>Nook (e-commerce):</strong> furniture storefront and admin on Next.js 16, Supabase Postgres and Drizzle, with oversell-safe, idempotent order transactions, server-side pricing, and Playwright end-to-end tests including WCAG 2.1 AA checks.</li>
@@ -180,7 +180,7 @@
 <div class="proj">
   <div class="proj-head"><strong>Distributed Wallet Service</strong> | <a href="https://github.com/SamuelOshin/wallet-service-system">GitHub</a></div>
   <ul>
-    <li>Processed 250+ transactions with zero fund loss via atomic ledger mutations, idempotent Paystack webhooks, automated failed-transfer recovery, and JWT/Google OAuth plus scoped, expiring API keys.</li>
+    <li>Zero fund loss by design: atomic ledger mutations, idempotent Paystack webhooks and automated failed-transfer recovery, with JWT/Google OAuth and scoped, expiring API keys.</li>
   </ul>
 </div>
 

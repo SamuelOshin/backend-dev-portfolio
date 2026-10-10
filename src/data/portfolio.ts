@@ -3,7 +3,7 @@
 
 export const profile = {
   name: "Samuel Oshin",
-  role: "AI Engineer",
+  role: "AI Backend Engineer",
   email: "samuelt.oshin@gmail.com",
   location: "Lagos, Nigeria · Remote",
   github: "https://github.com/SamuelOshin",
@@ -14,10 +14,10 @@ export const profile = {
 };
 
 export const headlineMetrics = [
-  { value: "<1.5s", label: "Hybrid RAG latency", context: "pgvector + FTS in parallel" },
   { value: "80%", label: "LLM billing cut", context: "Gemini prefix-cache anchoring" },
-  { value: "16×", label: "Endpoint speedup", context: "156s → 9.6s via asyncio" },
-  { value: "Top 5%", label: "of 10,000+ engineers", context: "2× HNG finalist" },
+  { value: "1,000+", label: "regulatory updates a day", context: "distributed Celery pipeline" },
+  { value: "40%", label: "less manual review", context: "LLM semantic change detection" },
+  { value: "30%", label: "storage & processing cost cut", context: "SHA-256 dedupe before the LLM" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -47,8 +47,8 @@ export const projects: Project[] = [
     categoryLabel: "Generative AI & RAG Platform",
     architecture: "FastAPI -> Celery Workers -> pgvector (FTS + Cosine) -> Gemini Prefix Caching",
     description:
-      "Production-grade generative AI pre-production platform for Nollywood film intelligence featuring sub-1.5s hybrid RAG search, dynamic XML prompt caching, and SSE streaming.",
-    metric: "< 1.5s Hybrid RAG Latency",
+      "Production-grade generative AI pre-production platform for Nollywood film intelligence featuring hybrid RAG search (pgvector + full-text in parallel), dynamic XML prompt caching, and SSE streaming.",
+    metric: "80% Lower LLM Billing",
     tags: ["Python", "FastAPI", "PostgreSQL", "pgvector", "Gemini", "Celery", "Redis", "Paystack"],
     liveUrl: "https://app.cr8us.africa",
     featured: true,
@@ -157,10 +157,10 @@ export const experiences: Experience[] = [
     period: "Feb 2026 — Present",
     summary:
       "Sole backend engineer architecting and scaling CR8US Intelligence: a generative AI pre-production platform for the Nollywood film industry.",
-    metrics: ["< 1.5s Hybrid RAG Latency", "80% Token Billing Reduction", "Dual-Mode Token Rotation"],
+    metrics: ["80% Token Billing Reduction", "Hybrid RAG (pgvector + FTS)", "Dual-Mode Token Rotation"],
     details: [
       "Engineered the entire AI-powered backend from scratch using FastAPI, SQLModel, and Celery, deploying a production-ready API serving both guest and authenticated tiers.",
-      "Designed a real-time Hybrid RAG pipeline combining pgvector cosine similarity and PostgreSQL Full-Text Search (FTS) executed in parallel via asyncio, reducing query latency under 1.5 seconds.",
+      "Designed a real-time Hybrid RAG pipeline combining pgvector cosine similarity and PostgreSQL Full-Text Search (FTS) executed in parallel via asyncio, keeping end-to-end query latency under 1.5 seconds.",
       "Optimized LLM token latency and API billing by 80% using Gemini Prefix Cache-Anchoring, strategically injecting dynamic XML-structured RAG contexts into static system prompts.",
       "Built a transient guest session model, replacing cookie-based sessions with in-memory state via SSE yields and implementing secure guest-to-user session migrations on login.",
       "Hardened authentication security by implementing Dual-Mode Token Rotation (supporting JSON payloads and secure HttpOnly cookies) and reducing OAuth access token lifetimes to a standard 30 minutes.",
@@ -291,8 +291,8 @@ export const pipelines: Pipeline[] = [
     id: "rag",
     name: "Hybrid RAG serving",
     project: "CR8US Intelligence",
-    headline: "Query to streamed, grounded answer in under 1.5 seconds.",
-    metric: { value: "<1.5s", label: "end-to-end retrieval latency" },
+    headline: "Semantic and keyword search in parallel, grounded answers streamed back, LLM bill cut by 80%.",
+    metric: { value: "80%", label: "lower LLM billing" },
     stages: [
       {
         id: "ingress",
