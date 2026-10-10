@@ -25,7 +25,7 @@ export function Navigation() {
   useEffect(() => {
     if (isBlogPage) return;
 
-    const sectionIds = ["home", "systems", "projects", "clients", "experience", "skills", "blog", "contact"];
+    const sectionIds = ["home", "systems", "projects", "clients", "experience", "skills", "arcade", "blog", "contact"];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {

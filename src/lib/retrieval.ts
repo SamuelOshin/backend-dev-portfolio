@@ -136,6 +136,10 @@ class BM25Index {
     return this.docs.length;
   }
 
+  get chunks(): Chunk[] {
+    return this.docs.map((d) => d.chunk);
+  }
+
   search(query: string, k = 3): Hit[] {
     const base = tokenize(query);
     const terms = new Map<string, number>();

@@ -4,6 +4,7 @@ import { ProjectsSection } from "./components/sections/ProjectsSection";
 import { ClientBuildsSection } from "./components/sections/ClientBuildsSection";
 import { ExperienceSection } from "./components/sections/ExperienceSection";
 import { SkillsSection } from "./components/sections/SkillsSection";
+import { ArcadeSection } from "./components/sections/ArcadeSection";
 import { WritingSection } from "./components/sections/WritingSection";
 import { ContactSection } from "./components/sections/ContactSection";
 import { getAllPosts } from "@/lib/blog";
@@ -21,6 +22,7 @@ export default function Home() {
         <ClientBuildsSection />
         <ExperienceSection />
         <SkillsSection />
+        <ArcadeSection />
         <WritingSection posts={posts} />
         <ContactSection />
       </div>

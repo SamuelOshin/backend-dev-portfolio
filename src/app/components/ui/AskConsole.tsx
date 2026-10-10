@@ -3,6 +3,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUp, CornerDownLeft } from "lucide-react";
 import { getIndex, MIN_SCORE, type Hit } from "@/lib/retrieval";
+import { OPEN_ARCADE_EVENT } from "../sections/ArcadeSection";
+
+const PLAY_COMMAND = /^\/?(play|game|games|arcade)$/i;
 
 const SUGGESTIONS = [
   "How did you get RAG under 1.5s?",
@@ -40,6 +43,16 @@ export function AskConsole() {
     setQuery("");
     setAnswer("");
     setHits([]);
+
+    // Easter egg: `play` skips retrieval and opens the arcade.
+    if (PLAY_COMMAND.test(trimmed)) {
+      setPhase("done");
+      setAnswer("Opening the arcade. Three tiny games about the problems I solve at work.");
+      window.dispatchEvent(new CustomEvent(OPEN_ARCADE_EVENT, { detail: "pipeline" }));
+      setTimeout(() => document.getElementById("arcade")?.scrollIntoView({ behavior: "smooth" }), 500);
+      return;
+    }
+
     setPhase("retrieving");
 
     const index = getIndex();
@@ -180,7 +193,7 @@ export function AskConsole() {
           id="ask"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Ask about RAG, agents, latency, costs…"
+          placeholder="Ask about RAG, agents, costs… or type play"
           autoComplete="off"
           className="flex-1 min-w-0 bg-transparent px-1 py-1.5 text-sm text-white placeholder:text-white/30 focus:outline-none"
         />
