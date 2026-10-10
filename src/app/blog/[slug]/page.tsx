@@ -11,6 +11,8 @@ import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
 import remarkMermaid from "@/lib/remark-mermaid";
 import { Mermaid } from "@/app/components/ui/Mermaid";
+import { Checklist, Command, Glossary, HiddenCode, InfectionCheck, Quiz } from "@/app/components/blog/interactive";
+import { RulesetBuilder } from "@/app/components/blog/RulesetBuilder";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
@@ -60,7 +62,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     const post = getPostBySlug(slug);
     if (!post) notFound();
 
-    const components = { Mermaid };
+    const components = { Mermaid, Glossary, HiddenCode, Quiz, InfectionCheck, Command, Checklist, RulesetBuilder };
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -216,6 +218,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                             source={post.content}
                             components={components}
                             options={{
+                                // Posts are our own files; allow data props like terms={[...]} for the
+                                // interactive components. blockDangerousJS (eval, Function, etc.) stays on.
+                                blockJS: false,
                                 mdxOptions: {
                                     remarkPlugins: [remarkGfm, remarkMermaid],
                                     rehypePlugins: [

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Repo worm incident cover</title>
+<!--
+  Cover source for content/blog/github-repo-worm-incident.mdx. Regenerate with:
+  "C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --disable-gpu --hide-scrollbars \
+    --window-size=1600,900 --screenshot="public/blog/repo-worm-incident-cover.png" "file:///C:/Users/dell/Documents/backend-dev-portfolio/resume/blog-covers/repo-worm-incident.html"
+-->
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1600px; height: 900px; overflow: hidden;
+    background: radial-gradient(ellipse 70% 60% at 75% 30%, #2a0d10 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 15% 85%, #1a2408 0%, transparent 60%), #0b0b0c;
+    font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+    color: #e8e8e6;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .term {
+    position: absolute; left: 90px; top: 110px; width: 860px;
+    border: 1px solid rgba(255,255,255,.12); border-radius: 18px; background: rgba(14,14,16,.92);
+    box-shadow: 0 40px 120px -30px rgba(0,0,0,.9);
+  }
+  .bar { display: flex; gap: 9px; padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .bar span { width: 13px; height: 13px; border-radius: 50%; background: rgba(255,255,255,.15); }
+  .body { padding: 26px 30px 30px; font-size: 22px; line-height: 1.75; }
+  .dim { color: rgba(255,255,255,.38); }
+  .red { color: #ff5d6c; }
+  .lime { color: #c6f432; }
+  .tabs { color: rgba(255,255,255,.12); letter-spacing: 2px; }
+  .hidden { background: #ff5d6c; color: #0b0b0c; padding: 0 8px; border-radius: 4px; font-weight: 700; }
+  /* commit graph */
+  svg { position: absolute; right: 120px; top: 150px; }
+  .tag {
+    position: absolute; left: 90px; bottom: 90px; display: flex; align-items: center; gap: 14px;
+    font-size: 24px; color: rgba(255,255,255,.55); letter-spacing: .14em; text-transform: uppercase;
+  }
+  .tag::before { content: ""; width: 44px; height: 2px; background: #c6f432; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+
+  <div class="term">
+    <div class="bar"><span></span><span></span><span></span></div>
+    <div class="body">
+      <div><span class="lime">$</span> git fetch origin</div>
+      <div><span class="red"> + 9233db2...060957e</span> main <span class="dim">-&gt;</span> origin/main <span class="red">(forced update)</span></div>
+      <div><span class="red"> + 4f3d99a...a188f9d</span> dev <span class="dim">-&gt;</span> origin/dev <span class="red">(forced update)</span></div>
+      <div><span class="red"> + 2e7ae52...c09d1e4</span> feat/ui <span class="dim">-&gt;</span> origin/feat/ui <span class="red">(forced update)</span></div>
+      <div style="margin-top:22px"><span class="lime">$</span> tail -c 120 postcss.config.mjs</div>
+      <div>export default config;<span class="tabs">→→→→→→→→→→→→→→→→</span><span class="hidden">global['!']…</span></div>
+      <div style="margin-top:22px"><span class="lime">$</span> grep '"dev"' package.json</div>
+      <div>"dev": "<span class="red">node api.js &amp;&amp; </span>next dev"</div>
+    </div>
+  </div>
+
+  <!-- Commit graph: the clean line, and the rewritten copy force-pushed over it -->
+  <svg width="420" height="600" viewBox="0 0 420 600" fill="none">
+    <line x1="120" y1="40" x2="120" y2="560" stroke="rgba(255,255,255,.18)" stroke-width="4"/>
+    <circle cx="120" cy="80" r="16" fill="#0b0b0c" stroke="rgba(255,255,255,.45)" stroke-width="4"/>
+    <circle cx="120" cy="200" r="16" fill="#0b0b0c" stroke="rgba(255,255,255,.45)" stroke-width="4"/>
+    <circle cx="120" cy="320" r="16" fill="#0b0b0c" stroke="#c6f432" stroke-width="4"/>
+    <path d="M120 320 C 120 380, 300 380, 300 440" stroke="#ff5d6c" stroke-width="4" stroke-dasharray="10 9"/>
+    <circle cx="300" cy="460" r="20" fill="#ff5d6c"/>
+    <circle cx="120" cy="460" r="16" fill="#0b0b0c" stroke="rgba(255,255,255,.18)" stroke-width="4" stroke-dasharray="6 6"/>
+    <text x="150" y="328" font-family="Consolas, monospace" font-size="20" fill="#c6f432">clean</text>
+    <text x="250" y="510" font-family="Consolas, monospace" font-size="20" fill="#ff5d6c">rewritten</text>
+    <text x="150" y="468" font-family="Consolas, monospace" font-size="20" fill="rgba(255,255,255,.35)">lost</text>
+  </svg>
+
+  <div class="tag">Incident report · supply-chain worm</div>
+</body>
+</html>
