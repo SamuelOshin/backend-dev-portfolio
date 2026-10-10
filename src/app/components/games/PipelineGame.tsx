@@ -220,7 +220,7 @@ export function PipelineGame() {
       <ResultPanel
         headline={`${w.served} requests served`}
         detail={`${w.dropped} dropped · ${w.cacheHits} cache hits${best !== null ? ` · best ${best}` : ""}`}
-        takeaway="Routing by hand gets hard fast. My production pipelines do this automatically: 1,000+ jobs a minute through Celery workers, Redis locks and caching."
+        takeaway="Routing by hand gets hard fast. In production the infrastructure does it: worker queues, Redis locks, dead-letter queues and caching. One notification service I built handles 1,000+ messages a minute at 99.5% delivery."
         isBest={isBest}
         shareText={`I served ${w.served} requests in Samuel Oshin's pipeline game. Beat that:`}
         onRestart={start}
