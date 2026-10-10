@@ -195,3 +195,11 @@
 nextjs-portal {
   display: none !important;
 }
+/* Blog posts: text stays at reading width (the article is max-w-3xl), while
+   visual blocks break out wider, up to about the nav's width. The 50vw term
+   keeps a 1.5rem gutter on mid-size screens, and the outer min() stops blocks
+   ever being narrower than the text on phones. */
+.breakout,
+.prose-breakout > :is(.not-prose, pre, .mermaid-block) {
+  margin-inline: min(0px, calc(50% - min(34rem, 50vw - 1.5rem)));
+}

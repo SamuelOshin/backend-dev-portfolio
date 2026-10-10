@@ -39,7 +39,7 @@ export function Mermaid({ chart }: MermaidProps) {
     return (
         <div
             ref={ref}
-            className="w-full flex justify-center my-8 overflow-x-auto bg-[#0d1117] p-8 border border-white/10 rounded-xl shadow-xl"
+            className="mermaid-block flex justify-center my-8 overflow-x-auto bg-[#0d1117] p-8 border border-white/10 rounded-xl shadow-xl"
             dangerouslySetInnerHTML={{ __html: svgImage }}
         />
     );

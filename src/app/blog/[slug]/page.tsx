@@ -141,14 +141,14 @@ export default async function BlogPostPage({ params }: PageProps) {
                     <header className="mb-10">
                         {/* Cover Image */}
                         {post.image && (
-                            <div className="relative w-full aspect-[2/1] rounded-2xl overflow-hidden mb-8 border border-white/10">
+                            <div className="breakout relative aspect-[2/1] rounded-2xl overflow-hidden mb-8 border border-white/10">
                                 <Image
                                     src={post.image}
                                     alt={post.title}
                                     fill
                                     className="object-cover"
                                     priority
-                                    sizes="(max-width: 768px) 100vw, 768px"
+                                    sizes="(max-width: 1100px) 100vw, 1088px"
                                 />
                             </div>
                         )}
@@ -195,7 +195,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     </header>
 
                     {/* MDX Content */}
-                    <div className="prose prose-invert max-w-none
+                    <div className="prose-breakout prose prose-invert max-w-none
             prose-headings:font-bold prose-headings:tracking-tight
             prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
             prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
