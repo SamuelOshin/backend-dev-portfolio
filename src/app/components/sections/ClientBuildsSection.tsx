@@ -112,9 +112,9 @@ export function ClientBuildsSection() {
             Design to deployment, <span className="font-display italic font-normal">one owner.</span>
           </h2>
           <p className="mt-4 text-white/60 leading-relaxed">
-            Work I&apos;ve built for clients, from the first screen design through frontend, backend and launch. TRIS
-            runs in production; the others are working prototypes, built so a client can test an idea before
-            committing to a full build.
+            Working prototypes and demos I&apos;ve built for clients, from the first screen design through frontend,
+            backend and deployment, so a client can test an idea with something real before committing to a full
+            build.
           </p>
         </div>
         <RoleTrack roles={ALL_ROLES} />

@@ -487,6 +487,7 @@ export const clientBuilds: ClientBuild[] = [
     stack: ["Next.js 16", "FastAPI", "SQLModel", "PostgreSQL 16", "Alembic", "Argon2id"],
     roles: ["Design", "Frontend", "Backend", "Deploy"],
     year: "2025–26",
+    status: "Demo",
     liveUrl: "https://tris-sigma.vercel.app/",
     githubUrl: "https://github.com/SamuelOshin/tris-dashboard",
     image: "/clients/tris.png",
