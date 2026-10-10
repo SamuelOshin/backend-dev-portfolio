@@ -158,7 +158,7 @@ export function ClientBuildsSection() {
       </div>
 
       {/* The rest */}
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className={`mt-4 grid grid-cols-1 gap-4 ${others.length % 2 === 0 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
         {others.map((b, i) => (
           <motion.article
             key={b.name}
@@ -169,7 +169,12 @@ export function ClientBuildsSection() {
             className="group flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.015] p-4 sm:p-5"
           >
             <Shot b={b} />
-            <div className="mt-5 font-mono text-[10.5px] uppercase tracking-wider text-white/40">{b.kind}</div>
+            <div className="mt-5 flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-wider text-white/40">
+              <span>{b.kind}</span>
+              {b.status && (
+                <span className="rounded-full border border-amber-300/40 px-2 py-0.5 normal-case tracking-normal text-amber-300">{b.status}</span>
+              )}
+            </div>
             <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-white">{b.name}</h3>
             <p className="mt-2 text-sm leading-relaxed text-white/55">{b.summary}</p>
             <div className="mt-3 font-mono text-[11px] text-white/40">{b.stack.join(" · ")}</div>

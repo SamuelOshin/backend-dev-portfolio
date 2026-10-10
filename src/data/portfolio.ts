@@ -170,7 +170,7 @@ export const experiences: Experience[] = [
     tech: ["Python", "FastAPI", "Celery", "Redis", "PostgreSQL (pgvector)", "Gemini", "OAuth 2.0", "Paystack", "Docker"],
   },
   {
-    role: "Backend Engineer",
+    role: "Backend Engineer (Contract)",
     company: "Emerj LLC",
     period: "Dec 2025 — Present",
     summary:
@@ -465,6 +465,8 @@ export interface ClientBuild {
   stack: string[];
   roles: BuildRole[];
   year: string;
+  // Shown as a badge, e.g. "Prototype".
+  status?: string;
   liveUrl?: string;
   githubUrl?: string;
   image?: string;
@@ -530,6 +532,19 @@ export const clientBuilds: ClientBuild[] = [
     liveUrl: "https://prison-gihon-global-service.vercel.app/",
     githubUrl: "https://github.com/SamuelOshin/real-estate-web",
     image: "/clients/gihon.png",
+  },
+  {
+    name: "Fhatley Global",
+    kind: "Construction · marketing site, Lagos",
+    summary:
+      "Prototype website for a construction and real-estate company: services, project portfolio, company profile and a quote request page.",
+    highlights: ["Five pages with animated page transitions and scroll reveals", "Quote request form"],
+    stack: ["Next.js", "TypeScript", "Tailwind", "Framer Motion"],
+    roles: ["Design", "Frontend", "Deploy"],
+    year: "2026",
+    status: "Prototype",
+    liveUrl: "https://v0-construction-website-blush.vercel.app/",
+    image: "/clients/fhatley.png",
   },
   {
     name: "LingoMeet",
