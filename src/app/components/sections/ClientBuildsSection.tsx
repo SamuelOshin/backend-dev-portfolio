@@ -112,8 +112,9 @@ export function ClientBuildsSection() {
             Design to deployment, <span className="font-display italic font-normal">one owner.</span>
           </h2>
           <p className="mt-4 text-white/60 leading-relaxed">
-            Products I&apos;ve built for clients: stores, marketplaces and internal tools. I take each one from the first
-            screen design through frontend, backend and launch.
+            Work I&apos;ve built for clients, from the first screen design through frontend, backend and launch. TRIS
+            runs in production; the others are working prototypes, built so a client can test an idea before
+            committing to a full build.
           </p>
         </div>
         <RoleTrack roles={ALL_ROLES} />
@@ -134,8 +135,13 @@ export function ClientBuildsSection() {
               <Shot b={b} priority={i === 0} />
             </div>
             <div className="lg:col-span-5 flex flex-col">
-              <div className="font-mono text-[11px] uppercase tracking-wider text-white/40">
-                {b.kind} · {b.year}
+              <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-white/40">
+                <span>
+                  {b.kind} · {b.year}
+                </span>
+                {b.status && (
+                  <span className="rounded-full border border-amber-300/40 px-2 py-0.5 normal-case tracking-normal text-amber-300">{b.status}</span>
+                )}
               </div>
               <h3 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-white">{b.name}</h3>
               <p className="mt-3 text-sm leading-relaxed text-white/60">{b.summary}</p>

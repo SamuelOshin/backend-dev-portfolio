@@ -475,23 +475,6 @@ export interface ClientBuild {
 
 export const clientBuilds: ClientBuild[] = [
   {
-    name: "Nook",
-    kind: "E-commerce · furniture & decor, Lagos",
-    summary:
-      "A full storefront and owner's back office: catalogue with four product types, cart, checkout, accounts, wishlist, reviews and an admin for orders and stock.",
-    highlights: [
-      "Order transactions guard against overselling races and duplicate submits; prices are recalculated server-side",
-      "Admin with order history, restock-on-cancel and product editing for simple, variable and grouped items",
-      "Playwright end-to-end suite with WCAG 2.1 AA checks, plus transactional email with a retry cron",
-    ],
-    stack: ["Next.js 16", "Supabase Postgres", "Drizzle", "Supabase Auth", "Tailwind v4", "Playwright"],
-    roles: ["Design", "Frontend", "Backend", "Deploy"],
-    year: "2026",
-    liveUrl: "https://nook-shop.vercel.app/",
-    image: "/clients/nook.png",
-    feature: true,
-  },
-  {
     name: "TRIS",
     kind: "Enterprise · risk & internal-control auditing",
     summary:
@@ -510,6 +493,24 @@ export const clientBuilds: ClientBuild[] = [
     feature: true,
   },
   {
+    name: "Nook",
+    kind: "E-commerce · furniture & decor, Lagos",
+    summary:
+      "A full storefront and owner's back office: catalogue with four product types, cart, checkout, accounts, wishlist, reviews and an admin for orders and stock.",
+    highlights: [
+      "Order transactions guard against overselling races and duplicate submits; prices are recalculated server-side",
+      "Admin with order history, restock-on-cancel and product editing for simple, variable and grouped items",
+      "Playwright end-to-end suite with WCAG 2.1 AA checks, plus transactional email with a retry cron",
+    ],
+    stack: ["Next.js 16", "Supabase Postgres", "Drizzle", "Supabase Auth", "Tailwind v4", "Playwright"],
+    roles: ["Design", "Frontend", "Backend", "Deploy"],
+    year: "2026",
+    status: "Prototype",
+    liveUrl: "https://nook-shop.vercel.app/",
+    image: "/clients/nook.png",
+    feature: true,
+  },
+  {
     name: "ConnectHub",
     kind: "Consumer · dating & matchmaking",
     summary: "Dating app with verified profiles, location-aware discovery, matching and real-time chat.",
@@ -517,6 +518,7 @@ export const clientBuilds: ClientBuild[] = [
     stack: ["Next.js", "React Query", "FastAPI", "PostGIS", "Supabase", "arq"],
     roles: ["Design", "Frontend", "Backend", "Deploy"],
     year: "2026",
+    status: "Prototype",
     liveUrl: "https://connecthub-tawny.vercel.app/",
     githubUrl: "https://github.com/SamuelOshin/connecthub",
     image: "/clients/connecthub.png",
@@ -529,6 +531,7 @@ export const clientBuilds: ClientBuild[] = [
     stack: ["Next.js 15", "TypeScript", "Tailwind", "Framer Motion"],
     roles: ["Design", "Frontend", "Backend", "Deploy"],
     year: "2026",
+    status: "Prototype",
     liveUrl: "https://prison-gihon-global-service.vercel.app/",
     githubUrl: "https://github.com/SamuelOshin/real-estate-web",
     image: "/clients/gihon.png",
@@ -554,6 +557,7 @@ export const clientBuilds: ClientBuild[] = [
     stack: ["WebRTC", "Web Speech API", "Node.js", "OpenRouter", "Docker"],
     roles: ["Design", "Frontend", "Backend"],
     year: "2026",
+    status: "Prototype",
     githubUrl: "https://github.com/SamuelOshin/Syncra",
   },
 ];

@@ -99,7 +99,7 @@ function buildCorpus(): Chunk[] {
     chunks.push({
       id: `client-${i}`,
       source: `client build · ${b.name}`,
-      text: `${b.name} (${b.kind}), designed and built end to end for a client: ${b.summary} ${b.highlights.join(". ")}. Stack: ${b.stack.join(", ")}.`,
+      text: `${b.name} (${b.kind}${b.status ? `, ${b.status.toLowerCase()}` : ""}), designed and built end to end for a client: ${b.summary} ${b.highlights.join(". ")}. Stack: ${b.stack.join(", ")}.`,
     });
   });
 
