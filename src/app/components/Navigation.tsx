@@ -12,7 +12,7 @@ const navigation = [
   { name: "Work", href: "#projects", isPage: false },
   { name: "Clients", href: "#clients", isPage: false },
   { name: "Experience", href: "#experience", isPage: false },
-  { name: "Writing", href: "/blog", isPage: true },
+  { name: "Blog", href: "/blog", isPage: true },
   { name: "Contact", href: "#contact", isPage: false },
 ];
 
@@ -25,7 +25,7 @@ export function Navigation() {
   useEffect(() => {
     if (isBlogPage) return;
 
-    const sectionIds = ["home", "systems", "projects", "clients", "experience", "skills", "writing", "contact"];
+    const sectionIds = ["home", "systems", "projects", "clients", "experience", "skills", "blog", "contact"];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
