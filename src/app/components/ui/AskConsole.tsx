@@ -93,10 +93,23 @@ export function AskConsole() {
     );
   }, []);
 
+  // Play the first suggestion once the console scrolls into view.
+  const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const t = setTimeout(() => run(SUGGESTIONS[0]), 900);
+    const el = rootRef.current;
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        t = setTimeout(() => run(SUGGESTIONS[0]), 400);
+      },
+      { threshold: 0.4 }
+    );
+    if (el) io.observe(el);
     return () => {
-      clearTimeout(t);
+      io.disconnect();
+      if (t) clearTimeout(t);
       if (timer.current) clearInterval(timer.current);
     };
   }, [run]);
@@ -105,7 +118,7 @@ export function AskConsole() {
   const busy = phase === "retrieving" || phase === "answering";
 
   return (
-    <div className="relative rounded-2xl border border-white/10 bg-[color:var(--ink)]/90 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden">
+    <div ref={rootRef} className="relative rounded-2xl border border-white/10 bg-[color:var(--ink)]/90 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] px-4 py-3">
         <div className="flex items-center gap-2 min-w-0">
@@ -186,11 +199,11 @@ export function AskConsole() {
         }}
         className="flex items-center gap-2 border-t border-white/[0.07] px-3 py-2.5"
       >
-        <label htmlFor="ask" className="sr-only">
+        <label htmlFor="ask-input" className="sr-only">
           Ask a question about Samuel's work
         </label>
         <input
-          id="ask"
+          id="ask-input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ask about RAG, agents, costs… or type play"

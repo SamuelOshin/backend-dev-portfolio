@@ -1,16 +1,64 @@
 // Single source of truth for portfolio content. Sections, the in-browser
 // retrieval demo and the pipeline explorer all read from here.
 
+// Role variants. The default is what a plain visit sees; a `?for=<key>` link
+// (e.g. /?for=product) swaps the role label, the CV behind every Résumé button
+// and the hero's primary call to action. See src/lib/use-role-variant.ts.
+export type RoleKey = "default" | "ai" | "llm" | "product" | "backend";
+
+export interface RoleVariant {
+  role: string;
+  status: string;
+  resume: string;
+  cta: { label: string; href: string };
+}
+
+const systemsCta = { label: "See the systems", href: "#systems" };
+
+export const roleVariants: Record<RoleKey, RoleVariant> = {
+  default: {
+    role: "AI Engineer",
+    status: "Open to AI engineering roles",
+    resume: "/Samuel_Oshin_AI_Engineer.pdf",
+    cta: systemsCta,
+  },
+  ai: {
+    role: "AI Engineer",
+    status: "Open to AI engineering roles",
+    resume: "/Samuel_Oshin_AI_Engineer.pdf",
+    cta: systemsCta,
+  },
+  llm: {
+    role: "AI LLM Engineer",
+    status: "Open to AI / LLM engineering roles",
+    resume: "/Samuel_Oshin_AI_LLM_Engineer.pdf",
+    cta: systemsCta,
+  },
+  product: {
+    role: "AI Product Engineer",
+    status: "Open to AI product engineering roles",
+    resume: "/Samuel_Oshin_AI_Product_Engineer.pdf",
+    cta: { label: "See client builds", href: "#clients" },
+  },
+  backend: {
+    role: "AI Backend Engineer",
+    status: "Open to AI backend roles",
+    resume: "/Samuel_Oshin_AI_Backend_Engineer.pdf",
+    cta: systemsCta,
+  },
+};
+
 export const profile = {
   name: "Samuel Oshin",
-  role: "AI Backend Engineer",
+  role: roleVariants.default.role,
   email: "samuelt.oshin@gmail.com",
   location: "Lagos, Nigeria · Remote",
   github: "https://github.com/SamuelOshin",
   linkedin: "https://linkedin.com/in/samuel-oshin-2903611a5/",
   whatsapp: "https://wa.me/2349075904952",
-  // Source: resume/cv.html (see the regenerate command at the top of that file).
-  resume: "/Samuel_Oshin_AI_Backend_Engineer.pdf",
+  // Default CV. Per-role CVs live in public/ and are listed in roleVariants.
+  // The backend CV's source is resume/cv.html (see the regenerate command there).
+  resume: roleVariants.default.resume,
 };
 
 export const headlineMetrics = [
@@ -66,14 +114,14 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    title: "Code Review Agent (A2A)",
+    title: "PRRover: AI Code Review Agent (A2A)",
     category: "ai",
     categoryLabel: "Agentic Infrastructure",
-    architecture: "A2A Protocol -> Google Gemini 2.0 -> GitHub MCP -> Async Webhook Bus",
+    architecture: "GitHub Webhook -> A2A Protocol -> Pydantic AI (Gemini / OpenAI / Anthropic / OpenRouter) -> Schema-Checked Review",
     description:
-      "Autonomous code review agent leveraging Agent-to-Agent protocol and GitHub MCP for real-time security vulnerability detection, AST code analysis, and automated PR review feedback.",
-    metric: "< 800ms Review Cycles",
-    tags: ["Python", "FastAPI", "A2A Protocol", "Google Gemini 2.0", "GitHub MCP", "Docker"],
+      "Webhook-driven code review agent being rebuilt to production grade: a provider-agnostic model layer where switching model is a config change, schema-enforced structured output that fails closed, and hardened webhooks and auth.",
+    metric: "970 Tests · 91% Coverage",
+    tags: ["Python", "FastAPI", "A2A Protocol", "Pydantic AI", "Gemini", "OpenAI", "Anthropic", "GitHub Actions"],
     githubUrl: "https://github.com/SamuelOshin/code_reviewer_agent_a2a",
     featured: true,
   },
@@ -110,6 +158,17 @@ export const projects: Project[] = [
     metric: "Contextual Intent Scheduling",
     tags: ["Python", "FastAPI", "SQLModel", "arq", "Redis", "OpenRouter", "React Native"],
     githubUrl: "https://github.com/SamuelOshin/project_nudge",
+  },
+  {
+    title: "ResNet18 AI Image Detector",
+    category: "ai",
+    categoryLabel: "Computer Vision · Fine-Tuning",
+    architecture: "PyTorch -> Fine-Tuned ResNet18 -> Hugging Face Hub -> Gradio Demo",
+    description:
+      "Fine-tuned ResNet18 classifier, built for Proovia, that labels images as real or AI-generated. Published on Hugging Face with a Gradio demo.",
+    metric: "95.55% Accuracy · 0.9555 F1",
+    tags: ["Python", "PyTorch", "Hugging Face Transformers", "Gradio", "Fine-Tuning"],
+    liveUrl: "https://huggingface.co/bobbysam/resnet18-image-detector",
   },
   {
     title: "Intelligent Profile Query System",

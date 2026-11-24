@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, Linkedin, Mail, FileText, Menu, X, ArrowUpRight } from "lucide-react";
-import { profile } from "@/data/portfolio";
+import { useRoleVariant } from "@/lib/use-role-variant";
 
 const navigation = [
   { name: "Systems", href: "#systems", isPage: false },
@@ -17,6 +17,7 @@ const navigation = [
 ];
 
 export function Navigation() {
+  const variant = useRoleVariant();
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
@@ -152,7 +153,7 @@ export function Navigation() {
               <Mail size={15} />
             </a>
             <a
-              href={profile.resume}
+              href={variant.resume}
               download
               target="_blank"
               rel="noopener noreferrer"
@@ -256,7 +257,7 @@ export function Navigation() {
                   </a>
                 </div>
                 <a
-                  href={profile.resume}
+                  href={variant.resume}
                   download
                   target="_blank"
                   rel="noopener noreferrer"

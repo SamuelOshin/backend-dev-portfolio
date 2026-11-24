@@ -1,10 +1,10 @@
-# Samuel Oshin — Backend Engineer Portfolio (Full Content)
+# Samuel Oshin — AI Engineer Portfolio (Full Content)
 
-> Python Backend Engineer specializing in AI/LLM infrastructure, RAG pipelines, and distributed systems. 2× HNG Finalist, Top 1-5% of 10,000+ developers.
+> AI Engineer (backend, LLM and product) specializing in AI/LLM infrastructure, RAG pipelines, and distributed systems. 2× HNG Finalist, Top 1-5% of 10,000+ developers.
 
 ## About Samuel Oshin
 
-Samuel Oshin is a Python Backend Engineer with expertise in:
+Samuel Oshin is an AI Engineer with expertise in:
 - RAG (Retrieval-Augmented Generation) pipeline design and deployment
 - Distributed systems architecture
 - AI-powered backend infrastructure

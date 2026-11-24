@@ -69,7 +69,7 @@ function buildCorpus(): Chunk[] {
   chunks.push({
     id: "profile",
     source: "profile",
-    text: `${profile.name} is an AI backend engineer based in ${profile.location}, building production LLM systems (hybrid RAG, agents, distributed backends) and full products for clients, from design to deployment. Available for AI backend roles. Reach him at ${profile.email}.`,
+    text: `${profile.name} is an AI engineer based in ${profile.location}, building production LLM systems (hybrid RAG, agents, distributed backends) and full products for clients, from design to deployment. Available for AI engineering roles: AI engineer, AI LLM engineer, AI product engineer and AI backend engineer. Reach him at ${profile.email}.`,
   });
 
   experiences.forEach((exp, i) => {
