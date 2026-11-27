@@ -32,7 +32,7 @@ export async function generateMetadata({
     if (!post) return { title: "Post Not Found" };
 
     return {
-        title: `${post.title} | Samuel Oshin`,
+        title: post.title,
         description: post.description,
         openGraph: {
             title: post.title,

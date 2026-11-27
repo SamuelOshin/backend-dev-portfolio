@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samueloshin.vercel.app";
 
 export const metadata: Metadata = {
-    title: "Blog | Samuel Oshin - Python Backend & AI Engineering",
+    title: "Blog — Python Backend & AI Engineering",
     description:
         "Technical articles on Python backend development, RAG pipelines, distributed systems, AI infrastructure, and software engineering best practices.",
     openGraph: {

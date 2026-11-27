@@ -48,7 +48,7 @@ export function WritingSection({ posts }: { posts: BlogPostMeta[] }) {
             From the <span className="font-display italic font-normal">blog.</span>
           </h2>
           <p className="mt-4 text-white/60 leading-relaxed">
-            Deep dives on the systems above: RAG pipelines, guest sessions, resilient ingestion and backend architecture.
+            Deep dives on my AI-native SDLC, multi-agent workflows, RAG pipelines, resilient ingestion and backend architecture.
           </p>
         </div>
         <Link

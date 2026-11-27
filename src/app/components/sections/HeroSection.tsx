@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
 import { headlineMetrics, profile } from "@/data/portfolio";
@@ -87,6 +88,19 @@ export function HeroSection() {
               or ask my portfolio
               <ArrowDown size={14} className="transition-transform group-hover:translate-y-0.5" />
             </a>
+          </div>
+
+          <div className="mt-6">
+            <Link
+              href="/blog/ai-native-product-engineering-closed-loop"
+              className="group inline-flex items-center gap-2.5 font-mono text-xs text-white/60 transition-colors hover:text-white"
+            >
+              <span className="rounded-full border border-[color:var(--signal)]/30 bg-[color:var(--signal)]/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-[color:var(--signal)]">
+                New post
+              </span>
+              <span className="truncate">AI-Native SDLC: Inside My Multi-Agent Engineering Loop</span>
+              <ArrowUpRight size={13} className="shrink-0 text-white/40 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[color:var(--signal)]" />
+            </Link>
           </div>
         </div>
 

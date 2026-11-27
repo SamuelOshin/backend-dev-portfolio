@@ -7,6 +7,7 @@ export interface Chunk {
   id: string;
   source: string;
   text: string;
+  href?: string;
 }
 
 export interface Hit {
@@ -53,6 +54,18 @@ const SYNONYMS: Record<string, string[]> = {
   contact: ["email", "reach"],
   cache: ["prefix", "caching"],
   caching: ["prefix", "cache"],
+  sdlc: ["workflow", "agentic", "review", "qa", "worktree"],
+  workflow: ["sdlc", "agentic", "review", "qa"],
+  workflows: ["sdlc", "agentic", "review", "qa"],
+  qa: ["testing", "e2e", "playwright", "browser", "emulator"],
+  testing: ["qa", "e2e", "playwright", "jest", "pytest"],
+  e2e: ["qa", "playwright", "browser", "emulator"],
+  playwright: ["browser", "qa", "e2e"],
+  browser: ["playwright", "qa", "e2e"],
+  review: ["reviewer", "diff", "sdlc"],
+  worktree: ["sdlc", "git", "isolated"],
+  blog: ["writing", "post", "sdlc"],
+  writing: ["blog", "post", "sdlc"],
 };
 
 function tokenize(text: string): string[] {
@@ -109,6 +122,13 @@ function buildCorpus(): Chunk[] {
       source: `capabilities · ${c.title}`,
       text: `${c.title}: ${c.blurb} Tools: ${c.skills.join(", ")}.`,
     });
+  });
+
+  chunks.push({
+    id: "blog-ai-sdlc",
+    source: "blog · AI-Native SDLC",
+    href: "/blog/ai-native-product-engineering-closed-loop",
+    text: "Samuel runs a 6-stage closed-loop AI-native SDLC across backend, web, and mobile: architecture specs & proactive bug reproduction, Figma design tokens, model-tiered builds in isolated Git worktrees, cold adversarial code review pinned to top-tier reasoning models (diff + acceptance criteria only), and live UI verification using Playwright, Browser Use, or in-ADE built-in browsers for web and Docker + Android emulator/device over adb for mobile, with every push and PR human-gated.",
   });
 
   return chunks;

@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUp, CornerDownLeft } from "lucide-react";
+import Link from "next/link";
+import { ArrowUp, ArrowUpRight, CornerDownLeft } from "lucide-react";
 import { getIndex, MIN_SCORE, type Hit } from "@/lib/retrieval";
 import { OPEN_ARCADE_EVENT } from "../sections/ArcadeSection";
 
 const PLAY_COMMAND = /^\/?(play|game|games|arcade)$/i;
 
 const SUGGESTIONS = [
+  "How do you use AI in your SDLC?",
   "How does your hybrid RAG work?",
   "How do you cut LLM costs?",
   "Have you built AI agents?",
@@ -155,7 +157,17 @@ export function AskConsole() {
               {hits.map((h, i) => (
                 <li key={h.chunk.id} className="flex items-center gap-2 text-[11px]">
                   <span className="text-white/40 w-4">[{i + 1}]</span>
-                  <span className="text-white/70 truncate flex-1">{h.chunk.source}</span>
+                  {h.chunk.href ? (
+                    <Link
+                      href={h.chunk.href}
+                      className="inline-flex items-center gap-1 text-[color:var(--signal)] hover:underline truncate flex-1"
+                    >
+                      <span className="truncate">{h.chunk.source}</span>
+                      <ArrowUpRight size={11} className="shrink-0" />
+                    </Link>
+                  ) : (
+                    <span className="text-white/70 truncate flex-1">{h.chunk.source}</span>
+                  )}
                   <span className="hidden sm:block h-1 w-14 rounded-full bg-white/[0.06] overflow-hidden">
                     <span
                       className="block h-full bg-[color:var(--signal)]"

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI-Native SDLC Cover</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background:
+      radial-gradient(ellipse 65% 65% at 80% 25%, rgba(198, 244, 50, 0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 55% at 15% 85%, rgba(34, 197, 94, 0.12) 0%, transparent 60%),
+      #0b0b0c;
+    font-family: "SF Mono", "Cascadia Code", Consolas, "Courier New", monospace;
+    color: #e8e8e6;
+    position: relative;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .term {
+    position: absolute; left: 56px; top: 64px; width: 706px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 16px;
+    background: rgba(14,14,17,.94);
+    box-shadow: 0 32px 90px -24px rgba(0,0,0,.92);
+  }
+  .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .dots { display: flex; gap: 8px; }
+  .dots span { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,.18); }
+  .bar-title { font-size: 13px; color: rgba(255,255,255,.45); letter-spacing: .04em; }
+  .body { padding: 22px 24px 26px; font-size: 15.5px; line-height: 1.72; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; white-space: nowrap; }
+  .row-left { display: flex; align-items: center; gap: 12px; }
+  .step { color: rgba(255,255,255,.42); }
+  .cmd { color: #e8e8e6; min-width: 150px; }
+  .detail { color: rgba(255,255,255,.68); }
+  .dim { color: rgba(255,255,255,.42); }
+  .lime { color: #c6f432; }
+  .amber { color: #fbbf24; }
+  .red { color: #ff5d6c; }
+  .badge {
+    display: inline-block; padding: 1px 9px; border-radius: 5px;
+    font-size: 12.5px; font-weight: 700; letter-spacing: .03em;
+    flex-shrink: 0;
+  }
+  .b-pass { background: rgba(74, 222, 128, .15); color: #4ade80; border: 1px solid rgba(74, 222, 128, .35); }
+  .b-fix { background: rgba(198, 244, 50, .14); color: #c6f432; border: 1px solid rgba(198, 244, 50, .35); }
+  .b-gate { background: rgba(251, 191, 36, .14); color: #fbbf24; border: 1px solid rgba(251, 191, 36, .35); }
+  .loop {
+    position: absolute; right: 52px; top: 76px; width: 344px;
+    display: flex; flex-direction: column; gap: 13px;
+  }
+  .node {
+    padding: 13px 18px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(18,18,22,.9);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .node.active { border-color: rgba(198, 244, 50, .55); background: rgba(198, 244, 50, .07); }
+  .node-label { font-size: 14.5px; font-weight: 600; color: #f3f4f6; }
+  .node-sub { font-size: 11.5px; color: rgba(255,255,255,.48); margin-top: 3px; }
+  .arrow { text-align: center; color: rgba(198, 244, 50, .55); font-size: 14px; line-height: 1; }
+  .tag {
+    position: absolute; left: 56px; bottom: 48px; display: flex; align-items: center; gap: 14px;
+    font-size: 17.5px; color: rgba(255,255,255,.62); letter-spacing: .12em; text-transform: uppercase;
+  }
+  .tag::before { content: ""; width: 40px; height: 2px; background: #c6f432; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+
+  <div class="term">
+    <div class="bar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="bar-title">orchestrator · ai-native sdlc pre-pr gate</div>
+    </div>
+    <div class="body">
+      <div style="margin-bottom:8px"><span class="lime">$</span> sdlc run --mode closed-loop</div>
+      <div class="row">
+        <div class="row-left"><span class="step">[1]</span><span class="cmd">spec + figma</span><span class="detail">invariants &amp; tokens</span></div>
+        <span class="badge b-pass">SYNCED</span>
+      </div>
+      <div class="row">
+        <div class="row-left"><span class="step">[2]</span><span class="cmd">build-worktree</span><span class="detail">68 suites / 705 tests</span></div>
+        <span class="badge b-pass">PASS</span>
+      </div>
+      <div class="row">
+        <div class="row-left"><span class="step">[3]</span><span class="cmd">cold-review</span><span class="detail">diff + criteria (pro)</span></div>
+        <span class="badge b-pass">0 HOLES</span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="row-left"><span class="step">[4]</span><span class="cmd">live-qa</span><span class="red">IME covers BottomSheet CTA</span></div>
+      </div>
+      <div style="padding-left:2px">
+        <span class="lime">↳</span> patch: <span class="amber">&lt;KeyboardAvoidingView behavior="padding" /&gt;</span>
+      </div>
+      <div class="row">
+        <div class="row-left"><span class="step">[5]</span><span class="cmd">re-verify</span><span class="detail">android API 36 proof</span></div>
+        <span class="badge b-fix">FIXED</span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="row-left"><span class="step">[6]</span><span class="cmd">outward-gate</span><span class="detail">awaiting human ok</span></div>
+        <span class="badge b-gate">GATED</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="loop">
+    <div class="node">
+      <div>
+        <div class="node-label">1. Spec, QA &amp; Design</div>
+        <div class="node-sub">Architecture · repros · Figma tokens</div>
+      </div>
+      <span class="lime">01</span>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="node">
+      <div>
+        <div class="node-label">2. Isolated Build</div>
+        <div class="node-sub">Worktree · model-tiered · tests</div>
+      </div>
+      <span class="lime">02</span>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="node active">
+      <div>
+        <div class="node-label">3. Cold Review + Live QA</div>
+        <div class="node-sub">Pinned reviewer · browser/device · DB</div>
+      </div>
+      <span class="lime">03</span>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="node">
+      <div>
+        <div class="node-label">4. Human PR Gate</div>
+        <div class="node-sub">No push without explicit approval</div>
+      </div>
+      <span class="amber">04</span>
+    </div>
+  </div>
+
+  <div class="tag">AI-Native SDLC · Closed-Loop Agent Verification</div>
+</body>
+</html>
